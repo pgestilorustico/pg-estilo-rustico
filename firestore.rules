@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Solo la cuenta de Google del dueño puede leer y escribir.
+    match /{document=**} {
+      allow read, write: if request.auth != null
+        && request.auth.token.email == "pabloguzman2433@gmail.com"
+        && request.auth.token.email_verified == true;
+    }
+  }
+}
