@@ -123,7 +123,11 @@ input,textarea,select,.wa textarea,.cli-tel-big,.cli-tel,.cli-notas,.full-desc{-
 .wa p{margin:0 0 8px;font-size:.82rem;font-weight:600;color:var(--ok)}
 .wa textarea{width:100%;min-height:150px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;line-height:1.45;resize:vertical}
 .wa .actions{margin-top:8px}
+.wa-telbox{margin:10px 0 4px;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
+.wa-telbox .f{font-size:.84rem}
+.wa p.wa-tel{margin:8px 0 0;font-weight:500;color:var(--muted)}
 .wa a.btn{text-decoration:none;display:inline-flex;align-items:center;color:var(--ink)}
+.wa a.btn.primary{color:var(--bg);background:#1F8F4E;border-color:#1F8F4E}
 .wa-msg{font-size:.8rem;color:var(--ok);font-weight:600;margin:6px 0 0}
 details.compra{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 details.compra summary{list-style:none;cursor:pointer;padding:12px 16px;font-weight:600;font-size:.9rem;display:flex;justify-content:space-between;gap:10px}
@@ -609,7 +613,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 4</p>
+  <p class="ver">versión app 5</p>
 </div>
 
 
@@ -1038,7 +1042,15 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       if(state.waOpen===o.id){
         var wt = waText(o);
         h += '<div class="wa"><p>Texto listo para mandar a '+esc(o.cliente)+'. Podés cambiarlo antes de copiar.</p><textarea id="wa-'+esc(o.id)+'" aria-label="Texto para WhatsApp">'+esc(wt)+'</textarea>';
-        h += '<div class="actions">'+actBtn('wacopy',o.id,'btn primary','Copiar texto')+'<a class="btn" href="https://wa.me/?text='+encodeURIComponent(wt)+'" target="_blank" rel="noopener">Abrir WhatsApp</a>'+actBtn('waclose',o.id,'btn','Cerrar')+'</div>';
+        var wcli = findCliente(o.cliente), wnum = waNum(wcli && wcli.telefono);
+        if(wnum && state.waEdit!==o.id){
+          h += '<div class="actions"><a class="btn primary wa-go" href="'+waUrl(wnum,wt)+'" target="_blank" rel="noopener">Abrir chat de '+esc(String(o.cliente).split(' ')[0])+'</a>'+actBtn('wacopy',o.id,'btn','Copiar texto')+actBtn('waclose',o.id,'btn','Cerrar')+'</div>';
+          h += '<p class="wa-tel">Se abre el chat con '+esc(wcli.telefono)+'. '+'</p>'+actBtn('watelchg',o.id,'linkbtn','Cambiar número');
+        } else {
+          h += '<div class="wa-telbox"><label class="f">Teléfono de '+esc(o.cliente)+' (para abrir su chat directo)<input type="tel" inputmode="tel" id="watel-'+esc(o.id)+'" value="'+esc((wcli&&wcli.telefono)||'')+'" placeholder="Ej: 280 4123456"></label>';
+          h += '<div class="actions">'+actBtn('watel',o.id,'btn','Guardar número')+(('contacts' in navigator && navigator.contacts && navigator.contacts.select)?actBtn('wapick',o.id,'btn','📇 Elegir de mis contactos'):'')+'</div></div>';
+          h += '<div class="actions">'+actBtn('wacopy',o.id,'btn primary','Copiar texto')+'<a class="btn wa-go" href="'+waUrl('',wt)+'" target="_blank" rel="noopener">Abrir WhatsApp</a>'+actBtn('waclose',o.id,'btn','Cerrar')+'</div>';
+        }
         if(state.waMsg) h += '<p class="wa-msg">'+esc(state.waMsg)+'</p>';
         h += '</div>';
       }
@@ -1064,6 +1076,28 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     if(!act) return img;
     return '<form class="actf zoomf" data-act="zoom" data-fid="'+esc(fid)+'"><button type="submit" class="zoombtn" aria-label="Agrandar foto">'+img+'</button></form>';
   }
+  /* Teléfonos argentinos → formato de WhatsApp (549 + código de área sin 0 + número sin 15) */
+  function waNum(t){
+    var d = String(t||'').replace(/\D/g,''); if(d.length<8) return '';
+    if(d.indexOf('00')===0) d = d.slice(2);
+    if(d.indexOf('54')===0 && d.length>=12){ d = d.slice(2); if(d.charAt(0)==='9') d = d.slice(1); }
+    if(d.charAt(0)==='0') d = d.slice(1);
+    if(d.length===12){ for(var L=2; L<=4; L++){ if(d.substr(L,2)==='15'){ d = d.slice(0,L)+d.slice(L+2); break; } } }
+    if(d.length===10) return '549'+d;
+    return '';
+  }
+  function waUrl(num,txt){ return 'https://wa.me/'+(num||'')+'?text='+encodeURIComponent(txt||''); }
+  async function setTelCliente(nombre, tel){
+    await ensureCliente(nombre);
+    var c = findCliente(nombre);
+    if(!c){ throw new Error('No encontré el cliente'); }
+    c = JSON.parse(JSON.stringify(c)); c.telefono = tel; await saveCliente(c);
+  }
+  document.addEventListener('input', function(e){
+    var t = e.target; if(!t || !t.id || t.id.indexOf('wa-')!==0 || t.tagName!=='TEXTAREA') return;
+    var box = t.closest('.wa'); if(!box) return;
+    box.querySelectorAll('a.wa-go').forEach(function(a){ a.href = a.href.replace(/\?text=.*$/, '?text='+encodeURIComponent(t.value)); });
+  });
   function actBtn(act,id,cls,label){
     return '<form class="actf" data-act="'+act+'" data-id="'+esc(id)+'"><button type="submit" class="'+cls+'">'+label+'</button></form>';
   }
@@ -1667,6 +1701,23 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     }
     if(act==='edit' && o){openForm(o);return}
     if(act==='wa' && o){ state.waOpen = state.waOpen===id?null:id; state.waMsg=''; render(); return; }
+    if(act==='watel' && o){
+      var inp = document.getElementById('watel-'+id), tv = inp ? inp.value.trim() : '';
+      if(!waNum(tv)){ state.waMsg = 'Revisá el número: poné el código de área, por ejemplo 280 4123456.'; lastHtml=null; render(); return; }
+      await setTelCliente(o.cliente, tv); state.waEdit = null; state.waMsg = 'Número guardado en el cliente.'; lastHtml=null; render(); return;
+    }
+    if(act==='wapick' && o){
+      try{
+        var res = await navigator.contacts.select(['name','tel'], {multiple:false});
+        var tels = (res && res[0] && res[0].tel) || [];
+        if(!tels.length){ state.waMsg = 'Ese contacto no tiene teléfono.'; lastHtml=null; render(); return; }
+        await setTelCliente(o.cliente, tels[0]); state.waEdit = null; state.waMsg = 'Número guardado: '+tels[0]; lastHtml=null; render();
+      }catch(err){ state.waMsg = 'No pude abrir tus contactos. Escribí el número a mano.'; lastHtml=null; render(); }
+      return;
+    }
+    if(act==='watelchg' && o){
+      state.waEdit = id; state.waMsg = ''; lastHtml=null; render(); return;
+    }
     if(act==='waclose'){ state.waOpen = null; state.waMsg=''; render(); return; }
     if(act==='wacopy'){
       var ta = document.getElementById('wa-'+id), txt = ta ? ta.value : '';
