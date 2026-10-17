@@ -366,6 +366,26 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 .hint{color:var(--muted);font-size:.82rem;margin:2px 0 12px}
 .err{color:var(--danger);font-size:.88rem;min-height:1.2em;margin:0 0 8px}
 @media (max-width:360px){.two{grid-template-columns:1fr}}
+/* Computadora: aprovechar el ancho de la pantalla */
+@media (min-width:900px){
+  .wrap{max-width:1280px;padding-left:32px;padding-right:32px;padding-top:28px}
+  header.brand{padding:16px 22px}
+  .tools{display:grid;grid-template-columns:260px 1fr;gap:12px;align-items:stretch}
+  .tools > form.actf{display:block}
+  .tools .fab{height:100%}
+  .tools .tabs{grid-column:1/-1}
+  .tab{padding:9px 6px;font-size:.88rem}
+  #list,#slist{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));grid-auto-flow:row dense;gap:14px;align-items:start}
+  #clist{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;align-items:start}
+  #list > details.compra,#list > .compra-empty,#list > .empty,#slist > .empty,#clist > .empty{grid-column:1/-1}
+  #list > details.order[open],#slist > details[open]{grid-column:1/-1}
+  details.order[open] .rows{column-gap:28px}
+  .editor{max-width:860px;margin-left:auto;margin-right:auto}
+  .gallery{grid-template-columns:repeat(auto-fill,minmax(140px,180px))}
+}
+@media (min-width:1300px){
+  #list,#slist{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
@@ -642,7 +662,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 6</p>
+  <p class="ver">versión app 7</p>
 </div>
 
 
