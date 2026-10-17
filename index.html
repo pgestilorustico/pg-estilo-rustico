@@ -19,8 +19,8 @@
 <style>
 /* Layout: una sola columna angosta, lista limpia con divisores finos; el logo en madera es el único acento cálido */
 :root{
-  --bg:#F5EFE6; --surface:#FFFCF7; --ink:#2B2017; --muted:#7E6C5B; --line:#E7DBCB;
-  --accent:#8A5A34; --accent-ink:#FFFFFF; --soft:#EEE3D4; --accent-line:#D9BFA0; --wood:#6B4423; --wood-ink:#FFF7EC;
+  --bg:#FFFFFF; --surface:#FFFFFF; --ink:#1C1917; --muted:#78716C; --line:#ECE7E1;
+  --accent:#8A5A34; --accent-ink:#FFFFFF; --soft:#F5F2EE; --accent-line:#D9BFA0; --wood:#6B4423; --wood-ink:#FFF7EC;
   --ok:#3E7A4C; --ok-bg:#E5EFE3; --pres-bg:#EEF2F4; --pres-line:#D3DDE3; --pres-badge:#DCE6EC; --pres-ink:#3F5E73; --proc-bg:#FBF3DF; --proc-line:#EBDDB6; --proc-badge:#F3E3B8; --proc-ink:#7A5408; --warn:#A85C1A; --warn-bg:#F6E6D3; --danger:#B3402F;
   --head:'Archivo', 'Helvetica Neue', Arial, sans-serif;
   --body:'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -32,15 +32,15 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#15100C; --surface:#1F1812; --ink:#F0E6DA; --muted:#A8957F; --line:#33281F;
-    --accent:#CF9A6A; --accent-ink:#1A120C; --soft:#2A2018; --accent-line:#5A4028; --wood:#A8713F; --wood-ink:#1A120C;
+    --bg:#0A0A0A; --surface:#1C1612; --ink:#F2EBE3; --muted:#A8957F; --line:#2E241C;
+    --accent:#CF9A6A; --accent-ink:#1A120C; --soft:#211A15; --accent-line:#5A4028; --wood:#A8713F; --wood-ink:#1A120C;
     --ok:#85C49A; --ok-bg:#1B2A1F; --pres-bg:#161C21; --pres-line:#27333D; --pres-badge:#22303A; --pres-ink:#A8C4D8; --proc-bg:#241C0E; --proc-line:#3E3016; --proc-badge:#3E3014; --proc-ink:#EBCB7A; --warn:#E3A867; --warn-bg:#2E2216; --danger:#E58676;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-    --bg:#15100C; --surface:#1F1812; --ink:#F0E6DA; --muted:#A8957F; --line:#33281F;
-    --accent:#CF9A6A; --accent-ink:#1A120C; --soft:#2A2018; --accent-line:#5A4028; --wood:#A8713F; --wood-ink:#1A120C;
+    --bg:#0A0A0A; --surface:#1C1612; --ink:#F2EBE3; --muted:#A8957F; --line:#2E241C;
+    --accent:#CF9A6A; --accent-ink:#1A120C; --soft:#211A15; --accent-line:#5A4028; --wood:#A8713F; --wood-ink:#1A120C;
     --ok:#85C49A; --ok-bg:#1B2A1F; --pres-bg:#161C21; --pres-line:#27333D; --pres-badge:#22303A; --pres-ink:#A8C4D8; --proc-bg:#241C0E; --proc-line:#3E3016; --proc-badge:#3E3014; --proc-ink:#EBCB7A; --warn:#E3A867; --warn-bg:#2E2216; --danger:#E58676;
     color-scheme: dark;
 }
@@ -52,7 +52,8 @@ button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:tran
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* Encabezado */
-header.brand{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#33241A 0%,#1A130E 100%);box-shadow:0 6px 18px rgba(40,24,12,.22), inset 0 -3px 0 #B07A4A}
+header.brand{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:14px 16px;border-radius:20px;position:relative;overflow:hidden;background:repeating-linear-gradient(176deg,rgba(255,255,255,.035) 0 2px,transparent 2px 9px),repeating-linear-gradient(183deg,rgba(0,0,0,.10) 0 1px,transparent 1px 13px),linear-gradient(120deg,#5A3B24 0%,#3A2617 45%,#24170F 100%);box-shadow:0 10px 30px -12px rgba(60,35,15,.55), inset 0 1px 0 rgba(255,255,255,.08)}
+header.brand::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#C08A57,#E0B486,#A8713F)}
 .logo{width:54px;height:54px;border-radius:14px;object-fit:cover;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.35)}
 .brand h1{font-family:var(--head);font-weight:600;font-size:1.12rem;line-height:1.2;margin:0;letter-spacing:-.005em;color:#F2E6D3}
 .brand p{margin:2px 0 0;color:#C9A57E;font-size:.82rem;letter-spacing:.02em}
@@ -61,7 +62,7 @@ header.brand{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding
 
 /* Herramientas */
 .tools{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
-.fab{display:block;width:100%;padding:13px 18px;border-radius:var(--r);border:0;background:var(--wood);color:var(--wood-ink);box-shadow:0 3px 10px rgba(80,45,15,.25);font-weight:600;font-size:.98rem;letter-spacing:.01em}
+.fab{display:block;width:100%;padding:13px 18px;border-radius:var(--r);border:0;background:linear-gradient(180deg,#8A5A34,#6B4423);color:#FFF7EC;box-shadow:0 6px 16px -6px rgba(107,68,35,.6), inset 0 1px 0 rgba(255,255,255,.18);font-weight:600;font-size:.98rem;letter-spacing:.01em}
 .search{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:.95rem}
 .search::placeholder{color:var(--muted)}
 .tabs{display:flex;gap:4px;background:var(--soft);padding:4px;border-radius:var(--r)}
@@ -71,7 +72,7 @@ header.brand{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding
 
 /* Lista de pedidos */
 #list{display:flex;flex-direction:column;gap:10px}
-details.order{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+details.order{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(28,25,23,.04), 0 6px 16px -10px rgba(28,25,23,.12)}
 summary.order-sum{display:block;list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 summary.order-sum::-webkit-details-marker{display:none}
 summary.order-sum::marker{content:''}
@@ -133,24 +134,29 @@ label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .calc-open{color:var(--accent)!important;font-size:1.15rem;padding-left:4px!important;padding-right:4px!important}
 .calc-txt{display:none}
 @media (min-width:900px){ .calc-open{font-size:.98rem} .calc-txt{display:inline} }
-.calc{position:fixed;inset:0;z-index:40;background:rgba(20,12,6,.35);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.calc{position:fixed;inset:0;z-index:40;background:rgba(10,8,6,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:10px;animation:calcFade .18s ease}
 .calc[hidden]{display:none!important}
-.calc-box{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:0 18px 50px rgba(30,15,5,.35);margin-bottom:env(safe-area-inset-bottom,0px)}
-.calc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:.95rem}
-.calc-x{border:0;background:var(--soft);color:var(--ink);width:34px;height:34px;border-radius:50%;font-size:.95rem}
-.calc-screen{background:linear-gradient(135deg,#33241A,#1A130E);color:#F2E6D3;border-radius:14px;padding:12px 14px;text-align:right;margin-bottom:12px;min-height:84px}
-.calc-expr{font-size:.95rem;color:#C9A57E;min-height:1.4em;overflow-wrap:anywhere}
-.calc-res{font-family:var(--head);font-size:2.1rem;font-weight:600;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.calc-keys button{height:56px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1.3rem;font-weight:600;font-family:var(--head)}
-.calc-keys button:active{transform:scale(.96)}
-.calc-keys .k-fn{background:var(--soft);color:var(--accent)}
-.calc-keys .k-op{background:var(--soft);color:var(--accent);font-size:1.5rem}
-.calc-keys .k-eq{background:var(--wood);border-color:var(--wood);color:var(--wood-ink);font-size:1.5rem}
-.calc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.calc-acts .btn{flex:1}
-.calc-msg{margin:8px 0 0;font-size:.82rem;color:var(--ok);text-align:center;min-height:1em}
-@media (min-width:900px){ .calc{align-items:center;background:rgba(20,12,6,.25)} }
+@keyframes calcFade{from{opacity:0}to{opacity:1}}
+@keyframes calcUp{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+.calc-box{width:100%;max-width:370px;background:#141210;color:#F4EEE7;border-radius:28px;padding:10px 16px 16px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06);margin-bottom:env(safe-area-inset-bottom,0px);animation:calcUp .22s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden}
+.calc-box::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#C08A57,#E0B486,#A8713F)}
+.calc-top{display:flex;justify-content:space-between;align-items:center;margin:8px 0 2px;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#A8957F}
+.calc-top strong{font-weight:600}
+.calc-x{border:0;background:rgba(255,255,255,.08);color:#F4EEE7;width:32px;height:32px;border-radius:50%;font-size:.85rem}
+.calc-screen{background:none;padding:14px 4px 16px;text-align:right;min-height:104px}
+.calc-expr{font-size:1rem;color:#A8957F;min-height:1.5em;overflow-wrap:anywhere;letter-spacing:.02em}
+.calc-res{font-family:var(--head);font-size:2.9rem;font-weight:500;line-height:1.1;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:#FFFFFF}
+.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.calc-keys button{height:62px;border-radius:20px;border:0;background:#24201C;color:#F4EEE7;font-size:1.4rem;font-weight:500;font-family:var(--head);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:transform .08s ease, filter .12s ease}
+.calc-keys button:active{transform:scale(.94);filter:brightness(1.25)}
+.calc-keys .k-fn{background:#2F2924;color:#E0B486;font-size:1.2rem}
+.calc-keys .k-op{background:rgba(192,138,87,.16);color:#E0B486;font-size:1.6rem}
+.calc-keys .k-eq{background:linear-gradient(180deg,#C08A57,#8A5A34);color:#FFF;font-size:1.6rem;box-shadow:0 8px 18px -8px rgba(192,138,87,.8)}
+.calc-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.calc-acts .btn{flex:1;border-radius:16px;padding:12px 10px;border:0;background:#24201C;color:#F4EEE7}
+.calc-acts .btn.primary{background:linear-gradient(180deg,#C08A57,#8A5A34);color:#FFF}
+.calc-msg{margin:10px 0 0;font-size:.82rem;color:#9FD3AE;text-align:center;min-height:1em}
+@media (min-width:900px){ .calc{align-items:center} }
 .themesw{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:.82rem;color:var(--muted)}
 .themesw button{border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
 .themesw button[aria-pressed="true"]{background:var(--wood);border-color:var(--wood);color:var(--wood-ink)}
@@ -684,7 +690,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 8</p>
+  <p class="ver">versión app 9</p>
 </div>
 
 
