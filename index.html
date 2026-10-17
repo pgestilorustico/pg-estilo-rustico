@@ -603,7 +603,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 1</p>
+  <p class="ver">versión app 2</p>
 </div>
 
 
@@ -671,7 +671,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
         var c = cols[ci], ids = Object.keys(data[c]||{}), step = c==='fotos' ? 8 : 300;
         for(var i=0; i<ids.length; i+=step){
           var b = db.batch();
-          ids.slice(i, i+step).forEach(function(id){ b.set(db.collection(c).doc(id), data[c][id]); });
+          ids.slice(i, i+step).forEach(function(id){ var v = data[c][id]; if(typeof v === 'string') v = {data:v}; if(v && typeof v === 'object') b.set(db.collection(c).doc(id), v); });
           await b.commit(); hechos += Math.min(step, ids.length-i);
           msg.textContent = 'Importando… '+hechos+' de '+total;
         }
