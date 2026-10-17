@@ -187,6 +187,12 @@ details.compra[open] summary{border-bottom:1px solid var(--line)}
 .gbtn{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 18px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:1rem;color:var(--ink)}
 .gbtn svg{width:20px;height:20px}
 .login-err{color:var(--danger)!important;font-weight:600;min-height:1.2em}
+.login{transition:opacity .35s ease}
+.login.fade{opacity:0}
+.login.splash{background:#10110C}
+.login.splash .login-box img{width:200px;height:200px;border-radius:44px;box-shadow:none}
+.login.splash .login-box h1{color:#E9DCC8;font-size:1.5rem;margin-top:18px}
+.login.splash .login-box p{color:#A8957B}
 .acct{margin-top:14px;font-size:.78rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px}
 .linkbtn{border:0;background:none;color:var(--accent);font-weight:600;font-size:.82rem;text-decoration:underline;padding:4px}
 .tcrow{display:grid;grid-template-columns:1fr 110px auto;align-items:center;gap:8px;margin-top:6px;padding-top:10px;border-top:1px dashed var(--line)}
@@ -337,9 +343,9 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 </style>
 </head>
 <body>
-<div id="login" class="login">
+<div id="login" class="login splash">
   <div class="login-box">
-    <img src="icon-192.png" alt="Logo PG Estilo Rústico">
+    <img src="icon-512.png" alt="Logo PG Estilo Rústico">
     <h1>PG Estilo Rústico</h1>
     <p id="loginText">Cargando…</p>
     <button type="button" class="gbtn" id="gLogin" hidden>
@@ -603,7 +609,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 3</p>
+  <p class="ver">versión app 4</p>
 </div>
 
 
@@ -622,7 +628,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   var resolveDb, dbReady = new Promise(function(r){ resolveDb = r; });
   var cfg = window.PG_FIREBASE_CONFIG, ALLOWED = String(window.PG_ALLOWED_EMAIL||'').trim().toLowerCase();
   var fs = null, auth = null;
-  function showLogin(msg){ $('login').hidden = false; $('loginText').textContent = 'Entrá con tu cuenta de Google para ver tus pedidos.'; $('gLogin').hidden = false; $('loginErr').textContent = msg||''; }
+  function showLogin(msg){ $('login').classList.remove('splash','fade'); $('login').hidden = false; $('loginText').textContent = 'Entrá con tu cuenta de Google para ver tus pedidos.'; $('gLogin').hidden = false; $('loginErr').textContent = msg||''; }
   var downloads = { save: function(r){ return new Promise(function(res, rej){
     try{ var blob = r.data instanceof Blob ? r.data : new Blob([r.data]); var url = URL.createObjectURL(blob);
       var a = document.createElement('a'); a.href = url; a.download = r.filename; document.body.appendChild(a); a.click(); a.remove();
@@ -639,11 +645,12 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   try{ fs.settings({ ignoreUndefinedProperties: true, merge: true }); }catch(_){}
   try{ fs.enablePersistence({ synchronizeTabs: true }).catch(function(){}); }catch(_){}
   auth.getRedirectResult().catch(function(e){ showLogin('No se pudo entrar: '+(e.message||e.code)); });
+  var T0 = Date.now();
   auth.onAuthStateChanged(function(u){
     if(!u){ showLogin(); return; }
     var mail = String(u.email||'').toLowerCase();
     if(ALLOWED && mail !== ALLOWED){ auth.signOut(); showLogin('La cuenta '+u.email+' no tiene acceso. Entrá con '+ALLOWED+'.'); return; }
-    $('login').hidden = true; $('acctMail').textContent = 'Conectado como '+u.email;
+    var lg = $('login'), wait = Math.max(0, 1300 - (Date.now() - T0)); setTimeout(function(){ lg.classList.add('fade'); setTimeout(function(){ lg.hidden = true; lg.classList.remove('fade'); }, 380); }, wait); $('acctMail').textContent = 'Conectado como '+u.email;
     resolveDb(fs);
   });
   $('gLogin').addEventListener('click', function(){
