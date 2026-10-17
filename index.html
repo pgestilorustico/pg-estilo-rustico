@@ -130,6 +130,27 @@ details.compra.cobros.hot summary span:last-child{color:var(--danger)}
 .paybox .actions{margin-top:4px}
 label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .imgacts{margin-top:10px}
+.calc-open{color:var(--accent)!important;font-size:1.15rem;padding-left:4px!important;padding-right:4px!important}
+.calc-txt{display:none}
+@media (min-width:900px){ .calc-open{font-size:.98rem} .calc-txt{display:inline} }
+.calc{position:fixed;inset:0;z-index:40;background:rgba(20,12,6,.35);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.calc[hidden]{display:none!important}
+.calc-box{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:0 18px 50px rgba(30,15,5,.35);margin-bottom:env(safe-area-inset-bottom,0px)}
+.calc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:.95rem}
+.calc-x{border:0;background:var(--soft);color:var(--ink);width:34px;height:34px;border-radius:50%;font-size:.95rem}
+.calc-screen{background:linear-gradient(135deg,#33241A,#1A130E);color:#F2E6D3;border-radius:14px;padding:12px 14px;text-align:right;margin-bottom:12px;min-height:84px}
+.calc-expr{font-size:.95rem;color:#C9A57E;min-height:1.4em;overflow-wrap:anywhere}
+.calc-res{font-family:var(--head);font-size:2.1rem;font-weight:600;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc-keys button{height:56px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1.3rem;font-weight:600;font-family:var(--head)}
+.calc-keys button:active{transform:scale(.96)}
+.calc-keys .k-fn{background:var(--soft);color:var(--accent)}
+.calc-keys .k-op{background:var(--soft);color:var(--accent);font-size:1.5rem}
+.calc-keys .k-eq{background:var(--wood);border-color:var(--wood);color:var(--wood-ink);font-size:1.5rem}
+.calc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.calc-acts .btn{flex:1}
+.calc-msg{margin:8px 0 0;font-size:.82rem;color:var(--ok);text-align:center;min-height:1em}
+@media (min-width:900px){ .calc{align-items:center;background:rgba(20,12,6,.25)} }
 .themesw{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:.82rem;color:var(--muted)}
 .themesw button{border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
 .themesw button[aria-pressed="true"]{background:var(--wood);border-color:var(--wood);color:var(--wood-ink)}
@@ -414,6 +435,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <form class="actf" data-act="view" data-view="stock"><button type="submit" class="vtab" data-view="stock" aria-pressed="false">Stock <span class="cnt" id="cStock"></span></button></form>
     <form class="actf" data-act="view" data-view="clientes"><button type="submit" class="vtab" data-view="clientes" aria-pressed="false">Clientes <span class="cnt" id="cClientes"></span></button></form>
     <form class="actf" data-act="view" data-view="gastos"><button type="submit" class="vtab" data-view="gastos" aria-pressed="false">Gastos</button></form>
+    <button type="button" class="vtab calc-open" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora">🧮<span class="calc-txt"> Calculadora</span></button>
   </nav>
 
   <div id="vPedidos">
@@ -662,7 +684,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 7</p>
+  <p class="ver">versión app 8</p>
 </div>
 
 
@@ -670,6 +692,82 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 
 
 
+<div id="calc" class="calc" hidden role="dialog" aria-label="Calculadora">
+  <div class="calc-box">
+    <div class="calc-top"><strong>🧮 Calculadora</strong><button type="button" class="calc-x" id="calcClose" aria-label="Cerrar calculadora">✕</button></div>
+    <div class="calc-screen"><div class="calc-expr" id="calcExpr"></div><div class="calc-res" id="calcRes">0</div></div>
+    <div class="calc-keys" id="calcKeys">
+      <button type="button" data-k="C" class="k-fn">C</button><button type="button" data-k="back" class="k-fn" aria-label="Borrar">⌫</button><button type="button" data-k="%" class="k-fn">%</button><button type="button" data-k="/" class="k-op">÷</button>
+      <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="*" class="k-op">×</button>
+      <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="-" class="k-op">−</button>
+      <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="+" class="k-op">+</button>
+      <button type="button" data-k="000">000</button><button type="button" data-k="0">0</button><button type="button" data-k=".">,</button><button type="button" data-k="=" class="k-eq">=</button>
+    </div>
+    <div class="calc-acts"><button type="button" class="btn" id="calcCopy">Copiar resultado</button><button type="button" class="btn primary" id="calcUse" hidden></button></div>
+    <p class="calc-msg" id="calcMsg"></p>
+  </div>
+</div>
+<script>
+/* Calculadora flotante: se abre encima de lo que estés haciendo, sin perder lo cargado */
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  var expr = '', last = null, target = null, justEq = false;
+  var fmt = new Intl.NumberFormat('es-AR',{maximumFractionDigits:2});
+  document.addEventListener('focusin', function(e){ var t = e.target; if(t && t.tagName==='INPUT' && t.type==='number' && !t.closest('#calc')) target = t; });
+  function labelOf(inp){ var l = inp.closest('label'); var t = l ? (l.childNodes[0] && l.childNodes[0].textContent || '').trim() : ''; return t.replace(/\s*\(.*?\)\s*$/,'') || 'el campo'; }
+  function show(x){ return x.replace(/\*/g,'×').replace(/\//g,'÷').replace(/-/g,'−').replace(/\./g,','); }
+  function calc(e){
+    var toks = e.match(/\d*\.?\d+%?|[+\-*/]/g); if(!toks) return null;
+    var nums = [], ops = [];
+    function prec(o){ return (o==='*'||o==='/')?2:1; }
+    function apply(){ var b = nums.pop(), a = nums.pop(), o = ops.pop(); if(a===undefined||b===undefined) throw 0; nums.push(o==='+'?a+b:o==='-'?a-b:o==='*'?a*b:(b===0?NaN:a/b)); }
+    var prevNum = null, prevOp = null;
+    toks.forEach(function(t){
+      if(/[+\-*/]/.test(t) && t.length===1){ while(ops.length && prec(ops[ops.length-1])>=prec(t)) apply(); ops.push(t); prevOp = t; }
+      else { var pc = t.slice(-1)==='%', v = parseFloat(pc ? t.slice(0,-1) : t);
+        if(pc){ v = (prevOp==='+'||prevOp==='-') && nums.length ? nums[nums.length-1]*v/100 : v/100; }
+        nums.push(v); }
+    });
+    while(ops.length) apply();
+    var r = nums.pop(); return (typeof r==='number' && isFinite(r)) ? Math.round(r*100)/100 : null;
+  }
+  function draw(){
+    $('calcExpr').textContent = justEq && last!==null ? show(expr) + ' =' : show(expr);
+    var r = null; try{ r = calc(expr.replace(/[+\-*/]$/,'')); }catch(_){ r = null; }
+    $('calcRes').textContent = expr ? (r===null ? '…' : fmt.format(r)) : '0';
+    last = r;
+    var u = $('calcUse'); if(target && document.body.contains(target) && target.offsetParent!==null && last!==null){ u.hidden = false; u.textContent = 'Poner en “'+labelOf(target)+'”'; } else u.hidden = true;
+  }
+  function key(k){
+    $('calcMsg').textContent = '';
+    if(k==='C'){ expr=''; justEq=false; }
+    else if(k==='back'){ expr = expr.slice(0,-1); justEq=false; }
+    else if(k==='='){ if(last!==null){ justEq = true; draw(); expr = String(last); return; } }
+    else if(/^[+\-*/]$/.test(k)){ if(!expr && k!=='-') expr = String(last||0); expr = expr.replace(/[+\-*/]$/,'') + k; justEq=false; }
+    else if(k==='%'){ if(/\d$/.test(expr)) expr += '%'; }
+    else { if(justEq){ expr=''; justEq=false; } if(k==='.'){ var seg = expr.split(/[+\-*/]/).pop(); if(seg.indexOf('.')>=0) return; if(!seg) expr += '0'; } if(/%$/.test(expr)) expr += '*'; expr += k; }
+    draw();
+  }
+  $('calcKeys').addEventListener('click', function(e){ var b = e.target.closest('button[data-k]'); if(b) key(b.getAttribute('data-k')); });
+  function open(){ $('calc').hidden = false; draw(); }
+  function close(){ $('calc').hidden = true; }
+  $('calcBtn').addEventListener('click', open);
+  $('calcClose').addEventListener('click', close);
+  $('calc').addEventListener('click', function(e){ if(e.target===$('calc')) close(); });
+  $('calcCopy').addEventListener('click', function(){ if(last===null) return; var t = String(last).replace('.',','); try{ navigator.clipboard.writeText(t).then(function(){ $('calcMsg').textContent = 'Copiado: '+t; }); }catch(_){ $('calcMsg').textContent = t; } });
+  $('calcUse').addEventListener('click', function(){ if(!target || last===null) return; target.value = last; target.dispatchEvent(new Event('input',{bubbles:true})); target.dispatchEvent(new Event('change',{bubbles:true})); close(); try{ target.focus(); }catch(_){} });
+  document.addEventListener('keydown', function(e){
+    if($('calc').hidden) return;
+    var k = e.key;
+    if(/^[0-9]$/.test(k) || /^[+\-*/%]$/.test(k)){ key(k); e.preventDefault(); }
+    else if(k==='.'||k===','){ key('.'); e.preventDefault(); }
+    else if(k==='Enter'||k==='='){ key('='); e.preventDefault(); }
+    else if(k==='Backspace'){ key('back'); e.preventDefault(); }
+    else if(k==='Escape'){ close(); e.preventDefault(); }
+    else if(k==='Delete'){ key('C'); e.preventDefault(); }
+  });
+})();
+</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
