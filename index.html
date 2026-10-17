@@ -136,6 +136,10 @@ label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .imgacts{margin-top:10px}
 .calc-open{color:var(--accent)!important;font-size:1.15rem;padding-left:4px!important;padding-right:4px!important}
 .calc-txt{display:none}
+.calc-ic{width:22px;height:22px;vertical-align:-5px;display:inline-block}
+.calc-open{display:inline-flex;align-items:center;gap:6px}
+.calc-top strong{display:inline-flex;align-items:center;gap:6px}
+.calc-top .calc-ic{width:18px;height:18px;vertical-align:-3px;color:var(--c-opink)}
 @media (min-width:900px){ .calc-open{font-size:.98rem} .calc-txt{display:inline} }
 .calc{position:fixed;inset:0;z-index:40;background:rgba(10,8,6,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:10px;animation:calcFade .18s ease}
 .calc[hidden]{display:none!important}
@@ -444,7 +448,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <form class="actf" data-act="view" data-view="stock"><button type="submit" class="vtab" data-view="stock" aria-pressed="false">Stock <span class="cnt" id="cStock"></span></button></form>
     <form class="actf" data-act="view" data-view="clientes"><button type="submit" class="vtab" data-view="clientes" aria-pressed="false">Clientes <span class="cnt" id="cClientes"></span></button></form>
     <form class="actf" data-act="view" data-view="gastos"><button type="submit" class="vtab" data-view="gastos" aria-pressed="false">Gastos</button></form>
-    <button type="button" class="vtab calc-open" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora">🧮<span class="calc-txt"> Calculadora</span></button>
+    <button type="button" class="vtab calc-open" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button>
   </nav>
 
   <div id="vPedidos">
@@ -693,7 +697,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 10</p>
+  <p class="ver">versión app 11</p>
 </div>
 
 
@@ -703,7 +707,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 
 <div id="calc" class="calc" hidden role="dialog" aria-label="Calculadora">
   <div class="calc-box">
-    <div class="calc-top"><strong>🧮 Calculadora</strong><button type="button" class="calc-x" id="calcClose" aria-label="Cerrar calculadora">✕</button></div>
+    <div class="calc-top"><strong><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg> Calculadora</strong><button type="button" class="calc-x" id="calcClose" aria-label="Cerrar calculadora">✕</button></div>
     <div class="calc-screen"><div class="calc-expr" id="calcExpr"></div><div class="calc-res" id="calcRes">0</div></div>
     <div class="calc-keys" id="calcKeys">
       <button type="button" data-k="C" class="k-fn">C</button><button type="button" data-k="back" class="k-fn" aria-label="Borrar">⌫</button><button type="button" data-k="%" class="k-fn">%</button><button type="button" data-k="/" class="k-op">÷</button>
