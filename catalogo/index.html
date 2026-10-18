@@ -410,4 +410,76 @@ q.addEventListener('focus',function(){if(q.value)render()});
 q.addEventListener('keydown',function(e){if(e.key==='ArrowDown'){e.preventDefault();mark(1)}else if(e.key==='ArrowUp'){e.preventDefault();mark(-1)}else if(e.key==='Enter'){e.preventDefault();if(res.length)go(res[cur>-1?cur:0])}else if(e.key==='Escape'){hide()}});
 document.addEventListener('click',function(e){if(!e.target.closest('.srch'))hide()});
 })();
-</script></body></html>
+</script><style>
+.shr{margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;border:1px solid #c79a6c;background:transparent;color:#8a5a32;font:600 .82rem/1.1 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:10px 12px;cursor:pointer}
+.shr svg{width:16px;height:16px;flex:none}
+.shr:active{transform:scale(.97);background:rgba(199,154,108,.12)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .shr{color:#e0b486;border-color:#7a5638}}
+:root[data-theme="dark"] .shr{color:#e0b486;border-color:#7a5638}
+#lb #ls{top:calc(env(safe-area-inset-top,0px) + 8px);left:12px;width:auto!important;height:42px!important;padding:0 16px!important;font:600 .82rem/1 Inter,system-ui,sans-serif!important;letter-spacing:.08em;text-transform:uppercase;display:inline-flex!important;align-items:center;gap:8px}
+#lb #ls svg{width:17px;height:17px}
+#shtoast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:#2e2118;color:#fff4e2;padding:10px 16px;border-radius:999px;font:500 .88rem Inter,system-ui,sans-serif;z-index:30;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90vw;text-align:center}
+#shtoast[hidden]{display:none}
+</style>
+<div id="shtoast" hidden></div>
+<script>
+/* Compartir un producto puntual: fotos + nombre, medidas, precio y link a su categoría */
+(function(){
+var PUB='https://pgestilorustico.pages.dev/';
+var IC='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="19" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3" stroke="currentColor" stroke-width="1.8"/></svg>';
+var cache=new WeakMap(), cur=null, tt=0;
+function toast(t){var e=document.getElementById('shtoast');e.textContent=t;e.hidden=false;clearTimeout(tt);tt=setTimeout(function(){e.hidden=true},3200)}
+function info(card){
+  var n=card.querySelector('h3'),m=card.querySelector('.m'),p=card.querySelector('.price'),sec=card.closest('main>section'),h=sec&&sec.querySelector('h2');
+  var name=n?n.textContent.trim():(h?h.textContent.trim():'Producto');
+  var L=['*'+name+'*'];
+  if(m&&m.textContent.trim())L.push('Medidas: '+m.textContent.replace(/\s+/g,' ').trim());
+  var vs=card.querySelectorAll('.var li');[].forEach.call(vs,function(li){L.push('• '+li.textContent.replace(/\s+/g,' ').trim())});
+  if(p&&p.textContent.trim())L.push('Precio: '+p.textContent.trim());
+  L.push('');L.push('PG Estilo Rústico · muebles de pino a medida');
+  L.push('Mirá más en mi catálogo: '+PUB+(sec?'#'+sec.id:''));
+  return {name:name,text:L.join('\n')};
+}
+function toJpg(img){return new Promise(function(res){
+  var go=function(){try{var w=img.naturalWidth,h=img.naturalHeight;if(!w){res(null);return}var k=Math.min(1,1600/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){res(b)},'image/jpeg',.88)}catch(_){res(null)}};
+  if(img.complete&&img.naturalWidth)go();else{var im=new Image();im.onload=function(){img=im;go()};im.onerror=function(){res(null)};im.src=img.currentSrc||img.src}
+})}
+function prep(card){
+  if(cache.has(card))return cache.get(card);
+  var I=info(card),imgs=[].slice.call(card.querySelectorAll('img')).slice(0,6);
+  var pr=Promise.all(imgs.map(toJpg)).then(function(bs){
+    var slug=I.name.replace(/[^\wÁÉÍÓÚáéíóúñÑ]+/g,'-').replace(/^-|-$/g,'');
+    var files=bs.filter(Boolean).map(function(b,i){return new File([b],slug+'-'+(i+1)+'.jpg',{type:'image/jpeg'})});
+    return {I:I,files:files};
+  });
+  cache.set(card,pr);return pr;
+}
+function share(card){
+  var ready=null;prep(card).then(function(r){ready=r});
+  var t0=Date.now();
+  return prep(card).then(function(r){
+    var d={title:r.I.name,text:r.I.text};
+    if(r.files.length&&navigator.canShare&&navigator.canShare({files:r.files}))d.files=r.files;
+    if(navigator.share)return navigator.share(d).catch(function(e){
+      if(e&&e.name==='AbortError')return;
+      toast('Listo. Tocá "Compartir" de nuevo para enviarlo.');
+    });
+    var done=function(){toast('Texto copiado. Pegalo en el chat.')};
+    try{navigator.clipboard.writeText(r.I.text).then(done,function(){toast(r.I.text)})}catch(_){toast(r.I.text)}
+  });
+}
+[].forEach.call(document.querySelectorAll('main .card'),function(card){
+  var b=card.querySelector('.b');if(!b||!card.querySelector('h3'))return;
+  var bt=document.createElement('button');bt.type='button';bt.className='shr';bt.innerHTML=IC+'Compartir';
+  bt.addEventListener('click',function(){share(card)});
+  b.appendChild(bt);
+  var ph=card.querySelector('.ph');if(ph)ph.addEventListener('click',function(){cur=card;prep(card)},true);
+});
+var lb=document.getElementById('lb');
+if(lb){var ls=document.createElement('button');ls.id='ls';ls.type='button';ls.setAttribute('aria-label','Compartir este producto');ls.innerHTML=IC+'Compartir';
+  ls.addEventListener('click',function(){if(cur)share(cur)});lb.appendChild(ls);
+  [].forEach.call(document.querySelectorAll('.ph'),function(b){b.addEventListener('click',function(){var c=b.closest('.card');ls.hidden=!(c&&c.querySelector('h3'));if(c)cur=c},true)});
+}
+})();
+</script>
+</body></html>
