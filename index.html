@@ -138,8 +138,8 @@ label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .pdfbox form.actf{display:block}
 .wa .pdf-btn{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 14px;border-radius:16px;border:0;background:linear-gradient(120deg,#8A5A34,#5A3B24);color:#FFF4E4;box-shadow:0 8px 20px -10px rgba(90,59,36,.7)}
 .wa .pdf-btn:active{transform:scale(.98)}
-.pdf-ic{flex:none;width:44px;height:52px;border-radius:8px;background:#FFF4E4;color:#B3402F;font:800 .8rem/52px var(--head);text-align:center;letter-spacing:.04em;position:relative;box-shadow:inset 0 -6px 0 rgba(179,64,47,.15)}
-.pdf-ic::before{content:'';position:absolute;top:0;right:0;border-style:solid;border-width:0 12px 12px 0;border-color:transparent #D9BFA0 transparent transparent;border-radius:0 8px 0 0}
+.pdf-ic{flex:none;width:48px;height:48px;border-radius:12px;background:#FFF4E4;color:#8A5A34;display:grid;place-items:center}
+.pdf-ic svg{width:28px;height:28px}
 .pdf-t{display:flex;flex-direction:column;gap:2px;min-width:0}
 .pdf-t b{font-size:.98rem;font-weight:700;color:#FFF4E4}
 .pdf-t small{font-size:.78rem;color:#E3C8A6;font-weight:500}
@@ -729,7 +729,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 14</p>
+  <p class="ver">versión app 15</p>
 </div>
 
 
@@ -1404,9 +1404,9 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       res(new Blob(parts, {type:'application/pdf'}));
     }); }, 'image/jpeg', 0.9); });
   }
-  function docName(o){ var k = docKind(o); return ({presu:'Presupuesto', saldo:'Saldo pendiente', pago:'Comprobante', pedido:'Pedido'}[k])+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.pdf'; }
+  function docName(o){ var k = docKind(o); return ({presu:'Presupuesto', saldo:'Saldo pendiente', pago:'Comprobante', pedido:'Pedido'}[k])+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.jpg'; }
   async function shareDoc(o, b){
-    var f = new File([b], docName(o), {type:'application/pdf'});
+    var f = new File([b], docName(o), {type:'image/jpeg'});
     if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title:docName(o)}); return 'shared'; }
     var u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(u)}, 4000); return 'downloaded';
   }
@@ -1537,9 +1537,9 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
           h += '<div class="actions">'+actBtn('watel',o.id,'btn','Guardar número')+(('contacts' in navigator && navigator.contacts && navigator.contacts.select)?actBtn('wapick',o.id,'btn','📇 Elegir de mis contactos'):'')+'</div></div>';
           h += '<div class="actions">'+actBtn('wacopy',o.id,'btn primary','Copiar texto')+'<a class="btn wa-go" href="'+waUrl('',wt)+'" target="_blank" rel="noopener">Abrir WhatsApp</a>'+actBtn('waclose',o.id,'btn','Cerrar')+'</div>';
         }
-        var dk = docKind(o), dlab = {presu:'Enviar presupuesto en PDF', saldo:'Enviar saldo pendiente en PDF', pago:'Enviar comprobante en PDF', pedido:'Enviar detalle en PDF'}[dk];
-        h += '<div class="pdfbox"><form class="actf" data-act="wapdf" data-id="'+esc(o.id)+'"><button type="submit" class="pdf-btn"><span class="pdf-ic" aria-hidden="true">PDF</span><span class="pdf-t"><b>'+dlab+'</b><small>Hoja con tu logo, detalle y precios, lista para WhatsApp</small></span></button></form>';
-        if(state.pdfB && state.pdfB.id===o.id) h += '<div class="pdfready"><img src="'+state.pdfB.prev+'" alt="Vista previa del PDF"><div class="actions">'+actBtn('wapdfshare',o.id,'btn primary','Compartir PDF')+actBtn('wapdfsave',o.id,'btn','Descargar')+'</div></div>';
+        var dk = docKind(o), dlab = {presu:'Enviar presupuesto como foto', saldo:'Enviar saldo pendiente como foto', pago:'Enviar comprobante como foto', pedido:'Enviar detalle como foto'}[dk];
+        h += '<div class="pdfbox"><form class="actf" data-act="wapdf" data-id="'+esc(o.id)+'"><button type="submit" class="pdf-btn"><span class="pdf-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="9.5" r="1.8" fill="currentColor"/><path d="M4 17.5l5-5 3.5 3.5 2.5-2.5 5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span class="pdf-t"><b>'+dlab+'</b><small>Con tu logo, detalle, fotos y precios, lista para WhatsApp</small></span></button></form>';
+        if(state.pdfB && state.pdfB.id===o.id) h += '<div class="pdfready"><img src="'+state.pdfB.prev+'" alt="Vista previa de la foto"><div class="actions">'+actBtn('wapdfshare',o.id,'btn primary','Compartir foto')+actBtn('wapdfsave',o.id,'btn','Guardar en el celular')+'</div></div>';
         h += '</div>';
         if(state.waMsg) h += '<p class="wa-msg">'+esc(state.waMsg)+'</p>';
         h += '</div>';
@@ -2223,22 +2223,22 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     }
     if(act==='vercobro' && o){ state.q=''; if($('q')) $('q').value=''; state.filter = estado(o); state.open = id; state.openSet[id] = true; document.querySelectorAll('.tab').forEach(function(b){b.setAttribute('aria-pressed', b.getAttribute('data-filter')===state.filter?'true':'false')}); lastHtml=null; render(); setTimeout(function(){ var c=document.getElementById('o-'+id); if(c) c.scrollIntoView({block:'start', behavior:'smooth'}); }, 60); return; }
     if(act==='wapdf' && o){
-      state.waMsg = 'Armando el PDF…'; lastHtml=null; render();
+      state.waMsg = 'Armando la foto…'; lastHtml=null; render();
       try{
-        var cv = await makeDoc(o), pb = await pdfFromCanvas(cv);
+        var cv = await makeDoc(o), pb = await new Promise(function(res){ cv.toBlob(res, 'image/jpeg', 0.92); });
         var pv = document.createElement('canvas'); pv.width = 420; pv.height = Math.round(420*cv.height/cv.width); pv.getContext('2d').drawImage(cv,0,0,pv.width,pv.height);
         state.pdfB = {id:id, blob:pb, prev:pv.toDataURL('image/jpeg',.85)};
-        var rr = await shareDoc(o, pb); state.waMsg = rr==='shared' ? '' : 'El PDF se descargó. Mandalo por WhatsApp desde tus descargas.';
-      }catch(e){ state.waMsg = (e && e.name==='AbortError') ? '' : (state.pdfB && state.pdfB.id===id ? 'Listo el PDF. Tocá “Compartir PDF” y elegí WhatsApp.' : 'No pude armar el PDF.'); }
+        var rr = await shareDoc(o, pb); state.waMsg = rr==='shared' ? '' : 'La foto se descargó. Mandala por WhatsApp desde tu galería o descargas.';
+      }catch(e){ state.waMsg = (e && e.name==='AbortError') ? '' : (state.pdfB && state.pdfB.id===id ? 'Lista la foto. Tocá “Compartir foto” y elegí WhatsApp.' : 'No pude armar la foto.'); }
       lastHtml=null; render(); return;
     }
     if(act==='wapdfshare' && o && state.pdfB && state.pdfB.id===id){
-      try{ var r3 = await shareDoc(o, state.pdfB.blob); state.waMsg = r3==='shared' ? '' : 'El PDF se descargó. Mandalo por WhatsApp desde tus descargas.'; }catch(e){ if(!(e && e.name==='AbortError')) state.waMsg = 'No se pudo compartir. Probá con “Descargar”.'; }
+      try{ var r3 = await shareDoc(o, state.pdfB.blob); state.waMsg = r3==='shared' ? '' : 'La foto se descargó. Mandala por WhatsApp desde tu galería o descargas.'; }catch(e){ if(!(e && e.name==='AbortError')) state.waMsg = 'No se pudo compartir. Probá con “Descargar”.'; }
       lastHtml=null; render(); return;
     }
     if(act==='wapdfsave' && o && state.pdfB && state.pdfB.id===id){
       var u2 = URL.createObjectURL(state.pdfB.blob), a2 = document.createElement('a'); a2.href = u2; a2.download = docName(o); document.body.appendChild(a2); a2.click(); a2.remove(); setTimeout(function(){URL.revokeObjectURL(u2)}, 4000);
-      state.waMsg = 'PDF descargado.'; lastHtml=null; render(); return;
+      state.waMsg = 'Foto guardada en descargas.'; lastHtml=null; render(); return;
     }
     if(act==='waimg' && o){
       state.waMsg = 'Armando la imagen…'; lastHtml=null; render();
