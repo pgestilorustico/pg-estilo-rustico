@@ -136,6 +136,12 @@ label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .imgacts{margin-top:10px}
 .calc-open{color:var(--accent)!important;font-size:1.15rem;padding-left:4px!important;padding-right:4px!important}
 .calc-txt{display:none}
+.brand-txt{flex:1;min-width:0}
+.hbtns{display:flex;gap:8px;flex:none;position:relative;z-index:1}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:42px;min-width:42px;padding:0 10px;border-radius:14px;border:1px solid rgba(255,235,210,.18);background:rgba(255,240,220,.08);color:#F2E6D3;font-weight:600;font-size:.88rem;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.hbtn:active{transform:scale(.95)}
+.hbtn .calc-ic{width:22px;height:22px}
+@media (max-width:380px){ .brand p{display:none} }
 .calc-ic{width:22px;height:22px;vertical-align:-5px;display:inline-block}
 .calc-open{display:inline-flex;align-items:center;gap:6px}
 .calc-top strong{display:inline-flex;align-items:center;gap:6px}
@@ -164,6 +170,20 @@ label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .calc-acts .btn.primary{background:linear-gradient(180deg,#C08A57,#8A5A34);color:#FFF}
 .calc-msg{margin:10px 0 0;font-size:.82rem;color:var(--ok);text-align:center;min-height:1em}
 @media (min-width:900px){ .calc{align-items:center} }
+.catov{position:fixed;inset:0;z-index:41;background:rgba(10,8,6,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:env(safe-area-inset-top,0px) 0 0;animation:calcFade .18s ease}
+.catov[hidden]{display:none!important}
+.cat-box{width:100%;height:calc(100% - 18px);max-width:1100px;background:var(--c-bg);color:var(--c-ink);border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:var(--c-shadow);animation:calcUp .24s cubic-bezier(.2,.8,.2,1)}
+.cat-box::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#C08A57,#E0B486,#A8713F);z-index:1}
+.cat-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 14px 10px 18px;border-bottom:1px solid var(--line);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--c-mut)}
+.cat-top strong{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.cat-top .calc-ic{width:18px;height:18px;color:var(--c-opink)}
+.cat-acts{display:inline-flex;gap:8px;align-items:center}
+.cat-b{border:0;background:var(--c-op);color:var(--c-opink);border-radius:999px;padding:7px 12px;font-size:.78rem;font-weight:600;letter-spacing:0;text-transform:none}
+.cat-msg{margin:0;padding:0 18px;font-size:.8rem;color:var(--ok)}
+.cat-msg:empty{display:none}
+#catFrame{flex:1;width:100%;border:0;background:var(--c-bg)}
+html.ov-open,html.ov-open body{overflow:hidden}
+@media (min-width:900px){ .catov{align-items:center;padding:24px} .cat-box{height:min(92vh,980px);border-radius:24px} }
 .themesw{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:.82rem;color:var(--muted)}
 .themesw button{border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
 .themesw button[aria-pressed="true"]{background:var(--wood);border-color:var(--wood);color:var(--wood-ink)}
@@ -438,7 +458,8 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 <div class="wrap">
   <header class="brand">
     <img class="logo" alt="Logo PG Estilo Rústico" src="logo.jpg">
-    <div><h1>PG Estilo Rústico</h1><p>Pedidos, stock, clientes y gastos</p></div>
+    <div class="brand-txt"><h1>PG Estilo Rústico</h1><p>Pedidos, stock, clientes y gastos</p></div>
+    <div class="hbtns"><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
   </header>
 
   <div id="notice"></div>
@@ -448,7 +469,6 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <form class="actf" data-act="view" data-view="stock"><button type="submit" class="vtab" data-view="stock" aria-pressed="false">Stock <span class="cnt" id="cStock"></span></button></form>
     <form class="actf" data-act="view" data-view="clientes"><button type="submit" class="vtab" data-view="clientes" aria-pressed="false">Clientes <span class="cnt" id="cClientes"></span></button></form>
     <form class="actf" data-act="view" data-view="gastos"><button type="submit" class="vtab" data-view="gastos" aria-pressed="false">Gastos</button></form>
-    <button type="button" class="vtab calc-open" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button>
   </nav>
 
   <div id="vPedidos">
@@ -697,7 +717,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 11</p>
+  <p class="ver">versión app 12</p>
 </div>
 
 
@@ -705,6 +725,16 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 
 
 
+<div id="cat" class="catov" hidden role="dialog" aria-label="Catálogo">
+  <div class="cat-box">
+    <div class="cat-top">
+      <strong><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Catálogo</strong>
+      <span class="cat-acts"><button type="button" class="cat-b" id="catShare">Compartir link</button><button type="button" class="calc-x" id="catClose" aria-label="Cerrar catálogo">✕</button></span>
+    </div>
+    <p class="cat-msg" id="catMsg"></p>
+    <iframe id="catFrame" title="Catálogo de productos" loading="lazy"></iframe>
+  </div>
+</div>
 <div id="calc" class="calc" hidden role="dialog" aria-label="Calculadora">
   <div class="calc-box">
     <div class="calc-top"><strong><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg> Calculadora</strong><button type="button" class="calc-x" id="calcClose" aria-label="Cerrar calculadora">✕</button></div>
@@ -720,6 +750,27 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <p class="calc-msg" id="calcMsg"></p>
   </div>
 </div>
+<script>
+/* Catálogo: se abre encima de la app, sin salir */
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  var PUB = 'https://pgestilorustico.pages.dev/';
+  function syncTheme(){ try{ var d = $('catFrame').contentDocument; if(!d) return; var t = document.documentElement.getAttribute('data-theme'); if(t) d.documentElement.setAttribute('data-theme', t); else d.documentElement.removeAttribute('data-theme'); }catch(_){} }
+  $('catFrame').addEventListener('load', syncTheme);
+  new MutationObserver(syncTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+  function open(){ var f = $('catFrame'); if(!f.getAttribute('src')) f.setAttribute('src','catalogo/'); $('cat').hidden = false; $('catMsg').textContent=''; document.documentElement.classList.add('ov-open'); syncTheme(); }
+  function close(){ $('cat').hidden = true; document.documentElement.classList.remove('ov-open'); }
+  $('catBtn').addEventListener('click', open);
+  $('catClose').addEventListener('click', close);
+  $('cat').addEventListener('click', function(e){ if(e.target===$('cat')) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !$('cat').hidden) close(); });
+  $('catShare').addEventListener('click', function(){
+    var data = {title:'Catálogo PG Estilo Rústico', text:'Mirá mi catálogo de muebles de pino:', url:PUB};
+    if(navigator.share){ navigator.share(data).catch(function(){}); return; }
+    try{ navigator.clipboard.writeText(PUB).then(function(){ $('catMsg').textContent = 'Link copiado: '+PUB; }); }catch(_){ $('catMsg').textContent = PUB; }
+  });
+})();
+</script>
 <script>
 /* Calculadora flotante: se abre encima de lo que estés haciendo, sin perder lo cargado */
 (function(){
