@@ -134,6 +134,18 @@ details.compra.cobros.hot summary span:last-child{color:var(--danger)}
 .paybox .actions{margin-top:4px}
 label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .imgacts{margin-top:10px}
+.pdfbox{margin-top:12px}
+.pdfbox form.actf{display:block}
+.wa .pdf-btn{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 14px;border-radius:16px;border:0;background:linear-gradient(120deg,#8A5A34,#5A3B24);color:#FFF4E4;box-shadow:0 8px 20px -10px rgba(90,59,36,.7)}
+.wa .pdf-btn:active{transform:scale(.98)}
+.pdf-ic{flex:none;width:44px;height:52px;border-radius:8px;background:#FFF4E4;color:#B3402F;font:800 .8rem/52px var(--head);text-align:center;letter-spacing:.04em;position:relative;box-shadow:inset 0 -6px 0 rgba(179,64,47,.15)}
+.pdf-ic::before{content:'';position:absolute;top:0;right:0;border-style:solid;border-width:0 12px 12px 0;border-color:transparent #D9BFA0 transparent transparent;border-radius:0 8px 0 0}
+.pdf-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pdf-t b{font-size:.98rem;font-weight:700;color:#FFF4E4}
+.pdf-t small{font-size:.78rem;color:#E3C8A6;font-weight:500}
+.pdfready{margin-top:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pdfready img{width:110px;border-radius:8px;border:1px solid var(--line);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.pdfready .actions{margin:0;flex:1}
 .calc-open{color:var(--accent)!important;font-size:1.15rem;padding-left:4px!important;padding-right:4px!important}
 .calc-txt{display:none}
 .brand-txt{flex:1;min-width:0}
@@ -717,7 +729,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 13</p>
+  <p class="ver">versión app 14</p>
 </div>
 
 
@@ -1268,6 +1280,136 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     x.fillStyle = '#2A1D14'; x.fillRect(0, H-60, W, 60); x.fillStyle = '#C9A57E'; x.font = BODY+'24px '+FB; x.textAlign='center'; x.fillText('PG Estilo Rústico', W/2, H-22); x.textAlign='left';
     return await new Promise(function(res){ c.toBlob(function(b){ res(b); }, 'image/png'); });
   }
+  /* ---------- Presupuesto en PDF (hoja A4 con logo) ---------- */
+  var BIZ = {tel:'+54 9 280 437-6218', ig:'@pgestilorustico', web:'pgestilorustico.pages.dev'};
+  function docKind(o){ var st = estado(o); return (st==='presupuesto'||st==='rechazado') ? 'presu' : (st==='saldo' && saldo(o)>0 && num(o.sena)>0) ? 'saldo' : st==='pagado' ? 'pago' : 'pedido'; }
+  function docTitle(o){ return {presu:'PRESUPUESTO', saldo:'SALDO PENDIENTE', pago:'COMPROBANTE DE PAGO', pedido:'DETALLE DE PEDIDO'}[docKind(o)]; }
+  function docNum(o){ var h = 0, t = String(o.id||''); for(var i=0;i<t.length;i++) h = (h*31 + t.charCodeAt(i)) >>> 0; return String(h % 100000).padStart(5,'0'); }
+  async function makeDoc(o){
+    try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(_){}
+    var logo = logoImg.complete && logoImg.naturalWidth ? logoImg : await loadImg('icon-512.png');
+    var fids = (Array.isArray(o.fotos)?o.fotos:[]).slice(0,3), fotos = [];
+    for(var fi=0; fi<fids.length; fi++){ var im = await loadImg(blob(fids[fi])); if(im) fotos.push(im); }
+    var kind = docKind(o), st = estado(o), sinSena = st!=='pagado' && !num(o.sena);
+    var W = 1240, H = 1754, P = 90, CW = W-2*P;
+    var FH = "'Archivo', Arial, sans-serif", FB = "'Manrope', Arial, sans-serif";
+    var c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d');
+    var INK='#231A13', MUT='#7E6C5B', ACC='#8A5A34', LINE='#E6DACB', SOFT='#F6EFE6';
+    x.fillStyle = '#FFFFFF'; x.fillRect(0,0,W,H);
+    // encabezado madera
+    var g = x.createLinearGradient(0,0,W,320); g.addColorStop(0,'#5A3B24'); g.addColorStop(.5,'#3A2617'); g.addColorStop(1,'#1E140D');
+    x.fillStyle = g; x.fillRect(0,0,W,320);
+    x.globalAlpha = .06; x.strokeStyle = '#FFFFFF'; x.lineWidth = 2;
+    for(var gy=-40; gy<360; gy+=11){ x.beginPath(); x.moveTo(0,gy); x.bezierCurveTo(W*.3,gy+14,W*.6,gy-12,W,gy+8); x.stroke(); }
+    x.globalAlpha = 1;
+    var gl = x.createLinearGradient(0,0,W,0); gl.addColorStop(0,'#C08A57'); gl.addColorStop(.5,'#E0B486'); gl.addColorStop(1,'#A8713F');
+    x.fillStyle = gl; x.fillRect(0,316,W,6);
+    if(logo){ x.save(); rrect(x,P,70,180,180,38); x.clip(); x.drawImage(logo,P,70,180,180); x.restore(); }
+    x.textBaseline = 'alphabetic';
+    x.fillStyle = '#F4E8D6'; x.font = '600 60px '+FH; x.fillText('PG Estilo Rústico', P+215, 152);
+    x.fillStyle = '#D2B08A'; x.font = '500 28px '+FB; x.fillText('Muebles de pino hechos a medida', P+215, 198);
+    x.fillStyle = '#BFA284'; x.font = '500 24px '+FB; x.fillText('WhatsApp '+BIZ.tel+'  ·  '+BIZ.ig, P+215, 240);
+    // título y datos del documento
+    var y = 420;
+    x.fillStyle = ACC; x.font = '700 50px '+FH; x.fillText(docTitle(o).split('').join(String.fromCharCode(8202)), P, y);
+    x.textAlign = 'right'; x.fillStyle = MUT; x.font = '500 26px '+FB;
+    x.fillText('N° '+docNum(o), W-P, y-30); x.fillText('Fecha: '+fmtDate(hoyStr()), W-P, y+6); x.textAlign = 'left';
+    y += 40; x.fillStyle = LINE; x.fillRect(P, y, CW, 2);
+    // cliente / entrega
+    y += 70;
+    x.fillStyle = MUT; x.font = '600 22px '+FB; x.fillText('CLIENTE', P, y);
+    var showEnt = o.entrega && kind!=='pago' && kind!=='saldo';
+    if(showEnt){ x.fillText('ENTREGA ESTIMADA', P+CW*.62, y); }
+    y += 50; x.fillStyle = INK; x.font = '600 42px '+FH; x.fillText(String(o.cliente||''), P, y);
+    if(showEnt){ x.font = '600 36px '+FH; x.fillText(fmtDate(o.entrega), P+CW*.62, y); }
+    // tabla de detalle
+    y += 70;
+    x.fillStyle = SOFT; rrect(x,P,y,CW,64,14); x.fill();
+    x.fillStyle = ACC; x.font = '700 22px '+FB; x.fillText('DESCRIPCIÓN', P+28, y+41); x.textAlign='right'; x.fillText('IMPORTE', W-P-28, y+41); x.textAlign='left';
+    y += 64 + 50;
+    x.font = '600 34px '+FB; var tl = wrapLines(x, o.pedido||'', CW*.68);
+    x.fillStyle = INK; tl.forEach(function(l,i){ x.fillText(l, P+28, y + i*44); });
+    if(num(o.precio)){ x.textAlign='right'; x.font = '700 36px '+FH; x.fillText(money.format(num(o.precio)), W-P-28, y); x.textAlign='left'; }
+    y += tl.length*44;
+    if(o.medidas){ x.fillStyle = MUT; x.font = '500 28px '+FB; wrapLines(x, 'Medidas: '+o.medidas, CW*.68).forEach(function(l){ y += 6; x.fillText(l, P+28, y); y += 32; }); }
+    y += 24; x.fillStyle = LINE; x.fillRect(P, y, CW, 2);
+    // totales
+    var rows = [];
+    if(num(o.precio)) rows.push(['Total', money.format(num(o.precio)), 'tot']);
+    if(sinSena){ if(num(o.precio) && st!=='pagado') rows.push(['Seña para confirmar (50%)', money.format(Math.round(num(o.precio)/2)), 'big']); }
+    else {
+      var PG = pagosDe(o);
+      PG.forEach(function(pp){ rows.push([(pp.nota==='Seña'?'Seña':pp.nota==='Saldo'?'Pago del saldo':'Pago')+(pp.fecha?' · '+fmtDate(pp.fecha):''), '− '+money.format(num(pp.monto)), 'ok']); });
+      if(st!=='pagado' && saldo(o)>0) rows.push(['Saldo a pagar', money.format(saldo(o)), 'big']);
+      if(st==='pagado') rows.push(['Pagado completo', '✓', 'big']);
+    }
+    if(st!=='pagado' && saldo(o)>0 && o.vence && !sinSena) rows.push(['Fecha para abonar el saldo', fmtDate(o.vence), 'small']);
+    // condiciones
+    var cond = [];
+    if(kind==='presu'){ cond.push('Para confirmar el pedido se abona una seña del 50%.'); }
+    if(kind!=='pago' && kind!=='saldo') cond.push('Si es con envío, tiene un costo adicional de $ 5.000.');
+    if(o.notas && kind==='presu' && false) cond.push(o.notas);
+    // fotos (se achican para que todo entre en la hoja)
+    var need = rows.reduce(function(a,r){ return a + (r[2]==='big'?96:70); },0) + 50 + 30 + (cond.length ? 42 + cond.length*44 + 20 : 0) + 60 + 135;
+    if(fotos.length){
+      var avail = H - (y + 40) - need, gap = 22, n = fotos.length, fw = (CW - gap*(n-1))/n, fh = Math.min(n===1 ? 520 : n===2 ? 400 : 330, avail);
+      if(fh >= 160){
+        y += 40;
+        fotos.forEach(function(im,i){ var fx = P + i*(fw+gap); x.save(); rrect(x,fx,y,fw,fh,24); x.clip(); var r = Math.max(fw/im.naturalWidth, fh/im.naturalHeight), dw = im.naturalWidth*r, dh = im.naturalHeight*r; x.drawImage(im, fx+(fw-dw)/2, y+(fh-dh)/2, dw, dh); x.restore(); });
+        y += fh;
+      }
+    }
+    y += 50;
+    var bx = P + CW*.38, bw = CW*.62, by = y;
+    rows.forEach(function(rw){
+      var big = rw[2]==='big';
+      if(big){ var gg = x.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#8A5A34'); gg.addColorStop(1,'#5A3B24'); x.fillStyle = gg; rrect(x,bx,by,bw,78,18); x.fill(); }
+      x.fillStyle = big ? '#FFF4E4' : rw[2]==='small' ? MUT : INK; x.font = (big?'700 32px ':rw[2]==='tot'?'600 30px ':'500 28px ')+(big?FH:FB);
+      x.fillText(rw[0], bx+26, by+(big?50:44));
+      x.textAlign='right'; x.fillStyle = big ? '#FFFFFF' : rw[2]==='ok' ? '#3E7A4C' : INK; x.font = (big?'700 38px ':'600 30px ')+FH; x.fillText(rw[1], bx+bw-26, by+(big?52:44)); x.textAlign='left';
+      if(!big){ x.fillStyle = LINE; x.fillRect(bx+20, by+68, bw-40, 1.5); }
+      by += big ? 96 : 70;
+    });
+    y = by + 30;
+    if(cond.length){
+      x.fillStyle = ACC; x.font = '700 22px '+FB; x.fillText('CONDICIONES', P, y); y += 42;
+      x.fillStyle = INK; x.font = '500 27px '+FB;
+      cond.forEach(function(t){ wrapLines(x, '•  '+t, CW).forEach(function(l){ x.fillText(l, P, y); y += 40; }); });
+    }
+    y = Math.max(y + 30, H - 250);
+    x.fillStyle = INK; x.font = '600 32px '+FH; x.fillText(kind==='presu' ? '¡Gracias por tu consulta!' : '¡Muchas gracias por tu compra!', P, y);
+    // pie
+    x.fillStyle = g; x.fillRect(0, H-130, W, 130); x.fillStyle = gl; x.fillRect(0, H-130, W, 4);
+    x.fillStyle = '#E8D6BE'; x.font = '500 25px '+FB; x.textAlign = 'center';
+    x.fillText('WhatsApp '+BIZ.tel+'   ·   Instagram '+BIZ.ig+'   ·   '+BIZ.web, W/2, H-70); x.textAlign='left';
+    return c;
+  }
+  function pdfFromCanvas(c){
+    return new Promise(function(res){ c.toBlob(function(jb){ jb.arrayBuffer().then(function(ab){
+      var img = new Uint8Array(ab), enc = new TextEncoder(), parts = [], len = 0, offs = [];
+      function add(x){ var b = typeof x==='string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
+      var PW = 595.28, PH = (PW*c.height/c.width).toFixed(2);
+      add('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+      function obj(n, body){ offs[n] = len; add(n+' 0 obj\n'); body(); add('\nendobj\n'); }
+      obj(1, function(){ add('<< /Type /Catalog /Pages 2 0 R >>'); });
+      obj(2, function(){ add('<< /Type /Pages /Kids [3 0 R] /Count 1 >>'); });
+      obj(3, function(){ add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>'); });
+      obj(4, function(){ add('<< /Type /XObject /Subtype /Image /Width '+c.width+' /Height '+c.height+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+img.length+' >>\nstream\n'); add(img); add('\nendstream'); });
+      var cs = 'q '+PW+' 0 0 '+PH+' 0 0 cm /Im0 Do Q';
+      obj(5, function(){ add('<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream'); });
+      obj(6, function(){ add('<< /Title (PG Estilo Rustico) /Producer (PG Estilo Rustico) >>'); });
+      var xref = len, X = 'xref\n0 7\n0000000000 65535 f \n';
+      for(var i=1;i<=6;i++) X += String(offs[i]).padStart(10,'0')+' 00000 n \n';
+      add(X+'trailer\n<< /Size 7 /Root 1 0 R /Info 6 0 R >>\nstartxref\n'+xref+'\n%%EOF');
+      res(new Blob(parts, {type:'application/pdf'}));
+    }); }, 'image/jpeg', 0.9); });
+  }
+  function docName(o){ var k = docKind(o); return ({presu:'Presupuesto', saldo:'Saldo pendiente', pago:'Comprobante', pedido:'Pedido'}[k])+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.pdf'; }
+  async function shareDoc(o, b){
+    var f = new File([b], docName(o), {type:'application/pdf'});
+    if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title:docName(o)}); return 'shared'; }
+    var u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(u)}, 4000); return 'downloaded';
+  }
   function imgName(o){ var st = estado(o); return ((st==='presupuesto'||st==='rechazado')?'Presupuesto':'Pedido')+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.png'; }
   async function shareImg(o, b){
     var f = new File([b], imgName(o), {type:'image/png'});
@@ -1395,8 +1537,10 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
           h += '<div class="actions">'+actBtn('watel',o.id,'btn','Guardar número')+(('contacts' in navigator && navigator.contacts && navigator.contacts.select)?actBtn('wapick',o.id,'btn','📇 Elegir de mis contactos'):'')+'</div></div>';
           h += '<div class="actions">'+actBtn('wacopy',o.id,'btn primary','Copiar texto')+'<a class="btn wa-go" href="'+waUrl('',wt)+'" target="_blank" rel="noopener">Abrir WhatsApp</a>'+actBtn('waclose',o.id,'btn','Cerrar')+'</div>';
         }
-        h += '<div class="actions imgacts">'+actBtn('waimg',o.id,'btn img-btn','🖼️ '+((st==='presupuesto'||st==='rechazado')?'Mandar presupuesto con logo':'Mandar detalle con logo'))+(state.imgB && state.imgB.id===o.id ? actBtn('waimgshare',o.id,'btn primary','Compartir imagen') : '')+'</div>';
-        if(state.imgB && state.imgB.id===o.id) h += '<img class="imgprev" src="'+state.imgB.url+'" alt="Vista previa de la imagen">';
+        var dk = docKind(o), dlab = {presu:'Enviar presupuesto en PDF', saldo:'Enviar saldo pendiente en PDF', pago:'Enviar comprobante en PDF', pedido:'Enviar detalle en PDF'}[dk];
+        h += '<div class="pdfbox"><form class="actf" data-act="wapdf" data-id="'+esc(o.id)+'"><button type="submit" class="pdf-btn"><span class="pdf-ic" aria-hidden="true">PDF</span><span class="pdf-t"><b>'+dlab+'</b><small>Hoja con tu logo, detalle y precios, lista para WhatsApp</small></span></button></form>';
+        if(state.pdfB && state.pdfB.id===o.id) h += '<div class="pdfready"><img src="'+state.pdfB.prev+'" alt="Vista previa del PDF"><div class="actions">'+actBtn('wapdfshare',o.id,'btn primary','Compartir PDF')+actBtn('wapdfsave',o.id,'btn','Descargar')+'</div></div>';
+        h += '</div>';
         if(state.waMsg) h += '<p class="wa-msg">'+esc(state.waMsg)+'</p>';
         h += '</div>';
       }
@@ -2078,6 +2222,24 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       await saveOrder(o).catch(showErr); return;
     }
     if(act==='vercobro' && o){ state.q=''; if($('q')) $('q').value=''; state.filter = estado(o); state.open = id; state.openSet[id] = true; document.querySelectorAll('.tab').forEach(function(b){b.setAttribute('aria-pressed', b.getAttribute('data-filter')===state.filter?'true':'false')}); lastHtml=null; render(); setTimeout(function(){ var c=document.getElementById('o-'+id); if(c) c.scrollIntoView({block:'start', behavior:'smooth'}); }, 60); return; }
+    if(act==='wapdf' && o){
+      state.waMsg = 'Armando el PDF…'; lastHtml=null; render();
+      try{
+        var cv = await makeDoc(o), pb = await pdfFromCanvas(cv);
+        var pv = document.createElement('canvas'); pv.width = 420; pv.height = Math.round(420*cv.height/cv.width); pv.getContext('2d').drawImage(cv,0,0,pv.width,pv.height);
+        state.pdfB = {id:id, blob:pb, prev:pv.toDataURL('image/jpeg',.85)};
+        var rr = await shareDoc(o, pb); state.waMsg = rr==='shared' ? '' : 'El PDF se descargó. Mandalo por WhatsApp desde tus descargas.';
+      }catch(e){ state.waMsg = (e && e.name==='AbortError') ? '' : (state.pdfB && state.pdfB.id===id ? 'Listo el PDF. Tocá “Compartir PDF” y elegí WhatsApp.' : 'No pude armar el PDF.'); }
+      lastHtml=null; render(); return;
+    }
+    if(act==='wapdfshare' && o && state.pdfB && state.pdfB.id===id){
+      try{ var r3 = await shareDoc(o, state.pdfB.blob); state.waMsg = r3==='shared' ? '' : 'El PDF se descargó. Mandalo por WhatsApp desde tus descargas.'; }catch(e){ if(!(e && e.name==='AbortError')) state.waMsg = 'No se pudo compartir. Probá con “Descargar”.'; }
+      lastHtml=null; render(); return;
+    }
+    if(act==='wapdfsave' && o && state.pdfB && state.pdfB.id===id){
+      var u2 = URL.createObjectURL(state.pdfB.blob), a2 = document.createElement('a'); a2.href = u2; a2.download = docName(o); document.body.appendChild(a2); a2.click(); a2.remove(); setTimeout(function(){URL.revokeObjectURL(u2)}, 4000);
+      state.waMsg = 'PDF descargado.'; lastHtml=null; render(); return;
+    }
     if(act==='waimg' && o){
       state.waMsg = 'Armando la imagen…'; lastHtml=null; render();
       var b = await makeImg(o); if(!b){ state.waMsg = 'No pude armar la imagen.'; lastHtml=null; render(); return; }
