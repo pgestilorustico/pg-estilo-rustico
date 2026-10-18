@@ -204,6 +204,15 @@ html.ov-open,html.ov-open body{overflow:hidden}
 .rows dd.gan{color:var(--ok);font-weight:700}
 .rows dd.gan.neg{color:var(--danger)}
 .rows dt.sep,.rows dd.sep{border-top:1px dashed var(--line);padding-top:6px}
+.rows dt.rsec{grid-column:1/-1;margin:10px 0 -2px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:4px}
+.rows dt.rsec:first-child{margin-top:0}
+.rows dd.rsec{display:none}
+.rows dd.big{font-weight:600}
+.rows dd.cut{font-size:1.02rem;line-height:1.55}
+.rows dd.cut .okc{color:var(--ok);font-weight:700;font-size:.85rem;margin-left:4px}
+.rows dd.cut b{font-weight:700;color:var(--accent)}
+.rows dd.saldo-f{font-family:var(--head);font-size:1.15rem;font-weight:700;color:var(--warn)}
+.rows dd.saldo-f.ok{color:var(--ok);font-size:1rem}
 .csum.gan{border-top:0;padding-top:0;color:var(--muted)}
 .csum.gan strong{color:var(--ok)}
 .csum.gan strong.neg{color:var(--danger)}
@@ -729,7 +738,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 17</p>
+  <p class="ver">versión app 18</p>
 </div>
 
 
@@ -1483,25 +1492,32 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     h += '<span class="see see-txt">'+(isOpen?'Cerrar ▴':'Ver medidas y fotos ▾')+'</span>';
     h += '</summary>';
     h += '<div class="more"><dl class="rows">';
-    if(o.medidas) h += '<dt>Medidas</dt><dd>'+esc(o.medidas)+'</dd>';
+    var sec = function(t){ return '<dt class="rsec">'+t+'</dt><dd class="rsec"></dd>'; };
     var cts = (Array.isArray(o.cortes)?o.cortes:[]).filter(function(c){return c && (c.medida||num(c.cant))});
-    if(cts.length) h += '<dt>Cortes</dt><dd>'+cts.map(function(c){return esc((num(c.cant)||1)+' de '+(c.medida||'—'))}).join('<br>')+'</dd>';
-    h += '<dt>Precio</dt><dd>'+money.format(num(o.precio))+'</dd>';
-    var PG = pagosDe(o);
-    if(PG.length > 1 || (PG.length===1 && PG[0].fecha)){
-      h += '<dt>Pagos</dt><dd>'+PG.map(function(p){ return money.format(num(p.monto))+(p.fecha?' · '+esc(fmtDate(p.fecha).slice(0,5)):'')+(p.nota?' <small style="color:var(--muted)">'+esc(p.nota)+'</small>':''); }).join('<br>')+'</dd>';
-      h += '<dt>Total cobrado</dt><dd>'+money.format(num(o.sena))+'</dd>';
-    } else h += '<dt>Seña</dt><dd>'+money.format(num(o.sena))+'</dd>';
-    h += '<dt>Saldo</dt><dd>'+(paid?'Pagado completo':money.format(s)+(cobroPend(o)?'<br><small class="vence-'+venceTxt(o).c+'">'+esc(venceTxt(o).t)+'</small>':''))+'</dd>';
     var tbs = Array.isArray(o.tablas)?o.tablas:[], mls = Array.isArray(o.melamina)?o.melamina:[];
-    if(tbs.length) h += '<dt>Tablas de pino</dt><dd>'+tbs.map(function(t){return esc(t.cant+' de '+t.medida)+(t.comprado?' <span style="color:var(--ok)">✓ comprado</span>':'')}).join('<br>')+'</dd>';
-    if(mls.length) h += '<dt>Melamina</dt><dd>'+(o.melColor?'<small style="color:var(--muted)">'+esc(o.melColor)+'</small><br>':'')+mls.map(function(m){return esc(m.cant+' de '+m.medida)+(m.comprado?' <span style="color:var(--ok)">✓ comprado</span>':'')}).join('<br>')+'</dd>';
-    if(num(o.tapacanto)) h += '<dt>Tapacanto</dt><dd>'+esc(String(num(o.tapacanto)).replace('.',','))+' m'+(o.melColor?' · '+esc(o.melColor):'')+(o.tapaComprado?' <span style="color:var(--ok)">✓ comprado</span>':'')+'</dd>';
+    var ok = function(b){ return b?' <span class="okc" title="Comprado">✓</span>':''; };
+    /* 1) Para trabajar: medidas y todos los cortes juntos */
+    if(o.medidas || cts.length || tbs.length || mls.length || num(o.tapacanto)){
+      h += sec('Medidas y cortes');
+      if(o.medidas) h += '<dt>Medidas</dt><dd class="big">'+esc(o.medidas)+'</dd>';
+      if(cts.length) h += '<dt>Cortes de madera</dt><dd class="cut">'+cts.map(function(c){return '<b>'+esc(num(c.cant)||1)+'</b> de '+esc(c.medida||'—')}).join('<br>')+'</dd>';
+      if(tbs.length) h += '<dt>Tablas de pino</dt><dd class="cut">'+tbs.map(function(t){return '<b>'+esc(t.cant)+'</b> de '+esc(t.medida)+ok(t.comprado)}).join('<br>')+'</dd>';
+      if(mls.length) h += '<dt>Cortes de melamina</dt><dd class="cut">'+(o.melColor?'<small style="color:var(--muted)">'+esc(o.melColor)+'</small><br>':'')+mls.map(function(m){return '<b>'+esc(m.cant)+'</b> de '+esc(m.medida)+ok(m.comprado)}).join('<br>')+'</dd>';
+      if(num(o.tapacanto)) h += '<dt>Tapacanto</dt><dd class="cut"><b>'+esc(String(num(o.tapacanto)).replace('.',','))+' m</b>'+(o.melColor?' · '+esc(o.melColor):'')+ok(o.tapaComprado)+'</dd>';
+    }
+    if(o.fecha || o.entrega || o.notas){
+      h += sec('Fechas y notas');
+      if(o.fecha) h += '<dt>Pedido el</dt><dd>'+esc(fmtDate(o.fecha))+'</dd>';
+      if(o.entrega) h += '<dt>Entrega</dt><dd>'+esc(fmtDate(o.entrega))+'</dd>';
+      if(o.notas) h += '<dt>Notas</dt><dd>'+esc(o.notas)+'</dd>';
+    }
+    /* 2) Costos */
     if(num(o.costoMadera)||num(o.costoMelamina)||num(o.costoTornillos)||num(o.costoTapacanto)||num(o.costoOtros)||num(o.costoMano)){
+      h += sec('Costos');
       if(num(o.costoMadera)) h += '<dt>Madera</dt><dd>'+money.format(num(o.costoMadera))+(o.madera?' · '+esc(o.madera):'')+'</dd>';
-      if(num(o.costoMelamina)) h += '<dt>$ Melamina</dt><dd>'+money.format(num(o.costoMelamina))+'</dd>';
+      if(num(o.costoMelamina)) h += '<dt>Melamina</dt><dd>'+money.format(num(o.costoMelamina))+'</dd>';
       if(num(o.costoTornillos)) h += '<dt>Tornillos</dt><dd>'+money.format(num(o.costoTornillos))+'</dd>';
-      if(num(o.costoTapacanto)) h += '<dt>$ Tapacanto</dt><dd>'+money.format(num(o.costoTapacanto))+'</dd>';
+      if(num(o.costoTapacanto)) h += '<dt>Tapacanto</dt><dd>'+money.format(num(o.costoTapacanto))+'</dd>';
       if(num(o.costoOtros)) h += '<dt>Otros desgastes</dt><dd>'+money.format(num(o.costoOtros))+'</dd>';
       if(num(o.costoMano)) h += '<dt>Mano de obra</dt><dd>'+money.format(num(o.costoMano))+'</dd>';
       var mat = materiales(o);
@@ -1510,9 +1526,15 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
         h += '<dt class="sep">Ganancia</dt><dd class="sep gan'+(g<0?' neg':'')+'">'+money.format(g)+'<br><small style="font-weight:400;color:var(--muted)">precio − materiales ('+money.format(mat)+')</small></dd>';
       }
     }
-    if(o.fecha) h += '<dt>Pedido el</dt><dd>'+esc(fmtDate(o.fecha))+'</dd>';
-    if(o.entrega) h += '<dt>Entrega</dt><dd>'+esc(fmtDate(o.entrega))+'</dd>';
-    if(o.notas) h += '<dt>Notas</dt><dd>'+esc(o.notas)+'</dd>';
+    /* 3) La plata, al final de todo */
+    h += sec('Cobro');
+    h += '<dt>Precio total</dt><dd>'+money.format(num(o.precio))+'</dd>';
+    var PG = pagosDe(o);
+    if(PG.length > 1 || (PG.length===1 && PG[0].fecha)){
+      h += '<dt>Pagos</dt><dd>'+PG.map(function(p){ return money.format(num(p.monto))+(p.fecha?' · '+esc(fmtDate(p.fecha).slice(0,5)):'')+(p.nota?' <small style="color:var(--muted)">'+esc(p.nota)+'</small>':''); }).join('<br>')+'</dd>';
+      h += '<dt>Total cobrado</dt><dd>'+money.format(num(o.sena))+'</dd>';
+    } else h += '<dt>Seña</dt><dd>'+money.format(num(o.sena))+'</dd>';
+    h += '<dt class="sep">Falta abonar</dt><dd class="sep saldo-f'+(paid||s<=0?' ok':'')+'">'+(paid||s<=0?'Pagado completo ✓':money.format(s)+(cobroPend(o)?'<br><small class="vence-'+venceTxt(o).c+'">'+esc(venceTxt(o).t)+'</small>':''))+'</dd>';
     h += '</dl>';
     if(state.zoom && photos.indexOf(state.zoom)>=0 && blob(state.zoom)) h += '<div class="bigph"><img src="'+blob(state.zoom)+'" alt="Foto del mueble agrandada">'+actBtn('unzoom',o.id,'btn','Cerrar foto')+'</div>';
     if(photos.length) h += '<div class="gallery">'+photos.map(function(p){return thumb(p,'zoom')}).join('')+'</div>';
