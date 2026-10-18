@@ -337,7 +337,15 @@ details.cli{background:var(--surface);border:1px solid var(--line);border-radius
 details.cli summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 14px}
 details.cli summary::-webkit-details-marker{display:none}
 details.cli summary::marker{content:''}
-.cli-avatar{width:38px;height:38px;border-radius:50%;background:var(--soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:600;font-size:.95rem;flex:none}
+.av0{background:linear-gradient(135deg,#C08A57,#8A5A34)}
+.av1{background:linear-gradient(135deg,#9C6B43,#5A3B24)}
+.av2{background:linear-gradient(135deg,#D2A46E,#A8713F)}
+.av3{background:linear-gradient(135deg,#7E8A5A,#566238)}
+.av4{background:linear-gradient(135deg,#B9765A,#844A33)}
+.av5{background:linear-gradient(135deg,#8C7A66,#5E4E3E)}
+.av6{background:linear-gradient(135deg,#C9A26B,#8F6B3A)}
+.av7{background:linear-gradient(135deg,#6F8A86,#4A605C)}
+.cli-avatar{width:40px;height:40px;border-radius:50%;letter-spacing:.02em;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12), 0 2px 6px -2px rgba(60,35,15,.35);color:#FFF8EE;text-shadow:0 1px 1px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:600;font-size:.95rem;flex:none}
 .cli-txt{flex:1;min-width:0}
 .cli-name{font-family:var(--head);font-weight:600;font-size:.98rem;overflow-wrap:anywhere}
 .cli-emp{color:var(--accent);font-size:.84rem;font-weight:600;overflow-wrap:anywhere}
@@ -729,7 +737,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 15</p>
+  <p class="ver">versión app 16</p>
 </div>
 
 
@@ -1982,10 +1990,11 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   function syncCOpen(){
     $('clist').querySelectorAll('details[data-cid]').forEach(function(d){ var id=d.getAttribute('data-cid'); if(d.open) state.cOpen[id]=true; else delete state.cOpen[id]; });
   }
+  function avIdx(n){ var h=0, t=nrm(n||''); for(var i=0;i<t.length;i++) h=(h*33+t.charCodeAt(i))>>>0; return h%8; }
   function cliHtml(c){
     var peds = pedidosDe(c), ini = String(c.nombre||'?').trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase()}).join('');
     var h = '<details class="cli" data-cid="'+esc(c.id)+'"'+(state.cOpen[c.id]?' open':'')+'><summary>';
-    h += '<span class="cli-avatar" aria-hidden="true">'+esc(ini)+'</span><span class="cli-txt"><span class="cli-name">'+esc(c.nombre)+'</span>';
+    h += '<span class="cli-avatar av'+avIdx(c.nombre)+'" aria-hidden="true">'+esc(ini)+'</span><span class="cli-txt"><span class="cli-name">'+esc(c.nombre)+'</span>';
     if(c.emprendimiento) h += '<br><span class="cli-emp">'+esc(c.emprendimiento)+'</span>';
     if(c.telefono) h += '<br><span class="cli-tel">'+esc(c.telefono)+'</span>';
     h += '</span><span class="cli-n">'+peds.length+(peds.length===1?' pedido':' pedidos')+'</span></summary><div class="more">';
