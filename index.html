@@ -738,7 +738,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 18</p>
+  <p class="ver">versión app 19</p>
 </div>
 
 
@@ -1183,7 +1183,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   }
   function waText(o){
     var st = estado(o), L = [], nom = String(o.cliente||'').split(' ')[0];
-    var esSaldo = st==='saldo' && saldo(o)>0 && num(o.sena)>0;
+    var esSaldo = st==='saldo' && saldo(o)>0;
     var titulo = (st==='presupuesto'||st==='rechazado') ? 'Presupuesto' : esSaldo ? 'Saldo de tu pedido' : 'Resumen de tu pedido';
     L.push('*PG Estilo Rústico* · '+titulo);
     L.push('');
@@ -1192,21 +1192,22 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     L.push('• Trabajo: '+(o.pedido||''));
     if(o.medidas && !esSaldo) L.push('• Medidas: '+o.medidas);
     if(num(o.precio)) L.push('• Precio total: '+money.format(num(o.precio)));
-    var sinSena = st!=='pagado' && !num(o.sena);
+    var sinSena = st!=='pagado' && !esSaldo && !num(o.sena);
     if(sinSena){
       if(num(o.precio)) L.push('• Seña para tomar el pedido (50%): '+money.format(Math.round(num(o.precio)/2)));
     }else{
       var PG = pagosDe(o);
       if(PG.length>1) PG.forEach(function(p){ L.push('• Pagaste'+(p.fecha?' el '+fmtDate(p.fecha).slice(0,5):'')+': '+money.format(num(p.monto))); });
       else if(num(o.sena)) L.push('• '+(st==='pagado'?'Pagado':'Seña recibida')+': '+money.format(num(o.sena)));
-      if(st!=='pagado' && saldo(o)>0) L.push((esSaldo?'• *Saldo a pagar: ':'• Saldo a pagar: ')+money.format(saldo(o))+(esSaldo?'*':''));
-      if(st!=='pagado' && saldo(o)>0 && o.vence) L.push('• Fecha para abonar el saldo: '+fmtDate(o.vence));
+      if(st!=='pagado' && saldo(o)>0) L.push((esSaldo?'• *Debe: ':'• Saldo a pagar: ')+money.format(saldo(o))+(esSaldo?'*':''));
+      if(esSaldo) L.push('• Fecha de pago: '+(o.vence ? fmtDate(o.vence) : 'al entregar el pedido'));
+      else if(st!=='pagado' && saldo(o)>0 && o.vence) L.push('• Fecha para abonar el saldo: '+fmtDate(o.vence));
     }
     if(o.entrega && !esSaldo && st!=='pagado') L.push('• Entrega estimada: '+fmtDate(o.entrega));
     L.push('');
     if(st!=='pagado' && !esSaldo){ L.push('Si es con envío, tiene un costo adicional de $ 5.000.'); L.push(''); }
     L.push(st==='pagado' ? '¡Gracias por tu compra!'
-      : esSaldo ? (o.vence ? 'Cuando llegue la fecha avisame y te paso el alias para transferir. ¡Muchas gracias por tu compra!' : 'Avisame y te paso el alias para que puedas transferir el saldo. ¡Muchas gracias por tu compra!')
+      : esSaldo ? (o.vence ? 'Cuando llegue la fecha avisame y te paso el alias para transferir. ¡Muchas gracias por tu compra!' : 'El saldo se abona al momento de la entrega. Avisame si querés que te pase el alias. ¡Muchas gracias por tu compra!')
       : sinSena ? 'Cualquier consulta, avisame así te envío el alias para que puedas realizar la seña. ¡Gracias!'
       : '¡Recibí tu seña, muchas gracias! Te aviso cuando esté listo tu pedido.');
     return L.join('\n');
@@ -1291,7 +1292,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   }
   /* ---------- Presupuesto en PDF (hoja A4 con logo) ---------- */
   var BIZ = {tel:'+54 9 280 437-6218', ig:'@pgestilorustico', web:'pgestilorustico.pages.dev'};
-  function docKind(o){ var st = estado(o); return (st==='presupuesto'||st==='rechazado') ? 'presu' : (st==='saldo' && saldo(o)>0 && num(o.sena)>0) ? 'saldo' : st==='pagado' ? 'pago' : 'pedido'; }
+  function docKind(o){ var st = estado(o); return (st==='presupuesto'||st==='rechazado') ? 'presu' : (st==='saldo' && saldo(o)>0) ? 'saldo' : st==='pagado' ? 'pago' : 'pedido'; }
   function docTitle(o){ return {presu:'PRESUPUESTO', saldo:'SALDO PENDIENTE', pago:'COMPROBANTE DE PAGO', pedido:'DETALLE DE PEDIDO'}[docKind(o)]; }
   function docNum(o){ var h = 0, t = String(o.id||''); for(var i=0;i<t.length;i++) h = (h*31 + t.charCodeAt(i)) >>> 0; return String(h % 100000).padStart(5,'0'); }
   async function makeDoc(o){
@@ -1299,7 +1300,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     var logo = logoImg.complete && logoImg.naturalWidth ? logoImg : await loadImg('icon-512.png');
     var fids = (Array.isArray(o.fotos)?o.fotos:[]).slice(0,3), fotos = [];
     for(var fi=0; fi<fids.length; fi++){ var im = await loadImg(blob(fids[fi])); if(im) fotos.push(im); }
-    var kind = docKind(o), st = estado(o), sinSena = st!=='pagado' && !num(o.sena);
+    var kind = docKind(o), st = estado(o), sinSena = st!=='pagado' && st!=='saldo' && !num(o.sena);
     var W = 1240, H = 1754, P = 90, CW = W-2*P;
     var FH = "'Archivo', Arial, sans-serif", FB = "'Manrope', Arial, sans-serif";
     var c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d');
@@ -1349,10 +1350,11 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     else {
       var PG = pagosDe(o);
       PG.forEach(function(pp){ rows.push([(pp.nota==='Seña'?'Seña':pp.nota==='Saldo'?'Pago del saldo':'Pago')+(pp.fecha?' · '+fmtDate(pp.fecha):''), '− '+money.format(num(pp.monto)), 'ok']); });
-      if(st!=='pagado' && saldo(o)>0) rows.push(['Saldo a pagar', money.format(saldo(o)), 'big']);
+      if(st!=='pagado' && saldo(o)>0) rows.push([kind==='saldo' ? 'Debe' : 'Saldo a pagar', money.format(saldo(o)), 'big']);
       if(st==='pagado') rows.push(['Pagado completo', '✓', 'big']);
     }
-    if(st!=='pagado' && saldo(o)>0 && o.vence && !sinSena) rows.push(['Fecha para abonar el saldo', fmtDate(o.vence), 'small']);
+    if(kind==='saldo') rows.push(['Fecha de pago', o.vence ? fmtDate(o.vence) : 'Al entregar el pedido', 'date']);
+    else if(st!=='pagado' && saldo(o)>0 && o.vence && !sinSena) rows.push(['Fecha para abonar el saldo', fmtDate(o.vence), 'small']);
     // condiciones
     var cond = [];
     if(kind==='presu'){ cond.push('Para confirmar el pedido se abona una seña del 50%.'); }
@@ -1373,9 +1375,9 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     rows.forEach(function(rw){
       var big = rw[2]==='big';
       if(big){ var gg = x.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#8A5A34'); gg.addColorStop(1,'#5A3B24'); x.fillStyle = gg; rrect(x,bx,by,bw,78,18); x.fill(); }
-      x.fillStyle = big ? '#FFF4E4' : rw[2]==='small' ? MUT : INK; x.font = (big?'700 32px ':rw[2]==='tot'?'600 30px ':'500 28px ')+(big?FH:FB);
+      x.fillStyle = big ? '#FFF4E4' : (rw[2]==='small'||rw[2]==='date') ? MUT : INK; x.font = (big?'700 32px ':rw[2]==='tot'?'600 30px ':'500 28px ')+(big?FH:FB);
       x.fillText(rw[0], bx+26, by+(big?50:44));
-      x.textAlign='right'; x.fillStyle = big ? '#FFFFFF' : rw[2]==='ok' ? '#3E7A4C' : INK; x.font = (big?'700 38px ':'600 30px ')+FH; x.fillText(rw[1], bx+bw-26, by+(big?52:44)); x.textAlign='left';
+      x.textAlign='right'; x.fillStyle = big ? '#FFFFFF' : rw[2]==='ok' ? '#3E7A4C' : rw[2]==='date' ? '#8A5A34' : INK; x.font = (big?'700 38px ':rw[2]==='date'?'700 32px ':'600 30px ')+FH; x.fillText(rw[1], bx+bw-26, by+(big?52:44)); x.textAlign='left';
       if(!big){ x.fillStyle = LINE; x.fillRect(bx+20, by+68, bw-40, 1.5); }
       by += big ? 96 : 70;
     });
