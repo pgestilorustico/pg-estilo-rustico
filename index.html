@@ -744,7 +744,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 21</p>
+  <p class="ver">versión app 22</p>
 </div>
 
 
@@ -1211,7 +1211,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     }
     if(o.entrega && !esSaldo && st!=='pagado') L.push('• Entrega estimada: '+fmtDate(o.entrega));
     L.push('');
-    if(st!=='pagado' && !esSaldo){ L.push('Si es con envío, tiene un costo adicional de $ 5.000.'); L.push(''); }
+    L.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.'); L.push('');
     L.push(st==='pagado' ? '¡Gracias por tu compra!'
       : esSaldo ? (o.vence ? 'Cuando llegue la fecha avisame y te paso el alias para transferir. ¡Muchas gracias por tu compra!' : 'El saldo se abona al momento de la entrega. Avisame si querés que te pase el alias. ¡Muchas gracias por tu compra!')
       : sinSena ? 'Cualquier consulta, avisame así te envío el alias para que puedas realizar la seña. ¡Gracias!'
@@ -1364,7 +1364,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     // condiciones
     var cond = [];
     if(kind==='presu'){ cond.push('Para confirmar el pedido se abona una seña del 50%.'); }
-    if(kind!=='pago' && kind!=='saldo') cond.push('Si es con envío, tiene un costo adicional de $ 5.000.');
+    cond.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.');
     if(o.notas && kind==='presu' && false) cond.push(o.notas);
     // fotos (se achican para que todo entre en la hoja)
     var need = rows.reduce(function(a,r){ return a + (r[2]==='big'?96:70); },0) + 50 + 30 + (cond.length ? 42 + cond.length*44 + 20 : 0) + 60 + 135;
