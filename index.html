@@ -212,6 +212,12 @@ html.ov-open,html.ov-open body{overflow:hidden}
 .rows dd.cut .okc{color:var(--ok);font-weight:700;font-size:.85rem;margin-left:4px}
 .rows dd.cut b{font-weight:700;color:var(--accent)}
 .rows dd.saldo-f{font-family:var(--head);font-size:1.15rem;font-weight:700;color:var(--warn)}
+.payl{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.payx{display:inline-block}
+.payx button{border:0;background:none;color:var(--muted);font-size:.8rem;padding:2px 6px;border-radius:6px;opacity:.7}
+.payx button:active{background:var(--soft);color:var(--danger)}
+.rows dd.fpago{font-weight:700;color:var(--accent)}
+.rows dd.fpago small{font-weight:600;margin-left:6px}
 .rows dd.saldo-f.ok{color:var(--ok);font-size:1rem}
 .csum.gan{border-top:0;padding-top:0;color:var(--muted)}
 .csum.gan strong{color:var(--ok)}
@@ -738,7 +744,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 19</p>
+  <p class="ver">versión app 20</p>
 </div>
 
 
@@ -1488,7 +1494,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     h += '<summary class="order-sum">';
     h += '<span class="order-head"><span class="who"><span class="name">'+esc(o.cliente)+'</span><span class="what">'+esc(o.pedido)+'</span>'+(st==='proceso'?dueLine(o):'')+(cobroPend(o)?(function(v){return '<span class="due-line pay '+v.c+'">💰 '+v.t+'</span>'})(venceTxt(o)):'')+'</span>';
     h += '<span class="price-col"><span class="amt">'+money.format(num(o.precio))+'</span>';
-    h += st==='presupuesto' ? '<span class="badge pres">Presupuesto enviado</span>' : st==='rechazado' ? '<span class="badge rech">No aceptado</span>' : st==='pagado' ? '<span class="badge paid">Pagado</span>' : st==='saldo' ? '<span class="badge due">Debe '+money.format(s)+'</span>' : '<span class="badge proc">En proceso</span>';
+    h += st==='presupuesto' ? '<span class="badge pres">Presupuesto enviado</span>' : st==='rechazado' ? '<span class="badge rech">No aceptado</span>' : st==='pagado' ? '<span class="badge paid">Pagado</span>' : st==='saldo' ? (s>0 ? '<span class="badge due">Debe '+money.format(s)+'</span>' : '<span class="badge paid">Cobrado ✓</span>') : '<span class="badge proc">En proceso</span>';
     h += '</span></span>';
     if(photos.length) h += '<span class="thumb-line">'+photos.slice(0,4).map(function(p){return thumb(p,'')}).join('')+'</span>';
     h += '<span class="see see-txt">'+(isOpen?'Cerrar ▴':'Ver medidas y fotos ▾')+'</span>';
@@ -1533,21 +1539,27 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     h += '<dt>Precio total</dt><dd>'+money.format(num(o.precio))+'</dd>';
     var PG = pagosDe(o);
     if(PG.length > 1 || (PG.length===1 && PG[0].fecha)){
-      h += '<dt>Pagos</dt><dd>'+PG.map(function(p){ return money.format(num(p.monto))+(p.fecha?' · '+esc(fmtDate(p.fecha).slice(0,5)):'')+(p.nota?' <small style="color:var(--muted)">'+esc(p.nota)+'</small>':''); }).join('<br>')+'</dd>';
+      h += '<dt>Pagos</dt><dd>'+PG.map(function(p,i){ return '<span class="payl">'+money.format(num(p.monto))+(p.fecha?' · '+esc(fmtDate(p.fecha).slice(0,5)):'')+(p.nota?' <small style="color:var(--muted)">'+esc(p.nota)+'</small>':'')+'<form class="actf payx" data-act="paydel" data-id="'+esc(o.id)+'" data-i="'+i+'"><button type="submit" aria-label="Borrar este pago" title="Borrar este pago">✕</button></form></span>'; }).join('')+'</dd>';
       h += '<dt>Total cobrado</dt><dd>'+money.format(num(o.sena))+'</dd>';
     } else h += '<dt>Seña</dt><dd>'+money.format(num(o.sena))+'</dd>';
-    h += '<dt class="sep">Falta abonar</dt><dd class="sep saldo-f'+(paid||s<=0?' ok':'')+'">'+(paid||s<=0?'Pagado completo ✓':money.format(s)+(cobroPend(o)?'<br><small class="vence-'+venceTxt(o).c+'">'+esc(venceTxt(o).t)+'</small>':''))+'</dd>';
+    h += '<dt class="sep">Falta abonar</dt><dd class="sep saldo-f'+(paid||s<=0?' ok':'')+'">'+(paid||s<=0?'Pagado completo ✓':money.format(s))+'</dd>';
+    if(!paid && s>0 && st!=='presupuesto' && st!=='rechazado') h += '<dt>Fecha de pago</dt><dd class="fpago">'+(o.vence ? esc(fmtDate(o.vence))+(venceTxt(o).c?' <small class="vence-'+venceTxt(o).c+'">'+esc(venceTxt(o).t.split(' · ')[0])+'</small>':'') : '<span style="color:var(--muted)">Al entregar el pedido</span>')+'</dd>';
     h += '</dl>';
     if(state.zoom && photos.indexOf(state.zoom)>=0 && blob(state.zoom)) h += '<div class="bigph"><img src="'+blob(state.zoom)+'" alt="Foto del mueble agrandada">'+actBtn('unzoom',o.id,'btn','Cerrar foto')+'</div>';
     if(photos.length) h += '<div class="gallery">'+photos.map(function(p){return thumb(p,'zoom')}).join('')+'</div>';
     else h += '<p class="nophotos">Este pedido no tiene fotos.</p>';
       if(state.payOpen===o.id){
         h += '<div class="paybox"><p class="paytit">Registrar un pago de '+esc(o.cliente)+'</p><div class="two">';
-        h += '<label class="f">Monto ($)<input type="number" inputmode="numeric" min="0" step="any" id="pmonto-'+esc(o.id)+'" value="'+Math.round(s)+'"></label>';
+        h += '<label class="f">Monto que te pagó ($)<input type="number" inputmode="numeric" min="0" step="any" id="pmonto-'+esc(o.id)+'" placeholder="Debe '+esc(money.format(s))+'"></label>';
         h += '<label class="f">Fecha<input type="date" id="pfecha-'+esc(o.id)+'" value="'+hoyStr()+'"></label></div>';
         h += '<label class="f">Si queda saldo, lo paga el (opcional)<input type="date" id="pvence-'+esc(o.id)+'" value="'+esc(o.vence||'')+'"></label>';
         if(state.payMsg) h += '<p class="err">'+esc(state.payMsg)+'</p>';
         h += '<div class="actions">'+actBtn('paysave',o.id,'btn primary','Guardar pago')+actBtn('payclose',o.id,'btn','Cancelar')+'</div></div>';
+      }
+      if(state.vencOpen===o.id){
+        h += '<div class="paybox"><p class="paytit">¿Cuándo te paga lo que falta ('+esc(money.format(s))+')?</p>';
+        h += '<label class="f">Fecha de pago<input type="date" id="vdate-'+esc(o.id)+'" value="'+esc(o.vence||'')+'"></label>';
+        h += '<div class="actions">'+actBtn('vencsave',o.id,'btn primary','Guardar fecha')+actBtn('vencent',o.id,'btn','Paga al entregar')+actBtn('vencclose',o.id,'btn','Cancelar')+'</div></div>';
       }
       if(state.waOpen===o.id){
         var wt = waText(o);
@@ -1571,7 +1583,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       h += '<div class="actions">';
       if(st==='presupuesto') h += actBtn('aceptar',o.id,'btn acc','✓ Aceptado') + actBtn('rechazar',o.id,'btn rech','✗ No aceptado');
       if(st==='rechazado') h += actBtn('aceptar',o.id,'btn acc','✓ Al final lo aceptó') + actBtn('reenviar',o.id,'btn','Volver a enviado');
-      if(st!=='pagado' && st!=='presupuesto' && st!=='rechazado') h += actBtn('payopen',o.id,'btn good','💰 Registrar pago') + actBtn('markpaid',o.id,'btn','✓ Pagó todo');
+      if(st!=='pagado' && st!=='presupuesto' && st!=='rechazado') h += actBtn('payopen',o.id,'btn good','💰 Registrar pago') + actBtn('vencopen',o.id,'btn','📅 Fecha de pago') + actBtn('markpaid',o.id,'btn','✓ Pagó todo');
       if(st==='proceso') h += actBtn('tosaldo',o.id,'btn','Terminado, falta cobrar');
       if(st==='saldo') h += actBtn('toproceso',o.id,'btn','Volver a en proceso');
       if(st==='pagado') h += actBtn('unpaid',o.id,'btn','Reabrir saldo');
@@ -2232,7 +2244,20 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     if(act==='watelchg' && o){
       state.waEdit = id; state.waMsg = ''; lastHtml=null; render(); return;
     }
-    if(act==='payopen' && o){ state.payOpen = state.payOpen===id?null:id; state.payMsg=''; state.waOpen=null; lastHtml=null; render(); return; }
+    if(act==='payopen' && o){ state.payOpen = state.payOpen===id?null:id; state.payMsg=''; state.waOpen=null; state.vencOpen=null; lastHtml=null; render(); return; }
+    if(act==='vencopen' && o){ state.vencOpen = state.vencOpen===id?null:id; state.payOpen=null; lastHtml=null; render(); return; }
+    if(act==='vencclose'){ state.vencOpen = null; lastHtml=null; render(); return; }
+    if(act==='vencsave' && o){ var vd = ($('vdate-'+id)||{}).value||''; o.vence = vd; state.vencOpen = null; await saveOrder(o).catch(showErr); return; }
+    if(act==='vencent' && o){ o.vence = ''; state.vencOpen = null; await saveOrder(o).catch(showErr); return; }
+    if(act==='paydel' && o){
+      var pi = parseInt(a.getAttribute('data-i'),10), lst = pagosDe(o), pdel = lst[pi]; if(!pdel) return;
+      if(!window.confirm('¿Borrar el pago de '+money.format(num(pdel.monto))+(pdel.fecha?' del '+fmtDate(pdel.fecha):'')+'?')) return;
+      lst.splice(pi,1);
+      o.pagos = lst.map(function(p){ return {fecha:p.fecha||'', monto:num(p.monto), nota:p.nota||''}; });
+      o.sena = o.pagos.reduce(function(acc,p){ return acc+num(p.monto); },0);
+      if(o.pagado && saldo(Object.assign({},o,{pagado:false}))>0){ o.pagado = false; o.estado = 'saldo'; }
+      await saveOrder(o).catch(showErr); return;
+    }
     if(act==='payclose'){ state.payOpen = null; state.payMsg=''; lastHtml=null; render(); return; }
     if(act==='paysave' && o){
       var pm = num(($('pmonto-'+id)||{}).value), pf = ($('pfecha-'+id)||{}).value || hoyStr(), pv = ($('pvence-'+id)||{}).value || '';
