@@ -744,7 +744,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 20</p>
+  <p class="ver">versión app 21</p>
 </div>
 
 
@@ -1299,7 +1299,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   /* ---------- Presupuesto en PDF (hoja A4 con logo) ---------- */
   var BIZ = {tel:'+54 9 280 437-6218', ig:'@pgestilorustico', web:'pgestilorustico.pages.dev'};
   function docKind(o){ var st = estado(o); return (st==='presupuesto'||st==='rechazado') ? 'presu' : (st==='saldo' && saldo(o)>0) ? 'saldo' : st==='pagado' ? 'pago' : 'pedido'; }
-  function docTitle(o){ return {presu:'PRESUPUESTO', saldo:'SALDO PENDIENTE', pago:'COMPROBANTE DE PAGO', pedido:'DETALLE DE PEDIDO'}[docKind(o)]; }
+  function docTitle(o){ return {presu:'PRESUPUESTO', saldo:'TRABAJO FINALIZADO', pago:'COMPROBANTE DE PAGO', pedido:'DETALLE DE PEDIDO'}[docKind(o)]; }
   function docNum(o){ var h = 0, t = String(o.id||''); for(var i=0;i<t.length;i++) h = (h*31 + t.charCodeAt(i)) >>> 0; return String(h % 100000).padStart(5,'0'); }
   async function makeDoc(o){
     try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(_){}
@@ -1421,7 +1421,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       res(new Blob(parts, {type:'application/pdf'}));
     }); }, 'image/jpeg', 0.9); });
   }
-  function docName(o){ var k = docKind(o); return ({presu:'Presupuesto', saldo:'Saldo pendiente', pago:'Comprobante', pedido:'Pedido'}[k])+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.jpg'; }
+  function docName(o){ var k = docKind(o); return ({presu:'Presupuesto', saldo:'Trabajo finalizado', pago:'Comprobante', pedido:'Pedido'}[k])+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.jpg'; }
   async function shareDoc(o, b){
     var f = new File([b], docName(o), {type:'image/jpeg'});
     if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title:docName(o)}); return 'shared'; }
@@ -1573,7 +1573,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
           h += '<div class="actions">'+actBtn('watel',o.id,'btn','Guardar número')+(('contacts' in navigator && navigator.contacts && navigator.contacts.select)?actBtn('wapick',o.id,'btn','📇 Elegir de mis contactos'):'')+'</div></div>';
           h += '<div class="actions">'+actBtn('wacopy',o.id,'btn primary','Copiar texto')+'<a class="btn wa-go" href="'+waUrl('',wt)+'" target="_blank" rel="noopener">Abrir WhatsApp</a>'+actBtn('waclose',o.id,'btn','Cerrar')+'</div>';
         }
-        var dk = docKind(o), dlab = {presu:'Enviar presupuesto como foto', saldo:'Enviar saldo pendiente como foto', pago:'Enviar comprobante como foto', pedido:'Enviar detalle como foto'}[dk];
+        var dk = docKind(o), dlab = {presu:'Enviar presupuesto como foto', saldo:'Enviar trabajo finalizado como foto', pago:'Enviar comprobante como foto', pedido:'Enviar detalle como foto'}[dk];
         h += '<div class="pdfbox"><form class="actf" data-act="wapdf" data-id="'+esc(o.id)+'"><button type="submit" class="pdf-btn"><span class="pdf-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="9.5" r="1.8" fill="currentColor"/><path d="M4 17.5l5-5 3.5 3.5 2.5-2.5 5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span class="pdf-t"><b>'+dlab+'</b><small>Con tu logo, detalle, fotos y precios, lista para WhatsApp</small></span></button></form>';
         if(state.pdfB && state.pdfB.id===o.id) h += '<div class="pdfready"><img src="'+state.pdfB.prev+'" alt="Vista previa de la foto"><div class="actions">'+actBtn('wapdfshare',o.id,'btn primary','Compartir foto')+actBtn('wapdfsave',o.id,'btn','Guardar en el celular')+'</div></div>';
         h += '</div>';
