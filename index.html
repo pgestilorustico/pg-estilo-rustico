@@ -320,6 +320,13 @@ details.compra[open] summary{border-bottom:1px solid var(--line)}
 .tcrow .de{color:var(--muted);font-size:.84rem}
 .compra-empty{display:flex;flex-direction:column;gap:4px;padding:12px 16px;border:1px dashed var(--line);border-radius:var(--r);font-size:.84rem;color:var(--muted)}
 .compra-empty strong{color:var(--ink);font-size:.9rem}
+.ajustes{margin-top:28px;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+.ajustes summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:11px 14px;font-size:.84rem;font-weight:600;color:var(--muted)}
+.ajustes summary::-webkit-details-marker{display:none}
+.ajustes summary .nav-ic{width:18px;height:18px}
+.ajustes .aj-arrow{margin-left:auto;font-size:.75rem;transition:transform .15s}
+.ajustes[open] .aj-arrow{transform:rotate(180deg)}
+.ajustes .backup{margin:0;padding:14px;border-top:1px solid var(--line)}
 .backup{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);text-align:center}
 .backup .btn{font-size:.84rem}
 .backup p{margin:8px 0 0;font-size:.8rem;color:var(--muted)}
@@ -349,7 +356,7 @@ form.actf{margin:0;display:contents}
 
 .empty{text-align:center;padding:40px 12px;color:var(--muted);font-size:.92rem}
 .empty strong{display:block;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink);margin-bottom:4px}
-.ver{text-align:center;color:var(--muted);font-size:.72rem;margin-top:28px;opacity:.7}
+.ver{text-align:center;color:var(--muted);font-size:.72rem;margin-top:16px;opacity:.7}
 .credit{text-align:center;color:var(--muted);font-size:.78rem;margin:4px 0 0;letter-spacing:.02em}
 .credit b{color:var(--accent);font-weight:600}
 
@@ -797,6 +804,8 @@ body:not(.v-pedidos) .stats{display:none}
     <main id="glist" aria-live="polite"></main>
   </div>
 
+  <details class="ajustes" id="ajustes">
+  <summary><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes y copia de seguridad<span class="aj-arrow">▾</span></summary>
   <div class="backup" id="backupBox">
     <form class="actf" data-act="backup"><button type="submit" class="btn" id="backupBtn">⬇ Descargar copia de seguridad (Excel)</button></form>
     <p id="backupMsg">Guarda todos tus pedidos, clientes, stock y gastos en un archivo.</p>
@@ -811,7 +820,8 @@ body:not(.v-pedidos) .stats{display:none}
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 27</p>
+  </details>
+  <p class="ver">versión app 28</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
