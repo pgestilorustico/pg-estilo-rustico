@@ -285,6 +285,11 @@ details.compra[open] summary{border-bottom:1px solid var(--line)}
 .gitem form.actf{display:block}
 .gdel{border:0;background:none;color:var(--muted);font-size:1.1rem;width:30px;height:30px;padding:0}
 .gconf{display:flex;gap:6px;padding:0 12px 10px;justify-content:flex-end}
+.gedb{color:var(--accent);font-size:1rem}
+.gedit{padding:12px;border-top:1px solid var(--line);background:var(--soft)}
+.gedit:first-child{border-top:0}
+.gedit-t{margin:0 0 8px;font-weight:700;font-size:.9rem}
+.gedit .actions{margin-top:4px}
 [hidden]{display:none!important}
 .login{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px max(24px, env(safe-area-inset-right, 0px)) 24px max(24px, env(safe-area-inset-left, 0px))}
 .login-box{width:100%;max-width:340px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -744,7 +749,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 22</p>
+  <p class="ver">versión app 23</p>
 </div>
 
 
@@ -2147,8 +2152,16 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
         var m = meses[k], p = k.split('-'), titulo = p.length===2 ? MESES[parseInt(p[1],10)-1]+' '+p[0] : 'Sin fecha';
         return '<section class="gmes"><div class="gmes-h"><h4>'+esc(titulo)+'</h4><strong>'+money.format(m.total)+'</strong></div><div class="gbox">'+
           m.items.map(function(g){
+            if(state.gEdit===g.id){
+              return '<div class="gedit"><p class="gedit-t">Editar compra</p>'+
+                '<label class="f">Qué compraste<input type="text" id="ge-desc" autocomplete="off" value="'+esc(g.desc||'')+'"></label>'+
+                '<div class="two"><label class="f">Cuánto te salió ($)<input type="number" id="ge-monto" inputmode="numeric" min="0" step="any" value="'+esc(g.monto==null?'':g.monto)+'"></label>'+
+                '<label class="f">Fecha<input type="date" id="ge-fecha" value="'+esc(g.fecha||'')+'"></label></div>'+
+                (state.gEditErr?'<p class="err">'+esc(state.gEditErr)+'</p>':'')+
+                '<div class="actions">'+actBtn('gedsave',g.id,'btn primary','Guardar cambios')+actBtn('gedcancel',g.id,'btn','Cancelar')+'</div></div>';
+            }
             var h = '<div class="gitem"><span class="gtxt">'+esc(g.desc)+'<small>'+esc(g.fecha?fmtDate(g.fecha):'')+'</small></span><span class="gm">'+money.format(num(g.monto))+'</span>';
-            h += state.gConfirm===g.id ? '' : '<form class="actf" data-act="gdel" data-id="'+esc(g.id)+'"><button type="submit" class="gdel" aria-label="Borrar este gasto">×</button></form>';
+            h += state.gConfirm===g.id ? '' : '<form class="actf" data-act="gedit" data-id="'+esc(g.id)+'"><button type="submit" class="gdel gedb" aria-label="Editar este gasto" title="Editar">✎</button></form><form class="actf" data-act="gdel" data-id="'+esc(g.id)+'"><button type="submit" class="gdel" aria-label="Borrar este gasto">×</button></form>';
             h += '</div>';
             if(state.gConfirm===g.id) h += '<div class="gconf">'+actBtn('gdelyes',g.id,'btn bad','Sí, borrar')+actBtn('gdelno',g.id,'btn','No')+'</div>';
             return h;
@@ -2159,7 +2172,19 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   }
   async function onGastoAct(act, a){
     var id = a.getAttribute('data-id');
-    if(act==='gdel'){ state.gConfirm = id; renderGastos(); return true; }
+    if(act==='gedit'){ state.gEdit = id; state.gEditErr = ''; state.gConfirm = null; gLastHtml = null; renderGastos(); try{ $('ge-desc').focus(); }catch(_){} return true; }
+    if(act==='gedcancel'){ state.gEdit = null; gLastHtml = null; renderGastos(); return true; }
+    if(act==='gedsave'){
+      var gx = state.gastos.find(function(x){return x.id===id}); if(!gx) return true;
+      var nd = ($('ge-desc').value||'').trim(), nm = num($('ge-monto').value), nf = $('ge-fecha').value || gx.fecha || hoyStr();
+      if(!nd){ state.gEditErr = 'Escribí qué compraste.'; gLastHtml = null; renderGastos(); return true; }
+      if(!(nm>0)){ state.gEditErr = 'Poné cuánto te salió.'; gLastHtml = null; renderGastos(); return true; }
+      gx.desc = nd; gx.monto = nm; gx.fecha = nf;
+      var data = Object.assign({}, gx); delete data.id;
+      try{ if(gCol) await gCol.doc(id).set(data); }catch(ex){ state.gEditErr = 'No se pudo guardar. Revisá la conexión.'; gLastHtml = null; renderGastos(); return true; }
+      state.gEdit = null; state.gEditErr = ''; gLastHtml = null; renderGastos(); return true;
+    }
+    if(act==='gdel'){ state.gConfirm = id; state.gEdit = null; renderGastos(); return true; }
     if(act==='gdelno'){ state.gConfirm = null; renderGastos(); return true; }
     if(act==='gdelyes'){ state.gConfirm = null; if(gCol) await gCol.doc(id).delete().catch(showErr); state.gastos = state.gastos.filter(function(x){return x.id!==id}); renderGastos(); return true; }
     return false;
