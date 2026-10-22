@@ -159,29 +159,36 @@ label.f .hint{display:block;font-weight:400;margin:4px 0 0}
 .calc-top strong{display:inline-flex;align-items:center;gap:6px}
 .calc-top .calc-ic{width:18px;height:18px;vertical-align:-3px;color:var(--c-opink)}
 @media (min-width:900px){ .calc-open{font-size:.98rem} .calc-txt{display:inline} }
-.calc{position:fixed;inset:0;z-index:40;background:rgba(10,8,6,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:10px;animation:calcFade .18s ease}
+.calc{position:fixed;inset:0;z-index:40;pointer-events:none}
 .calc[hidden]{display:none!important}
 @keyframes calcFade{from{opacity:0}to{opacity:1}}
 @keyframes calcUp{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
-.calc-box{width:100%;max-width:370px;background:var(--c-bg);color:var(--c-ink);border:1px solid var(--line);border-radius:28px;padding:10px 16px 16px;box-shadow:var(--c-shadow);margin-bottom:env(safe-area-inset-bottom,0px);animation:calcUp .22s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden}
-.calc-box::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#C08A57,#E0B486,#A8713F)}
-.calc-top{display:flex;justify-content:space-between;align-items:center;margin:8px 0 2px;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--c-mut)}
-.calc-top strong{font-weight:600}
-.calc-x{border:0;background:var(--c-key);color:var(--c-ink);width:32px;height:32px;border-radius:50%;font-size:.85rem}
-.calc-screen{background:none;padding:14px 4px 16px;text-align:right;min-height:104px}
-.calc-expr{font-size:1rem;color:var(--c-mut);min-height:1.5em;overflow-wrap:anywhere;letter-spacing:.02em}
-.calc-res{font-family:var(--head);font-size:2.9rem;font-weight:500;line-height:1.1;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--c-res)}
-.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.calc-keys button{height:62px;border-radius:20px;border:0;background:var(--c-key);color:var(--c-ink);font-size:1.4rem;font-weight:500;font-family:var(--head);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:transform .08s ease, filter .12s ease}
-.calc-keys button:active{transform:scale(.94);filter:brightness(1.25)}
-.calc-keys .k-fn{background:var(--c-fn);color:var(--c-opink);font-size:1.2rem}
-.calc-keys .k-op{background:var(--c-op);color:var(--c-opink);font-size:1.6rem}
-.calc-keys .k-eq{background:linear-gradient(180deg,#C08A57,#8A5A34);color:#FFF;font-size:1.6rem;box-shadow:0 8px 18px -8px rgba(192,138,87,.8)}
-.calc-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.calc-acts .btn{flex:1;border-radius:16px;padding:12px 10px;border:0;background:var(--c-key);color:var(--c-ink)}
+.calc-box{pointer-events:auto;position:fixed;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(272px,calc(100vw - 20px));background:var(--c-bg);color:var(--c-ink);border:1px solid var(--line);border-radius:22px;padding:0 10px 10px;box-shadow:0 18px 40px -12px rgba(30,15,5,.45), 0 2px 6px rgba(0,0,0,.08);animation:calcUp .2s cubic-bezier(.2,.8,.2,1);overflow:hidden;touch-action:none}
+.calc-box::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,#C08A57,#E0B486,#A8713F)}
+.calc-top{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:9px 0 2px;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--c-mut);cursor:grab;user-select:none;-webkit-user-select:none}
+.calc-top:active{cursor:grabbing}
+.calc-top strong{font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.calc-top .grip{flex:1;height:4px;margin:0 8px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 9px);opacity:.9}
+.calc-tbtns{display:inline-flex;gap:6px}
+.calc-x{border:0;background:var(--c-key);color:var(--c-ink);width:28px;height:28px;border-radius:50%;font-size:.8rem;display:grid;place-items:center;padding:0}
+.calc-screen{background:none;padding:4px 4px 8px;text-align:right;min-height:58px}
+.calc-expr{font-size:.82rem;color:var(--c-mut);min-height:1.3em;overflow-wrap:anywhere;letter-spacing:.02em}
+.calc-res{font-family:var(--head);font-size:1.9rem;font-weight:500;line-height:1.1;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--c-res)}
+.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.calc-keys button{height:46px;border-radius:14px;border:0;background:var(--c-key);color:var(--c-ink);font-size:1.2rem;font-weight:600;font-family:var(--head);box-shadow:0 1px 0 rgba(0,0,0,.06);touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .06s ease, filter .08s ease}
+.calc-keys button.pr,.calc-keys button:active{transform:scale(.92);filter:brightness(.88)}
+.calc-keys .k-fn{background:var(--c-fn);color:var(--c-opink);font-size:1.05rem}
+.calc-keys .k-op{background:var(--c-op);color:var(--c-opink);font-size:1.35rem}
+.calc-keys .k-eq{background:linear-gradient(180deg,#C08A57,#8A5A34);color:#FFF;font-size:1.35rem;box-shadow:0 6px 14px -6px rgba(192,138,87,.8)}
+.calc-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.calc-acts .btn{flex:1;border-radius:12px;padding:9px 8px;border:0;background:var(--c-key);color:var(--c-ink);font-size:.8rem}
 .calc-acts .btn.primary{background:linear-gradient(180deg,#C08A57,#8A5A34);color:#FFF}
-.calc-msg{margin:10px 0 0;font-size:.82rem;color:var(--ok);text-align:center;min-height:1em}
-@media (min-width:900px){ .calc{align-items:center} }
+.calc-msg{margin:6px 0 0;font-size:.76rem;color:var(--ok);text-align:center;min-height:0}
+.calc-msg:empty{display:none}
+.calc.min .calc-keys,.calc.min .calc-acts,.calc.min .calc-msg{display:none}
+.calc.min .calc-screen{min-height:0;padding-bottom:6px}
+.calc.min .calc-res{font-size:1.3rem}
+.calc-flash{box-shadow:0 0 0 3px #C08A57 !important;transition:box-shadow .3s}
 .catov{position:fixed;inset:0;z-index:41;background:rgba(10,8,6,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;padding:env(safe-area-inset-top,0px) 0 0;animation:calcFade .18s ease}
 .catov[hidden]{display:none!important}
 .cat-box{width:100%;height:calc(100% - 18px);max-width:1100px;background:var(--c-bg);color:var(--c-ink);border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:var(--c-shadow);animation:calcUp .24s cubic-bezier(.2,.8,.2,1)}
@@ -749,7 +756,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 23</p>
+  <p class="ver">versión app 24</p>
 </div>
 
 
@@ -769,7 +776,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 </div>
 <div id="calc" class="calc" hidden role="dialog" aria-label="Calculadora">
   <div class="calc-box">
-    <div class="calc-top"><strong><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg> Calculadora</strong><button type="button" class="calc-x" id="calcClose" aria-label="Cerrar calculadora">✕</button></div>
+    <div class="calc-top"><strong><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg> Calculadora</strong><span class="grip" aria-hidden="true"></span><span class="calc-tbtns"><button type="button" class="calc-x" id="calcMin" aria-label="Achicar calculadora">–</button><button type="button" class="calc-x" id="calcClose" aria-label="Cerrar calculadora">✕</button></span></div>
     <div class="calc-screen"><div class="calc-expr" id="calcExpr"></div><div class="calc-res" id="calcRes">0</div></div>
     <div class="calc-keys" id="calcKeys">
       <button type="button" data-k="C" class="k-fn">C</button><button type="button" data-k="back" class="k-fn" aria-label="Borrar">⌫</button><button type="button" data-k="%" class="k-fn">%</button><button type="button" data-k="/" class="k-op">÷</button>
@@ -810,7 +817,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   var expr = '', last = null, target = null, justEq = false;
   var fmt = new Intl.NumberFormat('es-AR',{maximumFractionDigits:2});
   document.addEventListener('focusin', function(e){ var t = e.target; if(t && t.tagName==='INPUT' && t.type==='number' && !t.closest('#calc')) target = t; });
-  function labelOf(inp){ var l = inp.closest('label'); var t = l ? (l.childNodes[0] && l.childNodes[0].textContent || '').trim() : ''; return t.replace(/\s*\(.*?\)\s*$/,'') || 'el campo'; }
+  function labelOf(inp){ try{ if(inp.id){ var lf = document.querySelector('label[for="'+inp.id+'"]'); if(lf) return lf.textContent.trim(); } }catch(_){} if(inp.getAttribute('aria-label')) return inp.getAttribute('aria-label'); var l = inp.closest('label'); var t = l ? (l.childNodes[0] && l.childNodes[0].textContent || '').trim() : ''; return t.replace(/\s*\(.*?\)\s*$/,'') || 'el campo'; }
   function show(x){ return x.replace(/\*/g,'×').replace(/\//g,'÷').replace(/-/g,'−').replace(/\./g,','); }
   function calc(e){
     var toks = e.match(/\d*\.?\d+%?|[+\-*/]/g); if(!toks) return null;
@@ -844,16 +851,39 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     else { if(justEq){ expr=''; justEq=false; } if(k==='.'){ var seg = expr.split(/[+\-*/]/).pop(); if(seg.indexOf('.')>=0) return; if(!seg) expr += '0'; } if(/%$/.test(expr)) expr += '*'; expr += k; }
     draw();
   }
-  $('calcKeys').addEventListener('click', function(e){ var b = e.target.closest('button[data-k]'); if(b) key(b.getAttribute('data-k')); });
-  function open(){ $('calc').hidden = false; draw(); }
+  function blurField(){ var ae = document.activeElement; if(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) && !ae.closest('#calc')) try{ ae.blur(); }catch(_){} }
+  /* Teclas: responden al apoyar el dedo (no esperan a soltar), con vibración corta */
+  $('calcKeys').addEventListener('pointerdown', function(e){
+    var b = e.target.closest('button[data-k]'); if(!b) return;
+    e.preventDefault(); blurField();
+    b.classList.add('pr'); setTimeout(function(){ b.classList.remove('pr'); }, 110);
+    try{ if(navigator.vibrate) navigator.vibrate(8); }catch(_){}
+    key(b.getAttribute('data-k'));
+  });
+  $('calcKeys').addEventListener('click', function(e){ if(e.detail!==0) return; var b = e.target.closest('button[data-k]'); if(b) key(b.getAttribute('data-k')); });
+  /* Mover la calculadora arrastrando la barra de arriba */
+  var box = document.querySelector('#calc .calc-box'), drag = null;
+  function place(x, y){ var w = box.offsetWidth, h = box.offsetHeight; x = Math.max(4, Math.min(window.innerWidth - w - 4, x)); y = Math.max(4, Math.min(window.innerHeight - h - 4, y)); box.style.left = x+'px'; box.style.top = y+'px'; box.style.right = 'auto'; box.style.bottom = 'auto'; return [x,y]; }
+  document.querySelector('#calc .calc-top').addEventListener('pointerdown', function(e){
+    if(e.target.closest('button')) return;
+    var r = box.getBoundingClientRect(); drag = {dx:e.clientX - r.left, dy:e.clientY - r.top};
+    try{ this.setPointerCapture(e.pointerId); }catch(_){}
+    e.preventDefault();
+  });
+  document.querySelector('#calc .calc-top').addEventListener('pointermove', function(e){ if(drag) place(e.clientX - drag.dx, e.clientY - drag.dy); });
+  document.querySelector('#calc .calc-top').addEventListener('pointerup', function(){ if(!drag) return; drag = null; try{ localStorage.setItem('pg-calc-pos', JSON.stringify([parseFloat(box.style.left), parseFloat(box.style.top)])); }catch(_){} });
+  function restorePos(){ try{ var p = JSON.parse(localStorage.getItem('pg-calc-pos')||'null'); if(p) place(p[0], p[1]); }catch(_){} }
+  window.addEventListener('resize', function(){ if(!$('calc').hidden && box.style.left) place(parseFloat(box.style.left), parseFloat(box.style.top)); });
+  function open(){ $('calc').hidden = false; draw(); restorePos(); }
   function close(){ $('calc').hidden = true; }
   $('calcBtn').addEventListener('click', open);
   $('calcClose').addEventListener('click', close);
-  $('calc').addEventListener('click', function(e){ if(e.target===$('calc')) close(); });
+  $('calcMin').addEventListener('click', function(){ var m = $('calc').classList.toggle('min'); this.textContent = m ? '+' : '–'; this.setAttribute('aria-label', m ? 'Agrandar calculadora' : 'Achicar calculadora'); if(box.style.left) place(parseFloat(box.style.left), parseFloat(box.style.top)); });
   $('calcCopy').addEventListener('click', function(){ if(last===null) return; var t = String(last).replace('.',','); try{ navigator.clipboard.writeText(t).then(function(){ $('calcMsg').textContent = 'Copiado: '+t; }); }catch(_){ $('calcMsg').textContent = t; } });
-  $('calcUse').addEventListener('click', function(){ if(!target || last===null) return; target.value = last; target.dispatchEvent(new Event('input',{bubbles:true})); target.dispatchEvent(new Event('change',{bubbles:true})); close(); try{ target.focus(); }catch(_){} });
+  $('calcUse').addEventListener('click', function(){ if(!target || last===null) return; target.value = last; target.dispatchEvent(new Event('input',{bubbles:true})); target.dispatchEvent(new Event('change',{bubbles:true})); $('calcMsg').textContent = 'Listo, puesto en “'+labelOf(target)+'”'; try{ target.classList.add('calc-flash'); setTimeout(function(){ target.classList.remove('calc-flash'); }, 900); }catch(_){} });
   document.addEventListener('keydown', function(e){
     if($('calc').hidden) return;
+    var tg = e.target; if(tg && /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName) && !tg.closest('#calc')) return;
     var k = e.key;
     if(/^[0-9]$/.test(k) || /^[+\-*/%]$/.test(k)){ key(k); e.preventDefault(); }
     else if(k==='.'||k===','){ key('.'); e.preventDefault(); }
