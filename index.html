@@ -349,6 +349,8 @@ form.actf{margin:0;display:contents}
 .empty{text-align:center;padding:40px 12px;color:var(--muted);font-size:.92rem}
 .empty strong{display:block;font-family:var(--head);font-weight:600;font-size:1.02rem;color:var(--ink);margin-bottom:4px}
 .ver{text-align:center;color:var(--muted);font-size:.72rem;margin-top:28px;opacity:.7}
+.credit{text-align:center;color:var(--muted);font-size:.78rem;margin:4px 0 0;letter-spacing:.02em}
+.credit b{color:var(--accent);font-weight:600}
 
 /* Secciones Pedidos / Stock */
 .views{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;margin:-6px 0 18px;border-bottom:1px solid var(--line)}
@@ -529,11 +531,11 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <button type="submit" class="defbtn" tabindex="-1" aria-hidden="true"></button>
     <h3 id="formTitle">Nuevo pedido</h3>
     <label class="f">Nombre del cliente
-      <input type="text" id="fCliente" autocomplete="off" list="cliList" placeholder="Ej: Marta Gómez">
+      <input type="text" id="fCliente" class="capw" autocapitalize="words" autocomplete="off" list="cliList" placeholder="Ej: Marta Gómez">
       <datalist id="cliList"></datalist>
     </label>
     <label class="f">Pedido
-      <input type="text" id="fPedido" autocomplete="off" placeholder="Ej: Mesa de comedor de pino">
+      <input type="text" autocapitalize="sentences" id="fPedido" autocomplete="off" placeholder="Ej: Mesa de comedor de pino">
     </label>
     <div id="tplBox" class="tplbox" hidden>
       <p class="tpl-tit">¿Es como uno que ya hiciste? Tocalo para copiar sus datos:</p>
@@ -541,7 +543,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     </div>
     <p id="tplMsg" class="tpl-msg" hidden></p>
     <label class="f">Medidas del mueble
-      <input type="text" id="fMedidas" autocomplete="off" placeholder="Ej: 180 x 80 x 75 cm">
+      <input type="text" autocapitalize="sentences" id="fMedidas" autocomplete="off" placeholder="Ej: 180 x 80 x 75 cm">
     </label>
 
     <fieldset class="cortes">
@@ -560,7 +562,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
         <button type="submit" formnovalidate class="btn" id="usarTablas">Pasar a Madera</button>
       </div>
       <p class="sub2" style="margin-top:6px">Melamina (cortes a pedir)</p>
-      <input type="text" id="fMelColor" class="mcolor" autocomplete="off" placeholder="Color y espesor (ej: blanca 18 mm)" aria-label="Color y espesor de la melamina">
+      <input type="text" autocapitalize="sentences" id="fMelColor" class="mcolor" autocomplete="off" placeholder="Color y espesor (ej: blanca 18 mm)" aria-label="Color y espesor de la melamina">
       <div id="fMelamina" class="rowlist"></div>
       <button type="submit" formnovalidate class="btn" id="addMel">+ Agregar corte de melamina</button>
       <div class="tcrow">
@@ -589,7 +591,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       </details>
       <div class="crow">
         <label class="clab" for="fMadPrecio">Madera</label>
-        <input type="text" id="fMadera" autocomplete="off" placeholder="Qué madera (ej: pino 2 tablas)" aria-label="Detalle de la madera">
+        <input type="text" autocapitalize="sentences" id="fMadera" autocomplete="off" placeholder="Qué madera (ej: pino 2 tablas)" aria-label="Detalle de la madera">
         <span class="cpeso">$</span><input type="number" id="fMadPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
       </div>
       <div class="crow">
@@ -643,7 +645,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     </label>
     </div>
     <label class="f">Notas (opcional)
-      <textarea id="fNotas" rows="2" placeholder="Color, barniz, detalles del retiro…"></textarea>
+      <textarea autocapitalize="sentences" id="fNotas" rows="2" placeholder="Color, barniz, detalles del retiro…"></textarea>
     </label>
     <fieldset class="estados">
       <legend>Estado</legend>
@@ -673,10 +675,10 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <button type="submit" class="defbtn" tabindex="-1" aria-hidden="true"></button>
         <h3 id="sTitle">Nuevo producto</h3>
         <label class="f">Nombre del producto
-          <input type="text" id="sNombre" autocomplete="off" placeholder="Ej: Mesita de luz nórdica">
+          <input type="text" autocapitalize="sentences" id="sNombre" autocomplete="off" placeholder="Ej: Mesita de luz nórdica">
         </label>
         <label class="f">Descripción y medidas
-          <textarea id="sDesc" rows="3" placeholder="Ej: Pino con tapa de melamina blanca. 45 x 35 x 55 cm"></textarea>
+          <textarea autocapitalize="sentences" id="sDesc" rows="3" placeholder="Ej: Pino con tapa de melamina blanca. 45 x 35 x 55 cm"></textarea>
         </label>
         <div class="f" style="margin-bottom:14px">
           <span style="font-weight:500;font-size:.84rem;color:var(--muted)">Fotos del producto</span>
@@ -706,16 +708,16 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <button type="submit" class="defbtn" tabindex="-1" aria-hidden="true"></button>
         <h3 id="cTitle">Nuevo cliente</h3>
         <label class="f">Nombre
-          <input type="text" id="cNombre" autocomplete="off" placeholder="Ej: Marta Gómez">
+          <input type="text" id="cNombre" class="capw" autocapitalize="words" autocomplete="off" placeholder="Ej: Marta Gómez">
         </label>
         <label class="f">Emprendimiento (opcional)
-          <input type="text" id="cEmp" autocomplete="off" placeholder="Ej: Casa Deco">
+          <input type="text" autocapitalize="sentences" id="cEmp" autocomplete="off" placeholder="Ej: Casa Deco">
         </label>
         <label class="f">Teléfono
           <input type="tel" id="cTel" autocomplete="off" inputmode="tel" placeholder="Ej: 280 4123456">
         </label>
         <label class="f">Notas
-          <textarea id="cNotas" rows="3" placeholder="Ej: Revende, prefiere retirar por el taller, vive en Rawson…"></textarea>
+          <textarea autocapitalize="sentences" id="cNotas" rows="3" placeholder="Ej: Revende, prefiere retirar por el taller, vive en Rawson…"></textarea>
         </label>
         <p class="err" id="cErr" role="alert"></p>
         <div class="actions">
@@ -756,7 +758,8 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 24</p>
+  <p class="ver">versión app 25</p>
+  <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
 
@@ -789,6 +792,26 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <p class="calc-msg" id="calcMsg"></p>
   </div>
 </div>
+<script>
+/* Mayúsculas: primera letra de cada texto; en nombres de cliente, cada palabra */
+(function(){
+  function fix(el){
+    var v = el.value; if(!v) return;
+    var nv = el.classList.contains('capw')
+      ? v.replace(/(^|\s)([a-záéíóúñü])/g, function(m,a,b){ return a + b.toUpperCase(); })
+      : v.replace(/^(\s*)([a-záéíóúñü])/, function(m,a,b){ return a + b.toUpperCase(); });
+    if(nv !== v){ var st = el.selectionStart, en = el.selectionEnd; el.value = nv; try{ el.setSelectionRange(st, en); }catch(_){} }
+  }
+  document.addEventListener('input', function(e){
+    var el = e.target; if(!el || el.closest && el.closest('#calc')) return;
+    if(el.tagName==='TEXTAREA' || (el.tagName==='INPUT' && (el.type==='text'))){ if(el.getAttribute('autocapitalize')==='off') return; fix(el); }
+  }, true);
+  document.addEventListener('focusin', function(e){
+    var el = e.target;
+    if(el && (el.tagName==='TEXTAREA' || (el.tagName==='INPUT' && el.type==='text')) && !el.hasAttribute('autocapitalize')) el.setAttribute('autocapitalize', el.classList.contains('capw') ? 'words' : 'sentences');
+  }, true);
+})();
+</script>
 <script>
 /* Catálogo: se abre encima de la app, sin salir */
 (function(){
@@ -1598,7 +1621,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       }
       if(state.waOpen===o.id){
         var wt = waText(o);
-        h += '<div class="wa"><p>Texto listo para mandar a '+esc(o.cliente)+'. Podés cambiarlo antes de copiar.</p><textarea id="wa-'+esc(o.id)+'" aria-label="Texto para WhatsApp">'+esc(wt)+'</textarea>';
+        h += '<div class="wa"><p>Texto listo para mandar a '+esc(o.cliente)+'. Podés cambiarlo antes de copiar.</p><textarea autocapitalize="sentences" id="wa-'+esc(o.id)+'" aria-label="Texto para WhatsApp">'+esc(wt)+'</textarea>';
         var wcli = findCliente(o.cliente), wnum = waNum(wcli && wcli.telefono);
         if(wnum && state.waEdit!==o.id){
           h += '<div class="actions"><a class="btn primary wa-go" href="'+waUrl(wnum,wt)+'" target="_blank" rel="noopener">Abrir chat de '+esc(String(o.cliente).split(' ')[0])+'</a>'+actBtn('wacopy',o.id,'btn','Copiar texto')+actBtn('waclose',o.id,'btn','Cerrar')+'</div>';
@@ -1741,7 +1764,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   function drawMel(list){
     $('fMelamina').innerHTML = list.map(function(c,i){
       return '<div class="trow'+(c.comprado?' ok':'')+'" data-comprado="'+(c.comprado?1:0)+'"><input type="number" class="mcant" inputmode="numeric" min="1" step="1" placeholder="Cant." aria-label="Cantidad del corte de melamina" value="'+esc(c.cant==null?'':c.cant)+'">'+
-        '<span class="de">de</span><input type="text" class="mmed" autocomplete="off" placeholder="60 x 40" aria-label="Medida del corte de melamina" value="'+esc(c.medida||'')+'">'+
+        '<span class="de">de</span><input type="text" autocapitalize="sentences" class="mmed" autocomplete="off" placeholder="60 x 40" aria-label="Medida del corte de melamina" value="'+esc(c.medida||'')+'">'+
         '<button type="submit" formnovalidate class="crm" data-mrm="'+i+'" aria-label="Quitar corte de melamina">×</button></div>';
     }).join('');
   }
@@ -1755,7 +1778,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   function drawCortes(list){
     $('fCortes').innerHTML = list.map(function(c,i){
       return '<div class="corte"><input type="number" class="ccant" inputmode="numeric" min="1" step="1" placeholder="Cant." aria-label="Cantidad del corte '+(i+1)+'" value="'+esc(c.cant==null?'':c.cant)+'">'+
-        '<span class="de">de</span><input type="text" class="cmed" autocomplete="off" placeholder="150 x 60" aria-label="Medida del corte '+(i+1)+'" value="'+esc(c.medida||'')+'">'+
+        '<span class="de">de</span><input type="text" autocapitalize="sentences" class="cmed" autocomplete="off" placeholder="150 x 60" aria-label="Medida del corte '+(i+1)+'" value="'+esc(c.medida||'')+'">'+
         '<button type="submit" formnovalidate class="crm" data-crm="'+i+'" aria-label="Quitar corte '+(i+1)+'">×</button></div>';
     }).join('');
   }
@@ -2138,7 +2161,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   }
   function drawGRows(list){
     $('gRows').innerHTML = list.map(function(g,i){
-      return '<div class="grow"><input type="text" class="gdesc" autocomplete="off" placeholder="Qué compraste (ej: tornillos 4x40)" aria-label="Qué compraste" value="'+esc(g.desc||'')+'">'+
+      return '<div class="grow"><input type="text" autocapitalize="sentences" class="gdesc" autocomplete="off" placeholder="Qué compraste (ej: tornillos 4x40)" aria-label="Qué compraste" value="'+esc(g.desc||'')+'">'+
         '<span class="gpeso">$</span><input type="number" class="gmonto" inputmode="numeric" min="0" step="any" placeholder="0" aria-label="Cuánto te salió" value="'+esc(g.monto==null?'':g.monto)+'">'+
         '<input type="date" class="gfecha" aria-label="Fecha de la compra" value="'+esc(g.fecha||'')+'">'+
         (list.length>1 ? '<button type="submit" formnovalidate class="crm" data-grm="'+i+'" aria-label="Quitar esta compra">×</button>' : '<span></span>')+'</div>';
@@ -2184,7 +2207,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
           m.items.map(function(g){
             if(state.gEdit===g.id){
               return '<div class="gedit"><p class="gedit-t">Editar compra</p>'+
-                '<label class="f">Qué compraste<input type="text" id="ge-desc" autocomplete="off" value="'+esc(g.desc||'')+'"></label>'+
+                '<label class="f">Qué compraste<input type="text" autocapitalize="sentences" id="ge-desc" autocomplete="off" value="'+esc(g.desc||'')+'"></label>'+
                 '<div class="two"><label class="f">Cuánto te salió ($)<input type="number" id="ge-monto" inputmode="numeric" min="0" step="any" value="'+esc(g.monto==null?'':g.monto)+'"></label>'+
                 '<label class="f">Fecha<input type="date" id="ge-fecha" value="'+esc(g.fecha||'')+'"></label></div>'+
                 (state.gEditErr?'<p class="err">'+esc(state.gEditErr)+'</p>':'')+
