@@ -63,6 +63,7 @@ header.brand::after{content:'';position:absolute;left:0;right:0;bottom:0;height:
 
 .notice{background:var(--warn-bg);color:var(--ink);padding:10px 12px;margin-bottom:14px;font-size:.9rem;border-radius:10px}
 
+
 /* Herramientas */
 .tools{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
 .fab{display:block;width:100%;padding:13px 18px;border-radius:var(--r);border:0;background:linear-gradient(180deg,#8A5A34,#6B4423);color:#FFF7EC;box-shadow:0 6px 16px -6px rgba(107,68,35,.6), inset 0 1px 0 rgba(255,255,255,.18);font-weight:600;font-size:.98rem;letter-spacing:.01em}
@@ -481,6 +482,52 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 @media (min-width:1300px){
   #list,#slist{grid-template-columns:repeat(3,1fr)}
 }
+
+/* ===== Diseño "Tablero" ===== */
+header.brand{display:block;margin:-22px calc(-1 * max(16px, env(safe-area-inset-left,0px))) 16px;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 16px;border-radius:0 0 26px 26px;position:relative;overflow:hidden;background:repeating-linear-gradient(176deg,rgba(255,255,255,.035) 0 2px,transparent 2px 9px),repeating-linear-gradient(183deg,rgba(0,0,0,.10) 0 1px,transparent 1px 13px),linear-gradient(120deg,#5A3B24 0%,#3A2617 45%,#24170F 100%);box-shadow:0 12px 28px -16px rgba(60,35,15,.6)}
+header.brand::after{display:none}
+header.brand > .logo{position:absolute;left:16px;top:calc(18px + env(safe-area-inset-top,0px));width:46px;height:46px;border-radius:12px}
+header.brand .brand-txt{margin:0 104px 0 58px;min-height:46px;display:flex;flex-direction:column;justify-content:center}
+.brand-mini{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:#C9A57E;font-weight:600;line-height:1.2}
+header.brand h1{font-size:1.18rem;color:#F4E8D6;margin:1px 0 0}
+header.brand p{font-size:.8rem;color:#C9A57E;margin:1px 0 0}
+header.brand .hbtns{position:absolute;right:16px;top:calc(21px + env(safe-area-inset-top,0px))}
+.hbtn{height:40px;min-width:40px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stats form.actf{display:block}
+.st{width:100%;text-align:left;background:rgba(255,245,230,.09);border:1px solid rgba(255,235,210,.14);border-radius:16px;padding:10px 12px;color:#F4E8D6;display:flex;flex-direction:column;gap:2px;font-family:var(--body)}
+.st small{color:#D2B08A;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.st b{font-family:var(--head);font-size:1.4rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+.st.hot{background:#F2E6D3;color:#3A2617;border-color:#F2E6D3}.st.hot small{color:#8A5A34}
+.st.on{outline:2px solid #E0B486;outline-offset:1px}
+.st:active{transform:scale(.97)}
+body:not(.v-pedidos) .stats{display:none}
+/* barra de abajo */
+.views{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;border:0;border-top:1px solid var(--line);background:var(--surface);display:flex;justify-content:space-around;align-items:flex-end;gap:0;padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px));overflow:visible;box-shadow:0 -6px 20px -14px rgba(0,0,0,.25)}
+.views form.actf{flex:1;display:flex;justify-content:center}
+.vtab{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:6px 2px 2px;margin:0;font-family:var(--body);font-size:.7rem;font-weight:600;color:var(--muted);background:none;width:100%}
+.vtab[aria-pressed="true"]{color:var(--accent);border:0;font-weight:800}
+.nav-ic{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.navfab{flex:none;width:60px;height:60px;border-radius:50%;border:4px solid var(--surface);background:linear-gradient(180deg,#8A5A34,#6B4423);color:#fff;font-size:2rem;line-height:1;display:grid;place-items:center;margin:-30px 4px 0;box-shadow:0 8px 20px -6px rgba(107,68,35,.7)}
+.navfab:active{transform:scale(.94)}
+.wrap{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}
+.calc-box{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+#newBtn,#sNewBtn,#cNewBtn{display:none}
+.tools > form.actf:first-child{display:none}
+.tabs{background:none;padding:0;gap:6px}
+.tab{background:var(--soft);border-radius:999px;padding:8px 4px}
+.tab[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.tab .cnt{opacity:.8}
+@media (min-width:900px){
+  header.brand{margin:-28px -32px 20px;padding-left:32px;padding-right:32px;border-radius:0 0 28px 28px}
+  header.brand > .logo{left:32px}
+  header.brand .brand-txt{margin-left:62px;margin-right:280px}
+  header.brand .hbtns{right:32px}
+  .stats{grid-template-columns:repeat(4,1fr);max-width:900px}
+  .views{left:50%;right:auto;transform:translateX(-50%);bottom:14px;width:min(560px,calc(100% - 40px));border:1px solid var(--line);border-radius:22px;padding:6px 8px 8px}
+  .tools{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -499,17 +546,24 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 <div class="wrap">
   <header class="brand">
     <img class="logo" alt="Logo PG Estilo Rústico" src="logo.jpg">
-    <div class="brand-txt"><h1>PG Estilo Rústico</h1><p>Pedidos, stock, clientes y gastos</p></div>
+    <div class="brand-txt"><span class="brand-mini">PG Estilo Rústico</span><h1 id="hola">Hola, Pablo</h1><p id="hoyTxt"></p></div>
     <div class="hbtns"><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
+    <div class="stats" id="stats">
+      <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="proceso"><small>En proceso</small><b id="stProc">–</b></button></form>
+      <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="semana"><small>Entregas esta semana</small><b id="stSem">–</b></button></form>
+      <form class="actf tabf" data-filter="saldo"><button type="submit" class="st hot" data-st="saldo"><small>Por cobrar</small><b id="stCobrar">–</b></button></form>
+      <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="st" data-st="presupuesto"><small>Presupuestos</small><b id="stPres">–</b></button></form>
+    </div>
   </header>
 
   <div id="notice"></div>
 
   <nav class="views" aria-label="Secciones">
-    <form class="actf" data-act="view" data-view="pedidos"><button type="submit" class="vtab" data-view="pedidos" aria-pressed="true">Pedidos</button></form>
-    <form class="actf" data-act="view" data-view="stock"><button type="submit" class="vtab" data-view="stock" aria-pressed="false">Stock <span class="cnt" id="cStock"></span></button></form>
-    <form class="actf" data-act="view" data-view="clientes"><button type="submit" class="vtab" data-view="clientes" aria-pressed="false">Clientes <span class="cnt" id="cClientes"></span></button></form>
-    <form class="actf" data-act="view" data-view="gastos"><button type="submit" class="vtab" data-view="gastos" aria-pressed="false">Gastos</button></form>
+    <form class="actf" data-act="view" data-view="pedidos"><button type="submit" class="vtab" data-view="pedidos" aria-pressed="true"><svg class="nav-ic" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Pedidos</button></form>
+    <form class="actf" data-act="view" data-view="stock"><button type="submit" class="vtab" data-view="stock" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock<span class="cnt" id="cStock" hidden></span></button></form>
+    <button type="button" class="navfab" id="navFab" aria-label="Agregar nuevo">+</button>
+    <form class="actf" data-act="view" data-view="clientes"><button type="submit" class="vtab" data-view="clientes" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Clientes<span class="cnt" id="cClientes" hidden></span></button></form>
+    <form class="actf" data-act="view" data-view="gastos"><button type="submit" class="vtab" data-view="gastos" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Gastos</button></form>
   </nav>
 
   <div id="vPedidos">
@@ -758,7 +812,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 25</p>
+  <p class="ver">versión app 26</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -792,6 +846,20 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     <p class="calc-msg" id="calcMsg"></p>
   </div>
 </div>
+<script>
+/* Tablero: fecha, saludo y botón + de abajo */
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  document.body.classList.add('v-pedidos');
+  try{ var t = new Date().toLocaleDateString('es-AR',{weekday:'long', day:'numeric', month:'long'}); $('hoyTxt').textContent = t.charAt(0).toUpperCase()+t.slice(1); }catch(_){}
+  $('navFab').addEventListener('click', function(){
+    var v = (document.body.className.match(/v-(\w+)/)||[])[1] || 'pedidos';
+    var b = v==='stock' ? $('sNewBtn') : v==='clientes' ? $('cNewBtn') : v==='gastos' ? null : $('newBtn');
+    if(v==='gastos'){ var g = $('gform'); if(g){ g.scrollIntoView({behavior:'smooth', block:'start'}); var d = g.querySelector('.gdesc'); if(d) setTimeout(function(){ d.focus(); }, 300); } return; }
+    if(b){ b.click(); setTimeout(function(){ var ed = document.querySelector('.editor:not([hidden])'); if(ed) ed.scrollIntoView({behavior:'smooth', block:'start'}); }, 80); }
+  });
+})();
+</script>
 <script>
 /* Mayúsculas: primera letra de cada texto; en nombres de cliente, cada palabra */
 (function(){
@@ -950,7 +1018,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
     if(!u){ showLogin(); return; }
     var mail = String(u.email||'').toLowerCase();
     if(ALLOWED && mail !== ALLOWED){ auth.signOut(); showLogin('La cuenta '+u.email+' no tiene acceso. Entrá con '+ALLOWED+'.'); return; }
-    var lg = $('login'), wait = Math.max(0, 1300 - (Date.now() - T0)); setTimeout(function(){ lg.classList.add('fade'); setTimeout(function(){ lg.hidden = true; lg.classList.remove('fade'); }, 380); }, wait); $('acctMail').textContent = 'Conectado como '+u.email;
+    var lg = $('login'), wait = Math.max(0, 1300 - (Date.now() - T0)); setTimeout(function(){ lg.classList.add('fade'); setTimeout(function(){ lg.hidden = true; lg.classList.remove('fade'); }, 380); }, wait); $('acctMail').textContent = 'Conectado como '+u.email; try{ var fn = String(u.displayName||'').trim().split(/\s+/)[0]; if(fn) $('hola').textContent = 'Hola, '+fn; }catch(_){}
     resolveDb(fs);
   });
   $('gLogin').addEventListener('click', function(){
@@ -1109,6 +1177,15 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
       tPaid += o.pagado ? num(o.precio) : Math.min(num(o.sena), num(o.precio)||num(o.sena));
     });
     if($('tDue')) $('tDue').textContent = money.format(tDue);
+    try{
+      var nProc = 0, nSem = 0, porCobrar = 0, nPres = 0;
+      state.orders.forEach(function(o){ var e = estado(o);
+        if(e==='proceso'){ nProc++; if(o.entrega && /^\d{4}-\d{2}-\d{2}$/.test(o.entrega) && diasHasta(o.entrega)<=7) nSem++; }
+        if(e==='saldo') porCobrar += saldo(o);
+        if(e==='presupuesto') nPres++;
+      });
+      $('stProc').textContent = nProc; $('stSem').textContent = nSem; $('stCobrar').textContent = money.format(porCobrar); $('stPres').textContent = nPres;
+    }catch(_){}
     if($('tPaid')) $('tPaid').textContent = money.format(tPaid);
 
     var q = state.q.trim().toLowerCase();
@@ -1947,6 +2024,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
   }
   function setView(v){
     state.view = v;
+    document.body.classList.remove('v-pedidos','v-stock','v-clientes','v-gastos'); document.body.classList.add('v-'+v);
     $('vPedidos').hidden = v!=='pedidos'; $('vStock').hidden = v!=='stock'; $('vClientes').hidden = v!=='clientes'; $('vGastos').hidden = v!=='gastos';
     document.querySelectorAll('.vtab').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-view')===v?'true':'false'); });
     if(v==='stock') renderStock(); else if(v==='clientes') renderClientes(); else if(v==='gastos'){ if(!$('gRows').children.length) drawGRows([gNueva()]); renderGastos(); } else { lastHtml = null; render(); }
