@@ -21,7 +21,7 @@
 :root{
   --bg:#FFFFFF; --surface:#FFFFFF; --ink:#1C1917; --muted:#78716C; --line:#ECE7E1;
   --accent:#8A5A34; --accent-ink:#FFFFFF; --soft:#F5F2EE; --accent-line:#D9BFA0;
-  --c-bg:#FFFFFF; --c-key:#F4F1ED; --c-fn:#ECE5DD; --c-ink:#1C1917; --c-mut:#8A7A6A; --c-op:rgba(138,90,52,.12); --c-opink:#8A5A34; --c-shadow:0 30px 60px -20px rgba(60,35,15,.35); --c-res:#1C1917; --wood:#6B4423; --wood-ink:#FFF7EC;
+  --c-bg:#FFFFFF; --c-key:#F4F1ED; --c-fn:#ECE5DD; --c-ink:#1C1917; --c-mut:#8A7A6A; --c-op:rgba(138,90,52,.12); --c-opink:#8A5A34; --c-shadow:0 30px 60px -20px rgba(60,35,15,.35); --c-res:#1C1917; --wood:#A26A40; --wood-ink:#FFF7EC;
   --ok:#3E7A4C; --ok-bg:#E5EFE3; --pres-bg:#EEF2F4; --pres-line:#D3DDE3; --pres-badge:#DCE6EC; --pres-ink:#3F5E73; --proc-bg:#FBF3DF; --proc-line:#EBDDB6; --proc-badge:#F3E3B8; --proc-ink:#7A5408; --warn:#A85C1A; --warn-bg:#F6E6D3; --danger:#B3402F;
   --head:'Archivo', 'Helvetica Neue', Arial, sans-serif;
   --body:'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -66,7 +66,7 @@ header.brand::after{content:'';position:absolute;left:0;right:0;bottom:0;height:
 
 /* Herramientas */
 .tools{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
-.fab{display:block;width:100%;padding:13px 18px;border-radius:var(--r);border:0;background:linear-gradient(180deg,#8A5A34,#6B4423);color:#FFF7EC;box-shadow:0 6px 16px -6px rgba(107,68,35,.6), inset 0 1px 0 rgba(255,255,255,.18);font-weight:600;font-size:.98rem;letter-spacing:.01em}
+.fab{display:block;width:100%;padding:13px 18px;border-radius:var(--r);border:0;background:linear-gradient(160deg,#C08A57,#A26A40);color:#FFF7EC;box-shadow:0 6px 16px -6px rgba(107,68,35,.6), inset 0 1px 0 rgba(255,255,255,.18);font-weight:600;font-size:.98rem;letter-spacing:.01em}
 .search{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:.95rem}
 .search::placeholder{color:var(--muted)}
 .tabs{display:flex;gap:4px;background:var(--soft);padding:4px;border-radius:var(--r)}
@@ -484,22 +484,21 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 }
 
 /* ===== Diseño "Tablero" ===== */
-header.brand{display:block;margin:-22px calc(-1 * max(16px, env(safe-area-inset-left,0px))) 16px;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 16px;border-radius:0 0 26px 26px;position:relative;overflow:hidden;background:repeating-linear-gradient(176deg,rgba(255,255,255,.035) 0 2px,transparent 2px 9px),repeating-linear-gradient(183deg,rgba(0,0,0,.10) 0 1px,transparent 1px 13px),linear-gradient(120deg,#5A3B24 0%,#3A2617 45%,#24170F 100%);box-shadow:0 12px 28px -16px rgba(60,35,15,.6)}
+header.brand{display:block;margin:-22px calc(-1 * max(16px, env(safe-area-inset-left,0px))) 16px;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 18px;border-radius:0 0 30px 30px;position:relative;overflow:hidden;background:radial-gradient(120% 90% at 100% 0%,rgba(255,226,180,.35) 0%,rgba(255,226,180,0) 55%),repeating-linear-gradient(172deg,rgba(255,255,255,.05) 0 1px,transparent 1px 11px),linear-gradient(135deg,#C6905E 0%,#A9744A 48%,#8C5B37 100%);box-shadow:0 14px 30px -18px rgba(140,91,55,.7)}
 header.brand::after{display:none}
 header.brand > .logo{position:absolute;left:16px;top:calc(18px + env(safe-area-inset-top,0px));width:46px;height:46px;border-radius:12px}
 header.brand .brand-txt{margin:0 104px 0 58px;min-height:46px;display:flex;flex-direction:column;justify-content:center}
-.brand-mini{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:#C9A57E;font-weight:600;line-height:1.2}
-header.brand h1{font-size:1.18rem;color:#F4E8D6;margin:1px 0 0}
-header.brand p{font-size:.8rem;color:#C9A57E;margin:1px 0 0}
+.brand-mini{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#FBE9D2;opacity:.85;font-weight:600;line-height:1.2}
+header.brand h1{font-size:1.2rem;color:#FFFFFF;margin:1px 0 0;letter-spacing:-.01em}
+header.brand p{font-size:.8rem;color:#FBE9D2;opacity:.9;margin:1px 0 0}
 header.brand .hbtns{position:absolute;right:16px;top:calc(21px + env(safe-area-inset-top,0px))}
-.hbtn{height:40px;min-width:40px}
+.hbtn{height:40px;min-width:40px;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.28);color:#fff}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .stats form.actf{display:block}
-.st{width:100%;text-align:left;background:rgba(255,245,230,.09);border:1px solid rgba(255,235,210,.14);border-radius:16px;padding:10px 12px;color:#F4E8D6;display:flex;flex-direction:column;gap:2px;font-family:var(--body)}
-.st small{color:#D2B08A;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.st{width:100%;text-align:left;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:18px;padding:11px 13px;color:#FFFFFF;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .15s, transform .08s;display:flex;flex-direction:column;gap:2px;font-family:var(--body)}
+.st small{color:#FDEBD4;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
 .st b{font-family:var(--head);font-size:1.4rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
-.st.hot{background:#F2E6D3;color:#3A2617;border-color:#F2E6D3}.st.hot small{color:#8A5A34}
-.st.on{outline:2px solid #E0B486;outline-offset:1px}
+.st.on{background:#FFF8EF;color:#6E4528;border-color:#FFF8EF;box-shadow:0 8px 18px -10px rgba(80,45,15,.55)}.st.on small{color:#A9744A}
 .st:active{transform:scale(.97)}
 body:not(.v-pedidos) .stats{display:none}
 /* barra de abajo */
@@ -508,13 +507,13 @@ body:not(.v-pedidos) .stats{display:none}
 .vtab{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:6px 2px 2px;margin:0;font-family:var(--body);font-size:.7rem;font-weight:600;color:var(--muted);background:none;width:100%}
 .vtab[aria-pressed="true"]{color:var(--accent);border:0;font-weight:800}
 .nav-ic{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.navfab{flex:none;width:60px;height:60px;border-radius:50%;border:4px solid var(--surface);background:linear-gradient(180deg,#8A5A34,#6B4423);color:#fff;font-size:2rem;line-height:1;display:grid;place-items:center;margin:-30px 4px 0;box-shadow:0 8px 20px -6px rgba(107,68,35,.7)}
+.navfab{flex:none;width:60px;height:60px;border-radius:50%;border:4px solid var(--surface);background:linear-gradient(160deg,#D29A66,#A9744A);color:#fff;font-size:2rem;line-height:1;display:grid;place-items:center;margin:-30px 4px 0;box-shadow:0 8px 20px -6px rgba(107,68,35,.7)}
 .navfab:active{transform:scale(.94)}
 .wrap{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}
 .calc-box{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 #newBtn,#sNewBtn,#cNewBtn{display:none}
 .tools > form.actf:first-child{display:none}
-.tabs{background:none;padding:0;gap:6px}
+.tools .tabs{display:none}
 .tab{background:var(--soft);border-radius:999px;padding:8px 4px}
 .tab[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:none}
 .tab .cnt{opacity:.8}
@@ -550,9 +549,9 @@ body:not(.v-pedidos) .stats{display:none}
     <div class="hbtns"><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
     <div class="stats" id="stats">
       <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="proceso"><small>En proceso</small><b id="stProc">–</b></button></form>
-      <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="semana"><small>Entregas esta semana</small><b id="stSem">–</b></button></form>
-      <form class="actf tabf" data-filter="saldo"><button type="submit" class="st hot" data-st="saldo"><small>Por cobrar</small><b id="stCobrar">–</b></button></form>
       <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="st" data-st="presupuesto"><small>Presupuestos</small><b id="stPres">–</b></button></form>
+      <form class="actf tabf" data-filter="saldo"><button type="submit" class="st" data-st="saldo"><small>Por cobrar</small><b id="stCobrar">–</b></button></form>
+      <form class="actf tabf" data-filter="pagado"><button type="submit" class="st" data-st="pagado"><small>Pagados</small><b id="stPag">–</b></button></form>
     </div>
   </header>
 
@@ -812,7 +811,7 @@ body:not(.v-pedidos) .stats{display:none}
       <button type="button" class="linkbtn" id="logoutBtn">Cerrar sesión</button>
     </div>
   </div>
-  <p class="ver">versión app 26</p>
+  <p class="ver">versión app 27</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1178,13 +1177,9 @@ body:not(.v-pedidos) .stats{display:none}
     });
     if($('tDue')) $('tDue').textContent = money.format(tDue);
     try{
-      var nProc = 0, nSem = 0, porCobrar = 0, nPres = 0;
-      state.orders.forEach(function(o){ var e = estado(o);
-        if(e==='proceso'){ nProc++; if(o.entrega && /^\d{4}-\d{2}-\d{2}$/.test(o.entrega) && diasHasta(o.entrega)<=7) nSem++; }
-        if(e==='saldo') porCobrar += saldo(o);
-        if(e==='presupuesto') nPres++;
-      });
-      $('stProc').textContent = nProc; $('stSem').textContent = nSem; $('stCobrar').textContent = money.format(porCobrar); $('stPres').textContent = nPres;
+      var cnt0 = {presupuesto:0, rechazado:0, proceso:0, saldo:0, pagado:0}; state.orders.forEach(function(o){ cnt0[estado(o)]++; });
+      $('stProc').textContent = cnt0.proceso; $('stPres').textContent = cnt0.presupuesto + cnt0.rechazado; $('stCobrar').textContent = cnt0.saldo; $('stPag').textContent = cnt0.pagado;
+      document.querySelectorAll('.st[data-st]').forEach(function(t){ t.classList.toggle('on', !state.q.trim() && t.getAttribute('data-st')===state.filter); });
     }catch(_){}
     if($('tPaid')) $('tPaid').textContent = money.format(tPaid);
 
