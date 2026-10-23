@@ -534,6 +534,35 @@ body:not(.v-pedidos) .stats{display:none}
   .tools{grid-template-columns:1fr}
 }
 
+
+/* Encabezado "Roble claro" */
+header.brand{background:radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.6),rgba(255,255,255,0) 55%),repeating-linear-gradient(172deg,rgba(120,80,40,.05) 0 1px,transparent 1px 11px),linear-gradient(135deg,#F4E9DA 0%,#E8D3B5 55%,#DCC09A 100%);box-shadow:0 14px 30px -20px rgba(120,80,40,.5)}
+header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand p{color:#8A6A4C;opacity:1}
+.hbtn{background:rgba(255,255,255,.6);border-color:rgba(120,80,40,.18);color:#7A4E2D}
+.st{background:rgba(255,255,255,.55);border-color:rgba(120,80,40,.14);color:#3B2A1E} .st small{color:#8C5A35}
+.st.on{background:#7A4E2D;color:#fff;border-color:#7A4E2D} .st.on small{color:#F1DCC3}
+.navfab{background:linear-gradient(160deg,#9A6A44,#7A4E2D)}
+
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]) header.brand{background:radial-gradient(120% 90% at 100% 0%,rgba(255,220,180,.12),rgba(255,220,180,0) 55%),repeating-linear-gradient(172deg,rgba(255,255,255,.04) 0 1px,transparent 1px 11px),linear-gradient(135deg,#5A3F2B 0%,#46301F 55%,#352418 100%);box-shadow:none}
+:root:not([data-theme="light"]) header.brand h1{color:#F6EADB}
+:root:not([data-theme="light"]) .brand-mini{color:#D9B48A}
+:root:not([data-theme="light"]) header.brand p{color:#C9A988}
+:root:not([data-theme="light"]) .hbtn{background:rgba(255,255,255,.08);border-color:rgba(255,235,210,.18);color:#F2E6D3}
+:root:not([data-theme="light"]) .st{background:rgba(255,255,255,.07);border-color:rgba(255,235,210,.14);color:#F6EADB}
+:root:not([data-theme="light"]) .st small{color:#D9B48A}
+:root:not([data-theme="light"]) .st.on{background:#F2E3CF;color:#4A3121;border-color:#F2E3CF}
+:root:not([data-theme="light"]) .st.on small{color:#8C5A35}
+}
+:root[data-theme="dark"] header.brand{background:radial-gradient(120% 90% at 100% 0%,rgba(255,220,180,.12),rgba(255,220,180,0) 55%),repeating-linear-gradient(172deg,rgba(255,255,255,.04) 0 1px,transparent 1px 11px),linear-gradient(135deg,#5A3F2B 0%,#46301F 55%,#352418 100%);box-shadow:none}
+:root[data-theme="dark"] header.brand h1{color:#F6EADB}
+:root[data-theme="dark"] .brand-mini{color:#D9B48A}
+:root[data-theme="dark"] header.brand p{color:#C9A988}
+:root[data-theme="dark"] .hbtn{background:rgba(255,255,255,.08);border-color:rgba(255,235,210,.18);color:#F2E6D3}
+:root[data-theme="dark"] .st{background:rgba(255,255,255,.07);border-color:rgba(255,235,210,.14);color:#F6EADB}
+:root[data-theme="dark"] .st small{color:#D9B48A}
+:root[data-theme="dark"] .st.on{background:#F2E3CF;color:#4A3121;border-color:#F2E3CF}
+:root[data-theme="dark"] .st.on small{color:#8C5A35}
 </style>
 </head>
 <body>
@@ -821,7 +850,7 @@ body:not(.v-pedidos) .stats{display:none}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 28</p>
+  <p class="ver">versión app 29</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
