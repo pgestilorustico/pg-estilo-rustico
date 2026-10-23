@@ -647,6 +647,20 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .res-gan div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:.9rem}
 .res-gan div b{font-variant-numeric:tabular-nums}
 .res-gan p{margin:8px 0 0;font-size:.74rem;color:var(--muted)}
+
+.gsub{display:flex;gap:6px;background:var(--soft);padding:4px;border-radius:14px;margin-bottom:14px}
+.gsb{flex:1;border:0;background:none;border-radius:10px;padding:9px 6px;font-weight:700;font-size:.86rem;color:var(--muted)}
+.gsb.on{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(60,35,15,.14)}
+.nitem{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;background:var(--surface)}
+.nhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.nmat{display:flex;flex-direction:column;min-width:0}.nmat b{font-size:.98rem;overflow-wrap:anywhere}.nmat small{color:var(--muted);font-size:.84rem}
+.npre{font-family:var(--head);font-weight:800;color:var(--accent);font-size:1.05rem;white-space:nowrap}
+.nmeta{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--muted);margin-top:6px}
+.nbtns{margin-left:auto;display:flex;gap:2px}
+.nbtns button{border:0;background:none;color:var(--muted);font-size:1rem;width:30px;height:28px;border-radius:8px}
+.nbtns button:first-child{color:var(--accent)}
+.ntxt{margin:8px 0 0;font-size:.86rem;white-space:pre-wrap;overflow-wrap:anywhere;padding-top:8px;border-top:1px dashed var(--line)}
+.nform .sheet{display:flex;flex-direction:column}
 </style>
 </head>
 <body>
@@ -901,6 +915,8 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   </div>
 
   <div id="vGastos" hidden>
+    <div class="gsub" role="group" aria-label="Gastos o notas"><button type="button" class="gsb on" data-gs="compras">Compras</button><button type="button" class="gsb" data-gs="notas">📝 Notas de precios</button></div>
+    <div id="gCompras">
     <section class="editor" style="margin-bottom:18px">
       <form class="sheet" id="gform" novalidate>
         <button type="submit" class="defbtn" id="gDef" tabindex="-1" aria-hidden="true"></button>
@@ -913,6 +929,24 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       </form>
     </section>
     <main id="glist" aria-live="polite"></main>
+    </div>
+    <div id="gNotas" hidden>
+      <section class="editor nform" style="margin-bottom:14px">
+        <div class="sheet">
+          <h3 id="nTit">Nueva nota de precio</h3>
+          <p class="hint" style="margin-top:-4px">Anotá precios que averiguaste para usarlos en futuros presupuestos.</p>
+          <label class="f">Material o producto<input type="text" id="nMat" autocapitalize="sentences" autocomplete="off" placeholder="Ej: Melamina blanca 18 mm"></label>
+          <div class="two"><label class="f">Medida<input type="text" id="nMed" autocapitalize="sentences" autocomplete="off" placeholder="Ej: placa 183 x 260"></label>
+          <label class="f">Precio ($)<input type="number" id="nPre" inputmode="numeric" min="0" step="any" placeholder="0"></label></div>
+          <label class="f">Dónde (opcional)<input type="text" id="nDonde" autocapitalize="sentences" autocomplete="off" placeholder="Ej: Maderera Trelew"></label>
+          <label class="f">Nota (opcional)<textarea id="nTxt" rows="2" autocapitalize="sentences" placeholder="Ej: precio sin corte, con IVA"></textarea></label>
+          <p class="err" id="nErr"></p>
+          <div class="actions"><button type="button" class="btn primary" id="nSave">Guardar nota</button><button type="button" class="btn" id="nCancel" hidden>Cancelar</button></div>
+        </div>
+      </section>
+      <input class="search" id="nQ" type="search" placeholder="Buscar en notas (ej: melamina)" aria-label="Buscar en notas" style="margin-bottom:12px">
+      <main id="nlist"></main>
+    </div>
   </div>
 
   <details class="ajustes" id="ajustes">
@@ -932,7 +966,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 38</p>
+  <p class="ver">versión app 39</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -988,6 +1022,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   $('navFab').addEventListener('click', function(){
     var v = (document.body.className.match(/v-(\w+)/)||[])[1] || 'pedidos';
     var b = v==='stock' ? $('sNewBtn') : v==='clientes' ? $('cNewBtn') : v==='gastos' ? null : $('newBtn');
+    if(v==='gastos' && !$('gNotas').hidden){ var nm = $('nMat'); nm.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(function(){ nm.focus(); }, 300); return; }
     if(v==='gastos'){ var g = $('gform'); if(g){ g.scrollIntoView({behavior:'smooth', block:'start'}); var d = g.querySelector('.gdesc'); if(d) setTimeout(function(){ d.focus(); }, 300); } return; }
     if(b){ b.click(); setTimeout(function(){ var ed = document.querySelector('.editor:not([hidden])'); if(ed) ed.scrollIntoView({behavior:'smooth', block:'start'}); }, 80); }
   });
@@ -1280,7 +1315,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       subscribe();
       initStock();
       initClientes();
-      initGastos();
+      initGastos(); initNotas();
     }else{
       state.loading = false; render();
       state.mem = true;
@@ -2527,6 +2562,44 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(html===gLastHtml) return;
     gLastHtml = html; $('glist').innerHTML = html; wire($('glist'));
   }
+  /* ---------- Notas de precios (recordatorios para presupuestos) ---------- */
+  var nCol = null; state.notas = []; state.nEdit = null;
+  function initNotas(){
+    if(!state.db) return; nCol = state.db.collection('notas');
+    nCol.onSnapshot(function(snap){ state.notas = snap.docs.map(function(d){ var x = JSON.parse(JSON.stringify(d.data()||{})); x.id = String(d.id); return x; }); renderNotas(); }, function(){});
+  }
+  function renderNotas(){
+    var q = nrm($('nQ').value||''), L = state.notas.filter(function(n){ return !q || nrm([n.mat,n.med,n.donde,n.txt].join(' ')).indexOf(q)>=0; })
+      .sort(function(a,b){ return String(b.fecha||'').localeCompare(String(a.fecha||'')) || String(b.creado||'').localeCompare(String(a.creado||'')); });
+    $('nlist').innerHTML = L.length ? L.map(function(n){
+      return '<div class="nitem"><div class="nhead"><span class="nmat"><b>'+esc(n.mat)+'</b>'+(n.med?'<small>'+esc(n.med)+'</small>':'')+'</span>'+(num(n.pre)?'<span class="npre">'+money.format(num(n.pre))+'</span>':'')+'</div>'+
+        '<div class="nmeta">'+(n.donde?esc(n.donde)+' · ':'')+esc(n.fecha?fmtDate(n.fecha):'')+'<span class="nbtns"><button type="button" data-ned="'+esc(n.id)+'" aria-label="Editar nota">✎</button><button type="button" data-ndel="'+esc(n.id)+'" aria-label="Borrar nota">×</button></span></div>'+
+        (n.txt?'<p class="ntxt">'+esc(n.txt)+'</p>':'')+'</div>';
+    }).join('') : '<div class="empty"><strong>'+(q?'No encontré notas':'Todavía no tenés notas')+'</strong>'+(q?'Probá con otra palabra.':'Cuando averigües un precio, anotalo arriba.')+'</div>';
+  }
+  function nClear(){ ['nMat','nMed','nPre','nDonde','nTxt'].forEach(function(i){ $(i).value=''; }); state.nEdit = null; $('nTit').textContent = 'Nueva nota de precio'; $('nSave').textContent = 'Guardar nota'; $('nCancel').hidden = true; $('nErr').textContent=''; }
+  $('nSave').addEventListener('click', async function(){
+    var mat = $('nMat').value.trim(); if(!mat){ $('nErr').textContent = 'Escribí el material o producto.'; $('nMat').focus(); return; }
+    var prev = state.nEdit ? state.notas.find(function(x){return x.id===state.nEdit}) : null;
+    var n = {mat:mat, med:$('nMed').value.trim(), pre:num($('nPre').value), donde:$('nDonde').value.trim(), txt:$('nTxt').value.trim(), fecha:(prev&&prev.fecha)||hoyStr(), creado:(prev&&prev.creado)||new Date().toISOString(), editado:prev?hoyStr():''};
+    var id = state.nEdit || (nCol ? nCol.doc().id : 'n'+Date.now().toString(36));
+    $('nSave').disabled = true;
+    try{ if(nCol) await nCol.doc(id).set(n); if(!nCol){ n.id=id; state.notas = state.notas.filter(function(x){return x.id!==id}).concat([n]); } nClear(); renderNotas(); }
+    catch(ex){ $('nErr').textContent = 'No se pudo guardar. Revisá la conexión.'; }
+    $('nSave').disabled = false;
+  });
+  $('nCancel').addEventListener('click', nClear);
+  $('nQ').addEventListener('input', renderNotas);
+  $('nlist').addEventListener('click', async function(e){
+    var ed = e.target.closest('[data-ned]'), dl = e.target.closest('[data-ndel]');
+    if(ed){ var n = state.notas.find(function(x){return x.id===ed.getAttribute('data-ned')}); if(!n) return; state.nEdit = n.id; $('nMat').value=n.mat||''; $('nMed').value=n.med||''; $('nPre').value=n.pre||''; $('nDonde').value=n.donde||''; $('nTxt').value=n.txt||''; $('nTit').textContent='Editar nota'; $('nSave').textContent='Guardar cambios'; $('nCancel').hidden=false; $('gNotas').scrollIntoView({behavior:'smooth'}); return; }
+    if(dl){ var n2 = state.notas.find(function(x){return x.id===dl.getAttribute('data-ndel')}); if(!n2) return; if(!window.confirm('¿Borrar la nota de "'+n2.mat+'"?')) return; try{ if(nCol) await nCol.doc(n2.id).delete(); else { state.notas = state.notas.filter(function(x){return x.id!==n2.id}); renderNotas(); } }catch(_){} }
+  });
+  document.querySelectorAll('.gsb').forEach(function(b){ b.addEventListener('click', function(){
+    var v = b.getAttribute('data-gs'); document.querySelectorAll('.gsb').forEach(function(x){ x.classList.toggle('on', x===b); });
+    $('gCompras').hidden = v!=='compras'; $('gNotas').hidden = v!=='notas'; if(v==='notas') renderNotas();
+  }); });
+
   async function onGastoAct(act, a){
     var id = a.getAttribute('data-id');
     if(act==='gedit'){ state.gEdit = id; state.gEditErr = ''; state.gConfirm = null; gLastHtml = null; renderGastos(); try{ $('ge-desc').focus(); }catch(_){} return true; }
