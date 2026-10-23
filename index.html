@@ -642,6 +642,11 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .cp-t b{font-size:.86rem;line-height:1.2}.cp-t small{font-size:.72rem;color:var(--muted)}.cp-t em{font-style:normal;font-weight:800;color:var(--accent);font-size:.9rem}
 .cp-item:active{transform:scale(.97)}
 .cp-msg{color:var(--muted);text-align:center;padding:30px 0}
+
+.res-gan{margin-top:10px;border:1px solid var(--line);border-radius:16px;padding:6px 12px 10px;background:var(--surface)}
+.res-gan div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.res-gan div b{font-variant-numeric:tabular-nums}
+.res-gan p{margin:8px 0 0;font-size:.74rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -927,7 +932,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 37</p>
+  <p class="ver">versión app 38</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1712,13 +1717,17 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     return ev;
   }
   function mesData(m){
-    var cob = 0, gas = 0, nuevos = 0, presu = 0;
+    var cob = 0, gas = 0, nuevos = 0, presu = 0, mano = 0, otros = 0, gan = 0, conCostos = 0;
     state.orders.forEach(function(o){
       cobrosDe(o).forEach(function(e){ if(e.mes===m) cob += e.monto; });
-      if(String(o.fecha||'').slice(0,7)===m){ var e = estado(o); if(e==='presupuesto'||e==='rechazado') presu++; else nuevos++; }
+      if(String(o.fecha||'').slice(0,7)===m){ var e = estado(o); if(e==='presupuesto'||e==='rechazado') presu++; else {
+        nuevos++;
+        var tiene = num(o.costoMano)||num(o.costoOtros)||materiales(o);
+        if(tiene && num(o.precio)){ conCostos++; mano += num(o.costoMano); otros += num(o.costoOtros); gan += num(o.precio) - materiales(o); }
+      } }
     });
     (state.gastos||[]).forEach(function(g){ if(String(g.fecha||'').slice(0,7)===m) gas += num(g.monto); });
-    return {cob:cob, gas:gas, res:cob-gas, nuevos:nuevos, presu:presu};
+    return {cob:cob, gas:gas, res:cob-gas, nuevos:nuevos, presu:presu, mano:mano, otros:otros, gan:gan, conCostos:conCostos};
   }
   function mesNombre(m){ var p = m.split('-'); return MESES[parseInt(p[1],10)-1]+' '+p[0]; }
   function mesMas(m, d){ var p = m.split('-'), dt = new Date(+p[0], +p[1]-1+d, 1); return ymd(dt); }
@@ -1728,7 +1737,8 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var h = '<div class="res-mes">'+'<button type="button" class="res-nav" data-rm="-1" aria-label="Mes anterior">‹</button><b>'+esc(mesNombre(m).replace(/^./,function(c){return c.toUpperCase()}))+'</b><button type="button" class="res-nav" data-rm="1" aria-label="Mes siguiente"'+(m>=ymd(new Date())?' disabled':'')+'>›</button></div>';
     h += '<div class="res-cards"><div class="rc main"><small>Cobraste</small><b>'+money.format(d.cob)+'</b>'+(cmp===null?'':'<span class="rc-cmp '+(cmp>=0?'up':'down')+'">'+(cmp>=0?'▲ ':'▼ ')+Math.abs(cmp)+'% vs '+esc(MESES[parseInt(mesMas(m,-1).split('-')[1],10)-1])+'</span>')+'</div>';
     h += '<div class="rc"><small>Gastaste</small><b>'+money.format(d.gas)+'</b></div>';
-    h += '<div class="rc '+(d.res>=0?'pos':'neg')+'"><small>Te quedó</small><b>'+money.format(d.res)+'</b><span class="rc-note">cobrado − gastos</span></div></div>';
+    h += '<div class="rc '+(d.gan>=0?'pos':'neg')+'"><small>Te quedó</small><b>'+money.format(d.gan)+'</b><span class="rc-note">mano de obra + desgastes</span></div></div>';
+    h += '<div class="res-gan"><div><span>Mano de obra</span><b>'+money.format(d.mano)+'</b></div><div><span>Otros desgastes</span><b>'+money.format(d.otros)+'</b></div>'+(d.gan-d.mano-d.otros>0.5?'<div><span>Extra sobre el costo</span><b>'+money.format(d.gan-d.mano-d.otros)+'</b></div>':'')+'<p>De '+d.conCostos+(d.conCostos===1?' pedido':' pedidos')+' del mes con costos cargados'+(d.nuevos>d.conCostos?' ('+(d.nuevos-d.conCostos)+' sin costos no se cuentan)':'')+'.</p></div>';
     h += '<div class="res-mini"><span><b>'+d.nuevos+'</b> pedidos nuevos</span><span><b>'+d.presu+'</b> presupuestos sin confirmar</span></div>';
     // gráfico 6 meses
     var meses = []; for(var i=5;i>=0;i--) meses.push(mesMas(m,-i));
@@ -2076,10 +2086,10 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     }).join('');
   }
   function sumaCostos(){ return num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fOtrosPrecio').value)+num($('fManoPrecio').value); }
-  function materiales(o){ return num(o.costoMadera)+num(o.costoMelamina)+num(o.costoTornillos)+num(o.costoTapacanto)+num(o.costoOtros); }
+  function materiales(o){ return num(o.costoMadera)+num(o.costoMelamina)+num(o.costoTornillos)+num(o.costoTapacanto); }
   function updSuma(){
     $('fCostoTotal').textContent = money.format(sumaCostos());
-    var mat = num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fOtrosPrecio').value), p = num($('fPrecio').value);
+    var mat = num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value), p = num($('fPrecio').value);
     var show = p>0 && (mat>0 || num($('fManoPrecio').value)>0);
     $('fGanRow').hidden = !show;
     if(show){ var g = p-mat; $('fGanancia').textContent = money.format(g); $('fGanancia').classList.toggle('neg', g<0); }
