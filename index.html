@@ -309,10 +309,12 @@ details.compra[open] summary{border-bottom:1px solid var(--line)}
 .login-err{color:var(--danger)!important;font-weight:600;min-height:1.2em}
 .login{transition:opacity .35s ease}
 .login.fade{opacity:0}
-.login.splash{background:#10110C}
-.login.splash .login-box img{width:200px;height:200px;border-radius:44px;box-shadow:none}
-.login.splash .login-box h1{color:#E9DCC8;font-size:1.5rem;margin-top:18px}
-.login.splash .login-box p{color:#A8957B}
+.login.splash{background:radial-gradient(120% 70% at 100% 0%,rgba(255,255,255,.65),rgba(255,255,255,0) 60%),linear-gradient(160deg,#F4E9DA 0%,#E8D3B5 60%,#DCC09A 100%)}
+.login.splash .login-box img{width:190px;height:190px;border-radius:42px;box-shadow:0 24px 50px -18px rgba(90,55,25,.55)}
+.login.splash .login-box h1{color:#3B2A1E;font-size:1.5rem;margin-top:18px}
+.login.splash .login-box p{color:#8A6A4C}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .login.splash{background:linear-gradient(160deg,#5A3F2B 0%,#46301F 55%,#352418 100%)} :root:not([data-theme="light"]) .login.splash .login-box h1{color:#F6EADB} :root:not([data-theme="light"]) .login.splash .login-box p{color:#C9A988} }
+:root[data-theme="dark"] .login.splash{background:linear-gradient(160deg,#5A3F2B 0%,#46301F 55%,#352418 100%)} :root[data-theme="dark"] .login.splash .login-box h1{color:#F6EADB} :root[data-theme="dark"] .login.splash .login-box p{color:#C9A988}
 .acct{margin-top:14px;font-size:.78rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px}
 .linkbtn{border:0;background:none;color:var(--accent);font-weight:600;font-size:.82rem;text-decoration:underline;padding:4px}
 .tcrow{display:grid;grid-template-columns:1fr 110px auto;align-items:center;gap:8px;margin-top:6px;padding-top:10px;border-top:1px dashed var(--line)}
@@ -580,7 +582,7 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
 </div>
 <div class="wrap">
   <header class="brand">
-    <img class="logo" alt="Logo PG Estilo Rústico" src="logo.jpg">
+    <img class="logo" alt="Logo PG Estilo Rústico" src="logo.png">
     <div class="brand-txt"><span class="brand-mini">PG Estilo Rústico</span><h1 id="hola">Hola, Pablo</h1><p id="hoyTxt"></p></div>
     <div class="hbtns"><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
     <div class="stats" id="stats">
@@ -850,7 +852,7 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
     </div>
   </div>
   </details>
-  <p class="ver">versión app 31</p>
+  <p class="ver">versión app 32</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
