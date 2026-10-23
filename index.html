@@ -966,7 +966,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 39</p>
+  <p class="ver">versión app 40</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1518,9 +1518,14 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(o.entrega && !esSaldo && st!=='pagado') L.push('• Entrega estimada: '+fmtDate(o.entrega));
     L.push('');
     L.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.'); L.push('');
+    if(sinSena || esSaldo){
+      L.push('💳 Alias para '+(esSaldo?'abonar el saldo':'la seña')+': *'+BIZ.alias+'*');
+      L.push('Titular: '+BIZ.titular+' · '+BIZ.banco);
+      L.push('');
+    }
     L.push(st==='pagado' ? '¡Gracias por tu compra!'
-      : esSaldo ? (o.vence ? 'Cuando llegue la fecha avisame y te paso el alias para transferir. ¡Muchas gracias por tu compra!' : 'El saldo se abona al momento de la entrega. Avisame si querés que te pase el alias. ¡Muchas gracias por tu compra!')
-      : sinSena ? 'Cualquier consulta, avisame así te envío el alias para que puedas realizar la seña. ¡Gracias!'
+      : esSaldo ? (o.vence ? 'Cuando llegue la fecha, transferí al alias y mandame el comprobante por acá. ¡Muchas gracias por tu compra!' : 'El saldo se abona al momento de la entrega, en efectivo o por transferencia al alias. ¡Muchas gracias por tu compra!')
+      : sinSena ? 'Cuando hagas la seña, mandame el comprobante por acá y empiezo con tu pedido. ¡Gracias!'
       : '¡Recibí tu seña, muchas gracias! Te aviso cuando esté listo tu pedido.');
     return L.join('\n');
   }
@@ -1603,7 +1608,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     return await new Promise(function(res){ c.toBlob(function(b){ res(b); }, 'image/png'); });
   }
   /* ---------- Presupuesto en PDF (hoja A4 con logo) ---------- */
-  var BIZ = {tel:'+54 9 280 437-6218', ig:'@pgestilorustico', web:'pgestilorustico.pages.dev'};
+  var BIZ = {tel:'+54 9 280 437-6218', ig:'@pgestilorustico', web:'pgestilorustico.pages.dev', alias:'pgrustico.per', titular:'Pablo A. Guzmán', banco:'Personal Pay'};
   function docKind(o){ var st = estado(o); return (st==='presupuesto'||st==='rechazado') ? 'presu' : (st==='saldo' && saldo(o)>0) ? 'saldo' : st==='pagado' ? 'pago' : 'pedido'; }
   function docTitle(o){ return {presu:'PRESUPUESTO', saldo:'TRABAJO FINALIZADO', pago:'COMPROBANTE DE PAGO', pedido:'DETALLE DE PEDIDO'}[docKind(o)]; }
   function docNum(o){ var h = 0, t = String(o.id||''); for(var i=0;i<t.length;i++) h = (h*31 + t.charCodeAt(i)) >>> 0; return String(h % 100000).padStart(5,'0'); }
@@ -1673,7 +1678,8 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     cond.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.');
     if(o.notas && kind==='presu' && false) cond.push(o.notas);
     // fotos (se achican para que todo entre en la hoja)
-    var need = rows.reduce(function(a,r){ return a + (r[2]==='big'?96:70); },0) + 50 + 30 + (cond.length ? 42 + cond.length*44 + 20 : 0) + 60 + 135;
+    var showAlias = st!=='pagado' && (sinSena || kind==='saldo');
+    var need = rows.reduce(function(a,r){ return a + (r[2]==='big'?96:70); },0) + 50 + 30 + (cond.length ? 42 + cond.length*44 + 20 : 0) + 60 + 135 + (showAlias ? 170 : 0);
     if(fotos.length){
       var avail = H - (y + 40) - need, gap = 22, n = fotos.length, fw = (CW - gap*(n-1))/n, fh = Math.min(n===1 ? 520 : n===2 ? 400 : 330, avail);
       if(fh >= 160){
@@ -1694,6 +1700,14 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       by += big ? 96 : 70;
     });
     y = by + 30;
+    if(showAlias){
+      var ah = 140; x.fillStyle = '#F6EFE6'; rrect(x,P,y,CW,ah,22); x.fill(); x.strokeStyle = '#E3CBA8'; x.lineWidth = 2; x.stroke();
+      x.fillStyle = '#A9744A'; x.fillRect(P, y+22, 6, ah-44);
+      x.fillStyle = ACC; x.font = '700 22px '+FB; x.fillText((kind==='saldo'?'ALIAS PARA ABONAR EL SALDO':'ALIAS PARA LA SEÑA').split('').join(String.fromCharCode(8202)), P+34, y+42);
+      x.fillStyle = INK; x.font = '800 44px '+FH; x.fillText(BIZ.alias, P+34, y+92);
+      x.fillStyle = MUT; x.font = '500 25px '+FB; x.fillText('Titular: '+BIZ.titular+'  ·  '+BIZ.banco, P+34, y+124);
+      y += ah + 56;
+    }
     if(cond.length){
       x.fillStyle = ACC; x.font = '700 22px '+FB; x.fillText('CONDICIONES', P, y); y += 42;
       x.fillStyle = INK; x.font = '500 27px '+FB;
