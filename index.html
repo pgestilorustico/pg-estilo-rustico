@@ -850,7 +850,7 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
     </div>
   </div>
   </details>
-  <p class="ver">versión app 29</p>
+  <p class="ver">versión app 30</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1255,7 +1255,6 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
         : '<div class="empty"><strong>Todavía no cargaste pedidos</strong>Tocá “Nuevo pedido” para anotar el primero.</div>';
     }else html = list.map(cardHtml).join('');
     if(!q && state.filter==='proceso' && !(state.loading && !state.orders.length)) html = compraHtml(list) + html;
-    if(!q) html = cobrosHtml() + html;
     setList(html);
   }
   /* Solo redibuja si algo cambió */
