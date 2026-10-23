@@ -966,7 +966,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 40</p>
+  <p class="ver">versión app 41</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1618,7 +1618,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var fids = (Array.isArray(o.fotos)?o.fotos:[]).slice(0,3), fotos = [];
     for(var fi=0; fi<fids.length; fi++){ var im = await loadImg(blob(fids[fi])); if(im) fotos.push(im); }
     var kind = docKind(o), st = estado(o), sinSena = st!=='pagado' && st!=='saldo' && !num(o.sena);
-    var W = 1240, H = 1754, P = 90, CW = W-2*P;
+    var W = 1240, H = 3600, H0 = 1754, P = 90, CW = W-2*P;
     var FH = "'Archivo', Arial, sans-serif", FB = "'Manrope', Arial, sans-serif";
     var c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d');
     var INK='#231A13', MUT='#7E6C5B', ACC='#8A5A34', LINE='#E6DACB', SOFT='#F6EFE6';
@@ -1681,10 +1681,14 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var showAlias = st!=='pagado' && (sinSena || kind==='saldo');
     var need = rows.reduce(function(a,r){ return a + (r[2]==='big'?96:70); },0) + 50 + 30 + (cond.length ? 42 + cond.length*44 + 20 : 0) + 60 + 135 + (showAlias ? 170 : 0);
     if(fotos.length){
-      var avail = H - (y + 40) - need, gap = 22, n = fotos.length, fw = (CW - gap*(n-1))/n, fh = Math.min(n===1 ? 520 : n===2 ? 400 : 330, avail);
-      if(fh >= 160){
+      var avail = 99999, gap = 22;
+      /* Fotos enteras (sin recortar): cada una con su forma, todas a la misma altura */
+      var hMax = Math.min(fotos.length===1 ? 560 : 460, avail);
+      if(hMax >= 160){
+        var ars = fotos.map(function(im){ return im.naturalWidth / im.naturalHeight; }), sumAr = ars.reduce(function(a,b){ return a+b; },0);
+        var fh = Math.min(hMax, (CW - gap*(fotos.length-1)) / sumAr), tw = fh*sumAr + gap*(fotos.length-1), fx = P + (CW - tw)/2;
         y += 40;
-        fotos.forEach(function(im,i){ var fx = P + i*(fw+gap); x.save(); rrect(x,fx,y,fw,fh,24); x.clip(); var r = Math.max(fw/im.naturalWidth, fh/im.naturalHeight), dw = im.naturalWidth*r, dh = im.naturalHeight*r; x.drawImage(im, fx+(fw-dw)/2, y+(fh-dh)/2, dw, dh); x.restore(); });
+        fotos.forEach(function(im,i){ var fw = fh*ars[i]; x.save(); x.shadowColor = 'rgba(60,35,15,.18)'; x.shadowBlur = 18; x.shadowOffsetY = 6; rrect(x,fx,y,fw,fh,20); x.fillStyle = '#fff'; x.fill(); x.restore(); x.save(); rrect(x,fx,y,fw,fh,20); x.clip(); x.drawImage(im, fx, y, fw, fh); x.restore(); fx += fw + gap; });
         y += fh;
       }
     }
@@ -1713,13 +1717,15 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       x.fillStyle = INK; x.font = '500 27px '+FB;
       cond.forEach(function(t){ wrapLines(x, '•  '+t, CW).forEach(function(l){ x.fillText(l, P, y); y += 40; }); });
     }
+    H = Math.max(H0, y + 280);
     y = Math.max(y + 30, H - 250);
     x.fillStyle = INK; x.font = '600 32px '+FH; x.fillText(kind==='presu' ? '¡Gracias por tu consulta!' : '¡Muchas gracias por tu compra!', P, y);
     // pie
     x.fillStyle = g; x.fillRect(0, H-130, W, 130); x.fillStyle = gl; x.fillRect(0, H-130, W, 4);
     x.fillStyle = '#E8D6BE'; x.font = '500 25px '+FB; x.textAlign = 'center';
     x.fillText('WhatsApp '+BIZ.tel+'   ·   Instagram '+BIZ.ig+'   ·   '+BIZ.web, W/2, H-70); x.textAlign='left';
-    return c;
+    var out = document.createElement('canvas'); out.width = W; out.height = H; out.getContext('2d').drawImage(c, 0, 0);
+    return out;
   }
   function pdfFromCanvas(c){
     return new Promise(function(res){ c.toBlob(function(jb){ jb.arrayBuffer().then(function(ab){
