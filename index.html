@@ -567,6 +567,26 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
 :root[data-theme="dark"] .st small{color:#D9B48A}
 :root[data-theme="dark"] .st.on{background:#F2E3CF;color:#4A3121;border-color:#F2E3CF}
 :root[data-theme="dark"] .st.on small{color:#8C5A35}
+
+/* Costos: líneas finas y elegantes */
+fieldset.costos{border:1px solid var(--line);border-radius:18px;padding:14px 14px 16px;gap:12px;background:var(--surface)}
+fieldset.costos legend{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 6px}
+.mdet{display:flex;flex-direction:column;gap:6px}
+.mdet span{font-size:.78rem;color:var(--muted);font-weight:600}
+.mdet input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:.92rem;color:var(--ink)}
+.clist{display:flex;flex-direction:column}
+.clist .crow{display:flex;align-items:center;gap:8px;padding:9px 2px;border-bottom:1px solid var(--line);margin:0}
+.clist .crow:last-of-type{border-bottom:0}
+.clist .clab{flex:1;font-weight:600;font-size:.92rem;display:flex;flex-direction:column;line-height:1.2}
+.clist .clab small{font-weight:500;font-size:.72rem;color:var(--muted);margin-top:2px}
+.clist .cpeso{color:var(--accent);font-weight:600}
+.clist .cnum{width:118px;flex:none;text-align:right;border:0;border-bottom:1.5px solid var(--line);border-radius:0;background:transparent;padding:6px 2px;font-size:1rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+.clist .cnum:focus{outline:none;border-bottom-color:var(--accent)}
+.costos .csum{border-top:1.5px solid var(--ink);padding-top:12px;margin-top:2px}
+.costos .csum span{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.costos .csum strong{font-size:1.2rem}
+.costos .csum.gan{border-top:0;padding-top:0;margin-top:-4px}
+.costos .csum.gan span{letter-spacing:0;text-transform:none;font-weight:500}
 </style>
 </head>
 <body>
@@ -682,35 +702,31 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
           <tbody id="ptBody"></tbody>
         </table>
       </details>
+      <label class="mdet"><span>Detalle de la madera</span>
+        <input type="text" autocapitalize="sentences" id="fMadera" autocomplete="off" placeholder="Ej: pino, 2 tablas de 1x6" aria-label="Detalle de la madera">
+      </label>
+      <div class="clist">
       <div class="crow">
         <label class="clab" for="fMadPrecio">Madera</label>
-        <input type="text" autocapitalize="sentences" id="fMadera" autocomplete="off" placeholder="Qué madera (ej: pino 2 tablas)" aria-label="Detalle de la madera">
         <span class="cpeso">$</span><input type="number" id="fMadPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
       </div>
       <div class="crow">
-        <label class="clab" for="fMelPrecio">Melamina</label>
-        <span class="cfill"></span>
-        <span class="cpeso">$</span><input type="number" id="fMelPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
-      </div>
-      <div class="crow">
-        <label class="clab" for="fTorPrecio">Tornillos</label>
-        <span class="cfill"></span>
-        <span class="cpeso">$</span><input type="number" id="fTorPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
-      </div>
-      <div class="crow">
-        <label class="clab" for="fTapaPrecio">Tapacanto</label>
-        <span class="cfill"></span>
-        <span class="cpeso">$</span><input type="number" id="fTapaPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
-      </div>
-      <div class="crow">
-        <label class="clab" for="fOtrosPrecio">Otros desgastes</label>
-        <span class="cfill"></span>
+        <label class="clab" for="fOtrosPrecio">Otros desgastes<small>incluye tornillos, lija, cola</small></label>
         <span class="cpeso">$</span><input type="number" id="fOtrosPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
       </div>
       <div class="crow">
+        <label class="clab" for="fMelPrecio">Melamina</label>
+        <span class="cpeso">$</span><input type="number" id="fMelPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
+      </div>
+      <div class="crow">
+        <label class="clab" for="fTapaPrecio">Tapacanto</label>
+        <span class="cpeso">$</span><input type="number" id="fTapaPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
+      </div>
+      <div class="crow">
         <label class="clab" for="fManoPrecio">Mano de obra</label>
-        <span class="cfill"></span>
         <span class="cpeso">$</span><input type="number" id="fManoPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
+      </div>
+        <input type="hidden" id="fTorPrecio" value="">
       </div>
       <div class="csum"><span>Suma</span><strong id="fCostoTotal">$ 0</strong></div>
       <div class="csum gan" id="fGanRow" hidden><span>Ganancia con el precio total</span><strong id="fGanancia">$ 0</strong></div>
@@ -854,7 +870,7 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
     </div>
   </div>
   </details>
-  <p class="ver">versión app 35</p>
+  <p class="ver">versión app 36</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1814,7 +1830,7 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
     $('formTitle').textContent = o ? 'Editar pedido' : 'Nuevo pedido';
     $('fCliente').value = d.cliente||''; $('fPedido').value = d.pedido||''; $('fMedidas').value = d.medidas||'';
     $('fPrecio').value = d.precio||''; $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
-    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
+    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
     drawPhotos();
@@ -1851,7 +1867,7 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
     drawTablas((Array.isArray(o.tablas)?o.tablas:[]).map(function(t){return {cant:t.cant, medida:t.medida}}));
     drawMel((Array.isArray(o.melamina)?o.melamina:[]).map(function(m){return {cant:m.cant, medida:m.medida}}));
     $('fMelColor').value = o.melColor||''; $('fMelPrecio').value = o.costoMelamina||''; $('fTapa').value = o.tapacanto||'';
-    $('fMadera').value = o.madera||''; $('fMadPrecio').value = o.costoMadera||''; $('fTorPrecio').value = o.costoTornillos||''; $('fTapaPrecio').value = o.costoTapacanto||''; $('fOtrosPrecio').value = o.costoOtros||''; $('fManoPrecio').value = o.costoMano||''; updSuma();
+    $('fMadera').value = o.madera||''; $('fMadPrecio').value = o.costoMadera||''; $('fTorPrecio').value = o.costoTornillos||''; $('fTapaPrecio').value = o.costoTapacanto||''; $('fOtrosPrecio').value = (num(o.costoOtros)+num(o.costoTornillos))||''; $('fTorPrecio').value = ''; $('fManoPrecio').value = o.costoMano||''; updSuma();
     $('fPrecio').value = o.precio||'';
     $('tplBox').hidden = true;
     var m = $('tplMsg'); m.textContent = 'Copié los datos de “'+(o.pedido||'')+'”'+(o.cliente?' ('+o.cliente+')':'')+'. Revisá y cambiá lo que haga falta.'; m.hidden = false;
