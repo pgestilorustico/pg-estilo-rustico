@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PG Estilo Rústico</title>
-<meta name="theme-color" content="#1A130E">
+<meta name="theme-color" content="#F4E9DA" id="themeColor">
 <script>try{var __t=localStorage.getItem("pg-theme");if(__t==="light"||__t==="dark")document.documentElement.setAttribute("data-theme",__t);}catch(_){}</script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -850,7 +850,7 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
     </div>
   </div>
   </details>
-  <p class="ver">versión app 30</p>
+  <p class="ver">versión app 31</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1096,7 +1096,14 @@ header.brand h1{color:#3B2A1E} .brand-mini{color:#8C5A35;opacity:1} header.brand
     try{ if(t==='auto') localStorage.removeItem('pg-theme'); else localStorage.setItem('pg-theme', t); }catch(_){}
     if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t);
     document.querySelectorAll('[data-theme-set]').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-theme-set')===t?'true':'false'); });
+    syncBar();
   }
+  /* Color de la barra de arriba del celular (hora, batería) igual al encabezado */
+  function syncBar(){
+    var dark = document.documentElement.getAttribute('data-theme')==='dark' || (!document.documentElement.getAttribute('data-theme') && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+    var m = document.getElementById('themeColor'); if(m) m.setAttribute('content', dark ? '#5A3F2B' : '#F4E9DA');
+  }
+  try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncBar); }catch(_){}
   (function(){ var t='auto'; try{ t = localStorage.getItem('pg-theme')||'auto'; }catch(_){} setTheme(t);
     document.querySelectorAll('[data-theme-set]').forEach(function(b){ b.addEventListener('click', function(){ setTheme(b.getAttribute('data-theme-set')); }); }); })();
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
