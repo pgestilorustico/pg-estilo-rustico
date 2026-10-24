@@ -1016,7 +1016,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 43</p>
+  <p class="ver">versión app 44</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1386,7 +1386,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       subscribe();
       initStock();
       initClientes();
-      initGastos(); initNotas();
+      initGastos(); initNotas(); setTimeout(seedNotas, 1500);
     }else{
       state.loading = false; render();
       state.mem = true;
@@ -2845,6 +2845,27 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   function initNotas(){
     if(!state.db) return; nCol = state.db.collection('notas');
     nCol.onSnapshot(function(snap){ state.notas = snap.docs.map(function(d){ var x = JSON.parse(JSON.stringify(d.data()||{})); x.id = String(d.id); return x; }); renderNotas(); }, function(){});
+  }
+  /* Carga única: precios de Herrajes Trelew (presupuesto N° 41899 del 14/09/2026) */
+  var SEED_HT = [
+    ['MDF blanco 18 mm 1ª calidad','Placa 2,75 x 1,83 m',133092.79],
+    ['Corte de placa','Por corte',4963.30],
+    ['MDF blanco 3 mm 1ª calidad','2,60 m',52814.61],
+    ['Bisagra a resorte 35 mm codo 0 inox','4 agujeros · por unidad',1650.39],
+    ['Soporte para estante 5 mm','Por unidad',134.30],
+    ['Tapacanto melamina blanco 22 mm','Por metro',758.03]
+  ];
+  function seedNotas(){
+    if(!state.db) return;
+    var aj = state.db.collection('ajustes').doc('seeds');
+    aj.get().then(function(d){
+      var x = (d && d.exists) ? (d.data()||{}) : {};
+      if(x.ht20260914) return;
+      var b = state.db.batch();
+      SEED_HT.forEach(function(r,i){ b.set(state.db.collection('notas').doc('ht-20260914-'+(i+1)), {mat:r[0], med:r[1], pre:r[2], donde:'Herrajes Trelew', txt:'Presupuesto N° 41899 · lista cuotas', fecha:'2026-09-14', creado:'2026-09-14T12:0'+i+':00.000Z', editado:''}); });
+      b.set(aj, {ht20260914:true}, {merge:true});
+      return b.commit();
+    }).catch(function(){});
   }
   function renderNotas(){
     var q = nrm($('nQ').value||''), L = state.notas.filter(function(n){ return !q || nrm([n.mat,n.med,n.donde,n.txt].join(' ')).indexOf(q)>=0; })
