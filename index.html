@@ -1059,7 +1059,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 47</p>
+  <p class="ver">versión app 48</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -2395,7 +2395,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     $('formTitle').textContent = o ? 'Editar pedido' : 'Nuevo pedido';
     $('fCliente').value = d.cliente||''; $('fPedido').value = d.pedido||''; $('fMedidas').value = d.medidas||'';
     $('fPrecio').value = d.precio||''; $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
-    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||''; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
+    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||10000; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
     drawPhotos();
