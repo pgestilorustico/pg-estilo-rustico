@@ -1060,7 +1060,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 50</p>
+  <p class="ver">versión app 51</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -2055,7 +2055,12 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 
 
   /* ---------- Horas de trabajo por pedido (con pausa) ---------- */
-  function segTrab(o){ var t = o.tiempo||{}, s0 = num(t.seg); if(t.desde){ var d = (Date.now() - new Date(t.desde).getTime())/1000; if(d>0) s0 += d; } return s0; }
+  /* Hora real de internet: si la computadora o el celular tienen mal la hora, el contador igual cuenta bien */
+  var clockOff = 0;
+  function ahora(){ return Date.now() + clockOff; }
+  function syncReloj(){ try{ var t0 = Date.now(); fetch('./manifest.webmanifest?clk='+t0, {method:'HEAD', cache:'no-store'}).then(function(r){ var t1 = Date.now(), d = r.headers.get('date'); if(!d) return; var srv = new Date(d).getTime(); if(isNaN(srv)) return; var off = srv - (t0+t1)/2; clockOff = Math.abs(off) > 90000 ? off : 0; }).catch(function(){}); }catch(_){} }
+  syncReloj(); document.addEventListener('visibilitychange', function(){ if(!document.hidden) syncReloj(); });
+  function segTrab(o){ var t = o.tiempo||{}, s0 = num(t.seg); if(t.desde){ var d = (ahora() - new Date(t.desde).getTime())/1000; if(d>0) s0 += d; } return s0; }
   function fmtVivo(sg){ sg = Math.max(0, Math.floor(sg)); var h = Math.floor(sg/3600), m = Math.floor(sg%3600/60), ss = sg%60; return h ? h+' h '+m+' min' : m ? m+' min '+ss+' s' : ss+' s'; }
   function fmtHoras(sg){ var m = Math.round(sg/60), h = Math.floor(m/60), mm = m%60; return h ? h+' h'+(mm?' '+mm+' min':'') : mm+' min'; }
   function gananciaDe(o){ return num(o.precio) - materiales(o); }
@@ -2064,7 +2069,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(act==='start'){
       // si hay otro pedido corriendo, se pausa solo
       for(var i=0;i<state.orders.length;i++){ var x = state.orders[i]; if(x.id!==o.id && x.tiempo && x.tiempo.desde){ var tx = JSON.parse(JSON.stringify(x.tiempo)); tx.seg = Math.round(segTrab(x)); tx.desde = ''; x.tiempo = tx; await saveOrder(x).catch(function(){}); } }
-      t.desde = new Date().toISOString(); if(!t.inicio) t.inicio = hoyStr();
+      t.desde = new Date(ahora()).toISOString(); if(!t.inicio) t.inicio = hoyStr();
     } else if(act==='pause'){ t.seg = Math.round(segTrab(o)); t.desde = ''; }
     o.tiempo = t; await saveOrder(o).catch(showErr);
   }
@@ -2075,7 +2080,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     h += run ? actBtn('tpause',o.id,'btn tmr-b','⏸ Pausar') : actBtn('tstart',o.id,'btn tmr-b primary', sg>=60 ? '▶ Retomar' : '▶ Empezar');
     h += '</div>';
     var fixL = actBtn('tfix',o.id,'linkbtn','Corregir horas')+' · '+actBtn('treset',o.id,'linkbtn','Poner en cero');
-    var ses = run ? (Date.now() - new Date(t.desde).getTime())/1000 : 0;
+    var ses = run ? (ahora() - new Date(t.desde).getTime())/1000 : 0;
     if(ses > 10*3600) h += '<p class="tmr-x tmr-warn">⚠️ El contador lleva más de 10 horas sin pausar. ¿Te olvidaste de pausarlo? '+fixL+'</p>';
     else if(sg>=600){ var g = gananciaDe(o), hs = sg/3600; if(num(o.precio)>0 && g>0) h += '<p class="tmr-x">Ganás <b>'+money.format(Math.round(g/hs))+' por hora</b> en este pedido'+(run?' (por ahora)':'')+'. '+fixL+'</p>'; else h += '<p class="tmr-x">'+fixL+'</p>'; }
     else if(sg>=60 && !run) h += '<p class="tmr-x">'+fixL+'</p>';
@@ -3119,7 +3124,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(act==='tfix' && o){
       var cur = Math.round(segTrab(o)/360)/10, v = window.prompt('¿Cuántas horas le dedicaste a este pedido? (ej: 6,5 = 6 h 30 min · 0,5 = 30 min)', String(cur).replace('.',','));
       if(v===null) return; var nh = parseFloat(String(v).replace(',','.')); if(isNaN(nh) || nh<0) return;
-      var t = JSON.parse(JSON.stringify(o.tiempo||{})); t.seg = Math.round(nh*3600); if(t.desde) t.desde = new Date().toISOString(); o.tiempo = t; await saveOrder(o).catch(showErr); return;
+      var t = JSON.parse(JSON.stringify(o.tiempo||{})); t.seg = Math.round(nh*3600); if(t.desde) t.desde = new Date(ahora()).toISOString(); o.tiempo = t; await saveOrder(o).catch(showErr); return;
     }
     if(act==='payclose'){ state.payOpen = null; state.payMsg=''; lastHtml=null; render(); return; }
     if(act==='paysave' && o){
