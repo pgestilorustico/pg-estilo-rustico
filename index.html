@@ -498,7 +498,7 @@ fieldset.costos legend{font-weight:600;font-size:.84rem;color:var(--muted);paddi
 header.brand{display:block;margin:-22px calc(-1 * max(16px, env(safe-area-inset-left,0px))) 16px;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 18px;border-radius:0 0 30px 30px;position:relative;overflow:hidden;background:radial-gradient(120% 90% at 100% 0%,rgba(255,226,180,.35) 0%,rgba(255,226,180,0) 55%),repeating-linear-gradient(172deg,rgba(255,255,255,.05) 0 1px,transparent 1px 11px),linear-gradient(135deg,#C6905E 0%,#A9744A 48%,#8C5B37 100%);box-shadow:0 14px 30px -18px rgba(140,91,55,.7)}
 header.brand::after{display:none}
 header.brand > .logo{position:absolute;left:16px;top:calc(18px + env(safe-area-inset-top,0px));width:46px;height:46px;border-radius:12px}
-header.brand .brand-txt{margin:0 104px 0 58px;min-height:46px;display:flex;flex-direction:column;justify-content:center}
+header.brand .brand-txt{margin:0 150px 0 58px;min-height:46px;display:flex;flex-direction:column;justify-content:center}
 .brand-mini{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#FBE9D2;opacity:.85;font-weight:600;line-height:1.2}
 header.brand h1{font-size:1.2rem;color:#FFFFFF;margin:1px 0 0;letter-spacing:-.01em}
 header.brand p{font-size:.8rem;color:#FBE9D2;opacity:.9;margin:1px 0 0}
@@ -661,6 +661,45 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .nbtns button:first-child{color:var(--accent)}
 .ntxt{margin:8px 0 0;font-size:.86rem;white-space:pre-wrap;overflow-wrap:anywhere;padding-top:8px;border-top:1px dashed var(--line)}
 .nform .sheet{display:flex;flex-direction:column}
+
+.mel-acts{display:flex;gap:8px;flex-wrap:wrap}
+.placas-btn{background:#FBF6EF;border-color:#E3CBA8;color:#7A4E2D}
+.pl-cfg{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:10px 16px 0}
+.pl-cfg label{display:flex;flex-direction:column;gap:4px;font-size:.74rem;color:var(--muted);font-weight:600}
+.pl-cfg select,.pl-cfg input[type=number]{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:.9rem}
+.pl-cfg input[type=number]{width:80px}
+.pl-cfg .pl-rot{flex-direction:row;align-items:center;gap:6px;padding-bottom:8px;font-size:.82rem;color:var(--ink)}
+.pl-for{margin:0 0 10px;font-size:.84rem;color:var(--muted)}
+.pl-big{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:16px;background:linear-gradient(135deg,#F4E9DA,#E8D3B5);color:#3B2A1E;margin-bottom:12px}
+.pl-big small{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#8C5A35;font-weight:700}
+.pl-big b{font-family:var(--head);font-size:1.8rem}
+.pl-big span{font-size:.82rem;color:#7A5A3E}
+.pl-sheet{border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:12px;background:var(--surface)}
+.pl-sh-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;font-size:.86rem}
+.pl-sh-h span{color:var(--muted);font-size:.78rem}
+.pl-svg{width:100%;max-height:70vh;display:block}
+
+.cli-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 10px}
+.cli-stats div{background:var(--soft);border-radius:12px;padding:9px 11px;display:flex;flex-direction:column;gap:1px}
+.cli-stats small{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.cli-stats b{font-family:var(--head);font-size:1.05rem;font-variant-numeric:tabular-nums}
+.cli-debe{margin:0 0 8px;font-weight:700;color:var(--warn);font-size:.9rem}
+.cli-fiel{margin:0 0 8px;font-weight:700;color:var(--accent);font-size:.86rem}
+
+.hbell{position:relative}
+.bell-n{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#C2412D;color:#fff;font-size:.7rem;font-weight:800;display:grid;place-items:center;border:2px solid #F4E9DA}
+.bell-n[hidden]{display:none}
+.av-perm{border:1px solid #E3CBA8;background:#FBF6EF;border-radius:16px;padding:12px 14px;margin-bottom:6px}
+.av-perm p{margin:0 0 8px;font-size:.88rem}
+.av-ok{font-size:.84rem;color:var(--ok);font-weight:600;margin:0 0 4px}
+.av-it{width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:8px;background:var(--surface);color:var(--ink)}
+.av-ic{font-size:1.3rem;flex:none}
+.av-t{flex:1;min-width:0;display:flex;flex-direction:column}.av-t b{font-size:.92rem}.av-t small{font-size:.78rem;color:var(--muted)}
+.av-go{color:var(--accent);font-size:1.3rem}
+.av-late{border-color:#E8B4A8;background:#FCF1EE}
+.av-hoy{border-color:#E3CBA8;background:#FBF6EF}
+:root[data-theme="dark"] .av-late,:root[data-theme="dark"] .av-hoy,:root[data-theme="dark"] .av-perm{background:var(--soft)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .av-late,:root:not([data-theme="light"]) .av-hoy,:root:not([data-theme="light"]) .av-perm{background:var(--soft)} }
 </style>
 </head>
 <body>
@@ -680,7 +719,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   <header class="brand">
     <img class="logo" alt="Logo PG Estilo Rústico" src="logo.png">
     <div class="brand-txt"><span class="brand-mini">PG Estilo Rústico</span><h1 id="hola">Hola, Pablo</h1><p id="hoyTxt"></p></div>
-    <div class="hbtns"><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
+    <div class="hbtns"><button type="button" class="hbtn hbell" id="bellBtn" aria-label="Avisos"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="bell-n" id="bellN" hidden></span><span class="calc-txt"> Avisos</span></button><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
     <div class="stats" id="stats">
       <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="proceso"><small>En proceso</small><b id="stProc">–</b></button></form>
       <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="st" data-st="presupuesto"><small>Presupuestos</small><b id="stPres">–</b></button></form>
@@ -753,7 +792,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       <p class="sub2" style="margin-top:6px">Melamina (cortes a pedir)</p>
       <input type="text" autocapitalize="sentences" id="fMelColor" class="mcolor" autocomplete="off" placeholder="Color y espesor (ej: blanca 18 mm)" aria-label="Color y espesor de la melamina">
       <div id="fMelamina" class="rowlist"></div>
-      <button type="submit" formnovalidate class="btn" id="addMel">+ Agregar corte de melamina</button>
+      <div class="mel-acts"><button type="submit" formnovalidate class="btn" id="addMel">+ Agregar corte de melamina</button><button type="button" class="btn placas-btn" id="placasForm">📐 Calcular placas</button></div>
       <div class="tcrow">
         <label for="fTapa" class="sub2">Tapacanto</label>
         <input type="number" id="fTapa" inputmode="decimal" min="0" step="any" placeholder="0" aria-label="Metros de tapacanto">
@@ -966,7 +1005,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 41</p>
+  <p class="ver">versión app 42</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -975,6 +1014,23 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 
 
 
+<div id="avisos" class="catov" hidden role="dialog" aria-label="Avisos">
+  <div class="cat-box res-box">
+    <div class="cat-top"><strong>🔔 Avisos</strong><span class="cat-acts"><button type="button" class="calc-x" id="avClose" aria-label="Cerrar">✕</button></span></div>
+    <div class="res-body" id="avBody"></div>
+  </div>
+</div>
+<div id="placas" class="catov" hidden role="dialog" aria-label="Calcular placas de melamina">
+  <div class="cat-box res-box">
+    <div class="cat-top"><strong>📐 Placas de melamina</strong><span class="cat-acts"><button type="button" class="calc-x" id="plClose" aria-label="Cerrar">✕</button></span></div>
+    <div class="pl-cfg">
+      <label>Placa<select id="plSize"><option value="183x260">183 × 260 cm</option><option value="183x275">183 × 275 cm</option><option value="152x244">152 × 244 cm</option><option value="122x244">122 × 244 cm</option></select></label>
+      <label>Sierra (mm)<input type="number" id="plKerf" inputmode="decimal" min="0" step="0.5" value="4"></label>
+      <label class="pl-rot"><input type="checkbox" id="plRot" checked> Se pueden girar</label>
+    </div>
+    <div class="res-body" id="plBody"></div>
+  </div>
+</div>
 <div id="resumen" class="catov" hidden role="dialog" aria-label="Resumen del mes">
   <div class="cat-box res-box">
     <div class="cat-top"><strong>Resumen del mes</strong><span class="cat-acts"><button type="button" class="calc-x" id="resClose" aria-label="Cerrar">✕</button></span></div>
@@ -1354,7 +1410,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if($('tDue')) $('tDue').textContent = money.format(tDue);
     try{
       var cnt0 = {presupuesto:0, rechazado:0, proceso:0, saldo:0, pagado:0}; state.orders.forEach(function(o){ cnt0[estado(o)]++; });
-      updResBar();
+      updResBar(); updBell();
       $('stProc').textContent = cnt0.proceso; $('stPres').textContent = cnt0.presupuesto + cnt0.rechazado; $('stCobrar').textContent = cnt0.saldo; $('stPag').textContent = cnt0.pagado;
       document.querySelectorAll('.st[data-st]').forEach(function(t){ t.classList.toggle('on', !state.q.trim() && t.getAttribute('data-st')===state.filter); });
     }catch(_){}
@@ -1499,7 +1555,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var titulo = (st==='presupuesto'||st==='rechazado') ? 'Presupuesto' : esSaldo ? 'Saldo de tu pedido' : 'Resumen de tu pedido';
     L.push('*PG Estilo Rústico* · '+titulo);
     L.push('');
-    L.push('Hola '+nom+'! '+(esSaldo ? 'Te paso el detalle del saldo pendiente de tu pedido:' : 'Te paso el detalle:'));
+    L.push('Hola '+nom+'! '+(esSaldo ? '¡Tu pedido ya está listo! 🎉 Te paso el detalle del saldo:' : st==='pagado' ? '¡Tu pedido ya está listo! 🎉 Te paso el detalle:' : 'Te paso el detalle:'));
     L.push('');
     L.push('• Trabajo: '+(o.pedido||''));
     if(o.medidas && !esSaldo) L.push('• Medidas: '+o.medidas);
@@ -1523,6 +1579,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       L.push('Titular: '+BIZ.titular+' · '+BIZ.banco);
       L.push('');
     }
+    if(esSaldo || st==='pagado') L.push('Avisame cuándo te queda cómodo para la entrega o el retiro.');
     L.push(st==='pagado' ? '¡Gracias por tu compra!'
       : esSaldo ? (o.vence ? 'Cuando llegue la fecha, transferí al alias y mandame el comprobante por acá. ¡Muchas gracias por tu compra!' : 'El saldo se abona al momento de la entrega, en efectivo o por transferencia al alias. ¡Muchas gracias por tu compra!')
       : sinSena ? 'Cuando hagas la seña, mandame el comprobante por acá y empiezo con tu pedido. ¡Gracias!'
@@ -1717,8 +1774,9 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       x.fillStyle = INK; x.font = '500 27px '+FB;
       cond.forEach(function(t){ wrapLines(x, '•  '+t, CW).forEach(function(l){ x.fillText(l, P, y); y += 40; }); });
     }
-    H = Math.max(H0, y + 280);
+    H = Math.max(H0, y + 280 + (kind==='saldo' ? 60 : 0));
     y = Math.max(y + 30, H - 250);
+    if(kind==='saldo'){ x.fillStyle = ACC; x.font = '700 32px '+FH; x.fillText('¡Tu pedido ya está listo! Coordinemos la entrega o el retiro.', P, y - 52); }
     x.fillStyle = INK; x.font = '600 32px '+FH; x.fillText(kind==='presu' ? '¡Gracias por tu consulta!' : '¡Muchas gracias por tu compra!', P, y);
     // pie
     x.fillStyle = g; x.fillRect(0, H-130, W, 130); x.fillStyle = gl; x.fillRect(0, H-130, W, 4);
@@ -1759,6 +1817,165 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f]}); return 'shared'; }
     var u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(u)}, 4000); return 'downloaded';
   }
+
+
+  /* ---------- Avisos: entregas, cobros, compras y presupuestos ---------- */
+  function addDays(f, n){ var p = f.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]+n); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function cuando(d){ return d<0 ? 'hace '+(-d)+(d===-1?' día':' días') : d===0 ? 'hoy' : d===1 ? 'mañana' : 'en '+d+' días'; }
+  function faltaComprar(o){ return (Array.isArray(o.tablas)?o.tablas:[]).some(function(t){return !t.comprado}) || (Array.isArray(o.melamina)?o.melamina:[]).some(function(m){return !m.comprado}) || (num(o.tapacanto)>0 && !o.tapaComprado); }
+  function avisosList(){
+    var L = [], hoy = hoyStr(), okF = function(f){ return /^\d{4}-\d{2}-\d{2}$/.test(f||''); };
+    state.orders.forEach(function(o){
+      var e = estado(o), nom = String(o.cliente||'').split(' ').slice(0,2).join(' ');
+      if(e==='proceso' && okF(o.entrega)){
+        var d = diasHasta(o.entrega);
+        if(d<0) L.push({id:o.id, k:'late', ic:'⏰', t:'Entrega atrasada: '+o.pedido+' de '+nom, sub:'Era el '+fmtDate(o.entrega).slice(0,5)+' ('+cuando(d)+')', ord:d});
+        else if(d<=3) L.push({id:o.id, k:d<=1?'hoy':'pronto', ic:'🚚', t:(d===0?'Hoy entregás ':d===1?'Mañana entregás ':'En '+d+' días entregás ')+o.pedido, sub:'Para '+nom+' · '+fmtDate(o.entrega).slice(0,5), ord:d});
+        if(d<=5 && faltaComprar(o)) L.push({id:o.id, k:d<=2?'hoy':'pronto', ic:'🛒', t:'Falta comprar material para '+nom, sub:o.pedido+' · se entrega '+cuando(d), ord:d+0.5});
+      }
+      if(cobroPend(o)){
+        var dv = diasHasta(o.vence);
+        if(dv<=3) L.push({id:o.id, k:dv<0?'late':dv<=1?'hoy':'pronto', ic:'💰', t:(dv<0?'Pago vencido: ':dv===0?'Hoy te paga ':dv===1?'Mañana te paga ':'En '+dv+' días te paga ')+nom, sub:money.format(saldo(o))+' · '+o.pedido+(dv<0?' · era el '+fmtDate(o.vence).slice(0,5):''), ord:dv});
+      }
+      if(e==='saldo' && !o.vence && saldo(o)>0){
+        L.push({id:o.id, k:'info', ic:'💬', t:nom+' te debe '+money.format(saldo(o)), sub:'Trabajo terminado, sin fecha de pago · '+o.pedido, ord:50});
+      }
+      if(e==='presupuesto' && okF(o.fecha)){
+        var dp = -diasHasta(o.fecha);
+        if(dp>=7) L.push({id:o.id, k:'info', ic:'📝', t:'Presupuesto sin respuesta: '+nom, sub:'Se lo mandaste '+cuando(-dp)+' · '+o.pedido, ord:60+dp/100});
+      }
+    });
+    return L.sort(function(a,b){ return a.ord-b.ord; });
+  }
+  function avHtml(L){
+    var perm = ('Notification' in window) ? Notification.permission : 'no';
+    var h = '';
+    if(perm!=='granted') h += '<div class="av-perm"><p><b>Avisos en el celular</b><br>Te llegan aunque no abras la app: entregas, pagos y compras del día.</p>'+(perm==='denied' ? '<p class="hint">Los avisos están bloqueados. Activalos desde los ajustes de la app en el celular (Notificaciones).</p>' : perm==='no' ? '<p class="hint">Este navegador no permite avisos.</p>' : '<button type="button" class="btn primary" id="avOn">🔔 Activar avisos</button>')+'</div>';
+    else h += '<p class="av-ok">🔔 Avisos del celular activados.</p>';
+    if(!L.length) return h + '<div class="empty"><strong>Todo en orden</strong>No hay entregas, cobros ni compras pendientes para estos días.</div>';
+    var grupos = [['late','Atrasado'],['hoy','Hoy y mañana'],['pronto','Próximos días'],['info','Para tener en cuenta']];
+    grupos.forEach(function(g){ var it = L.filter(function(a){ return a.k===g[0]; }); if(!it.length) return;
+      h += '<p class="res-h">'+g[1]+'</p>'+it.map(function(a){ return '<button type="button" class="av-it av-'+a.k+'" data-avgo="'+esc(a.id)+'"><span class="av-ic">'+a.ic+'</span><span class="av-t"><b>'+esc(a.t)+'</b><small>'+esc(a.sub)+'</small></span><span class="av-go">›</span></button>'; }).join('');
+    });
+    return h;
+  }
+  function updBell(){ try{ var L = avisosList(), n = L.filter(function(a){ return a.k!=='info'; }).length; $('bellN').textContent = n; $('bellN').hidden = !n; saveAvisosForSW(); }catch(_){} }
+  var swSaveT = 0;
+  function saveAvisosForSW(){
+    clearTimeout(swSaveT); swSaveT = setTimeout(function(){
+      try{
+        if(!('caches' in window)) return;
+        var items = [];
+        state.orders.forEach(function(o){ var e = estado(o), nom = String(o.cliente||'').split(' ').slice(0,2).join(' ');
+          if(e==='proceso' && /^\d{4}-\d{2}-\d{2}$/.test(o.entrega||'')){ items.push({tipo:'entrega', f:o.entrega, nom:nom, ped:o.pedido}); if(faltaComprar(o)) items.push({tipo:'compra', f:o.entrega, nom:nom, ped:o.pedido}); }
+          if(cobroPend(o)) items.push({tipo:'pago', f:o.vence, nom:nom, ped:o.pedido, monto:money.format(saldo(o))});
+        });
+        caches.open('pg-avisos').then(function(c){ c.put('./__avisos.json', new Response(JSON.stringify({items:items, actualizado:new Date().toISOString()}), {headers:{'Content-Type':'application/json'}})); });
+      }catch(_){}
+    }, 800);
+  }
+  async function activarAvisos(){
+    try{
+      var r = await Notification.requestPermission();
+      if(r==='granted'){
+        var reg = await navigator.serviceWorker.ready;
+        try{ if(reg.periodicSync) await reg.periodicSync.register('pg-avisos', {minInterval: 6*60*60*1000}); }catch(_){}
+        var L = avisosList().filter(function(a){ return a.k==='late' || a.k==='hoy'; });
+        reg.showNotification('PG Estilo Rústico', {body: L.length ? L.slice(0,4).map(function(a){ return a.ic+' '+a.t; }).join('\n') : '¡Listo! Te voy a avisar de entregas, pagos y compras.', icon:'icon-v2-192.png', badge:'icon-v2-192.png', tag:'pg-avisos'});
+      }
+    }catch(_){}
+    $('avBody').innerHTML = avHtml(avisosList());
+  }
+  $('bellBtn').addEventListener('click', function(){ $('avBody').innerHTML = avHtml(avisosList()); $('avisos').hidden = false; document.documentElement.classList.add('ov-open'); });
+  function avClose(){ $('avisos').hidden = true; document.documentElement.classList.remove('ov-open'); }
+  $('avClose').addEventListener('click', avClose);
+  $('avisos').addEventListener('click', function(e){
+    if(e.target===$('avisos')){ avClose(); return; }
+    if(e.target.closest('#avOn')){ activarAvisos(); return; }
+    var b = e.target.closest('[data-avgo]'); if(!b) return;
+    var id = b.getAttribute('data-avgo'), o = state.orders.find(function(x){return x.id===id}); if(!o) return;
+    avClose(); setView('pedidos'); state.q=''; if($('q')) $('q').value=''; state.filter = estado(o); var ex = document.getElementById('o-'+id); if(ex) ex.open = true; state.open = id; state.openSet[id] = true; lastHtml=null; render();
+    setTimeout(function(){ var c=document.getElementById('o-'+id); if(c) c.scrollIntoView({block:'start', behavior:'smooth'}); }, 80);
+  });
+  /* re-registrar el aviso periódico cada vez que se abre la app */
+  try{ if('Notification' in window && Notification.permission==='granted') navigator.serviceWorker.ready.then(function(reg){ if(reg.periodicSync) reg.periodicSync.register('pg-avisos', {minInterval: 6*60*60*1000}).catch(function(){}); }); }catch(_){}
+
+  /* ---------- Calculadora de placas de melamina (acomoda los cortes en placas) ---------- */
+  var plCuts = [], plTitle = '';
+  function parseMed(t){ var m = String(t||'').replace(/×/g,'x').match(/(\d+(?:[.,]\d+)?)\s*x\s*(\d+(?:[.,]\d+)?)/i); return m ? [parseFloat(m[1].replace(',','.')), parseFloat(m[2].replace(',','.'))] : null; }
+  function packSheets(cuts, SW, SH, kerf, rot){
+    var pieces = [], bad = [];
+    cuts.forEach(function(c){ var d = parseMed(c.medida), n = Math.max(1, parseInt(c.cant,10)||1); if(!d){ return; } for(var i=0;i<n;i++) pieces.push({w:d[0], h:d[1], label:c.medida}); });
+    pieces.sort(function(a,b){ return Math.max(b.w,b.h) - Math.max(a.w,a.h) || (b.w*b.h - a.w*a.h); });
+    var sheets = [], K = kerf;
+    function newSheet(){ var sh = {free:[{x:0,y:0,w:SW+K,h:SH+K}], parts:[]}; sheets.push(sh); return sh; }
+    function fit(sh, w, h){
+      var best = null;
+      sh.free.forEach(function(r){
+        [[w,h,false],[h,w,true]].forEach(function(o, idx){
+          if(idx===1 && (!rot || w===h)) return;
+          var pw = o[0]+K, ph = o[1]+K;
+          if(pw <= r.w + 1e-9 && ph <= r.h + 1e-9){
+            var ss = Math.min(r.w-pw, r.h-ph), ls = Math.max(r.w-pw, r.h-ph);
+            if(!best || ss < best.ss || (ss===best.ss && ls < best.ls)) best = {x:r.x, y:r.y, w:o[0], h:o[1], pw:pw, ph:ph, rot:o[2], ss:ss, ls:ls};
+          }
+        });
+      });
+      return best;
+    }
+    function place(sh, p){
+      var nf = [];
+      sh.free.forEach(function(r){
+        if(p.x >= r.x+r.w || p.x+p.pw <= r.x || p.y >= r.y+r.h || p.y+p.ph <= r.y){ nf.push(r); return; }
+        if(p.x > r.x) nf.push({x:r.x, y:r.y, w:p.x-r.x, h:r.h});
+        if(p.x+p.pw < r.x+r.w) nf.push({x:p.x+p.pw, y:r.y, w:r.x+r.w-(p.x+p.pw), h:r.h});
+        if(p.y > r.y) nf.push({x:r.x, y:r.y, w:r.w, h:p.y-r.y});
+        if(p.y+p.ph < r.y+r.h) nf.push({x:r.x, y:p.y+p.ph, w:r.w, h:r.y+r.h-(p.y+p.ph)});
+      });
+      sh.free = nf.filter(function(a,i){ return a.w>0.01 && a.h>0.01 && !nf.some(function(b,j){ return j!==i && b.x<=a.x && b.y<=a.y && b.x+b.w>=a.x+a.w && b.y+b.h>=a.y+a.h && (j<i || !(a.x===b.x&&a.y===b.y&&a.w===b.w&&a.h===b.h)); }); });
+      sh.parts.push(p);
+    }
+    pieces.forEach(function(pc){
+      if(!((pc.w<=SW && pc.h<=SH) || (rot && pc.h<=SW && pc.w<=SH))){ bad.push(pc); return; }
+      var done = false;
+      for(var i=0;i<sheets.length && !done;i++){ var f = fit(sheets[i], pc.w, pc.h); if(f){ f.label = pc.label; place(sheets[i], f); done = true; } }
+      if(!done){ var sh = newSheet(), f2 = fit(sh, pc.w, pc.h); if(f2){ f2.label = pc.label; place(sh, f2); } }
+    });
+    return {sheets:sheets, bad:bad, n:pieces.length};
+  }
+  var PL_COL = ['#E9D6BC','#D9BFA0','#F1E3CF','#CFB08A','#E3CBA8','#F5EADB'];
+  function sheetSvg(sh, SW, SH, idx){
+    var used = sh.parts.reduce(function(a,p){ return a + p.w*p.h; },0), pct = Math.round(used/(SW*SH)*100);
+    var h = '<div class="pl-sheet"><div class="pl-sh-h"><b>Placa '+(idx+1)+'</b><span>'+sh.parts.length+(sh.parts.length===1?' corte':' cortes')+' · aprovechás '+pct+'%</span></div>';
+    h += '<svg viewBox="-1 -1 '+(SW+2)+' '+(SH+2)+'" class="pl-svg" preserveAspectRatio="xMidYMid meet"><rect x="0" y="0" width="'+SW+'" height="'+SH+'" fill="#FBF7F1" stroke="#B9834F" stroke-width="0.8"/>';
+    sh.parts.forEach(function(p,i){
+      var fs = Math.max(2.2, Math.min(7, Math.min(p.w, p.h)/4.2));
+      var txt = String(p.rot ? (String(p.h)+'×'+String(p.w)) : (String(p.w)+'×'+String(p.h))).replace(/\./g,',');
+      h += '<rect x="'+p.x+'" y="'+p.y+'" width="'+p.w+'" height="'+p.h+'" fill="'+PL_COL[i%PL_COL.length]+'" stroke="#8C5A35" stroke-width="0.35"/>';
+      if(Math.min(p.w,p.h) > 5) h += '<text x="'+(p.x+p.w/2)+'" y="'+(p.y+p.h/2)+'" font-size="'+fs+'" text-anchor="middle" dominant-baseline="middle" fill="#3B2A1E" font-family="sans-serif" font-weight="700"'+(p.h>p.w*1.6?' transform="rotate(-90 '+(p.x+p.w/2)+' '+(p.y+p.h/2)+')"':'')+'>'+esc(txt)+'</text>';
+    });
+    return h + '</svg></div>';
+  }
+  function drawPlacas(){
+    var sz = ($('plSize').value||'183x260').split('x'), SW = +sz[0], SH = +sz[1], kerf = Math.max(0, num($('plKerf').value))/10, rot = $('plRot').checked;
+    var r = packSheets(plCuts, SW, SH, kerf, rot);
+    var h = '<p class="pl-for">'+esc(plTitle)+'</p>';
+    if(!r.n){ $('plBody').innerHTML = h+'<p class="cp-msg">No hay cortes de melamina con medidas para calcular. Cargalos como "45 x 35".</p>'; return; }
+    var area = r.sheets.reduce(function(a,sh){ return a + sh.parts.reduce(function(b,p){ return b+p.w*p.h; },0); },0), tot = r.sheets.length*SW*SH;
+    h += '<div class="pl-big"><small>Necesitás</small><b>'+r.sheets.length+(r.sheets.length===1?' placa':' placas')+'</b><span>'+r.n+' cortes · aprovechamiento '+(tot?Math.round(area/tot*100):0)+'%</span></div>';
+    if(r.bad.length) h += '<p class="err">'+r.bad.length+(r.bad.length===1?' corte no entra':' cortes no entran')+' en la placa elegida: '+esc(r.bad.map(function(b){return b.label}).join(', '))+'.</p>';
+    h += r.sheets.map(function(sh,i){ return sheetSvg(sh, SW, SH, i); }).join('');
+    h += '<p class="hint">Medidas en cm. El dibujo es una guía para acomodar los cortes; tené en cuenta el sentido de la veta si la melamina tiene diseño.</p>';
+    $('plBody').innerHTML = h;
+  }
+  function openPlacas(cuts, title){ plCuts = cuts; plTitle = title||''; $('placas').hidden = false; document.documentElement.classList.add('ov-open'); drawPlacas(); }
+  function closePlacas(){ $('placas').hidden = true; document.documentElement.classList.remove('ov-open'); }
+  $('plClose').addEventListener('click', closePlacas);
+  $('placas').addEventListener('click', function(e){ if(e.target===$('placas')) closePlacas(); });
+  ['plSize','plKerf','plRot'].forEach(function(i){ $(i).addEventListener('change', drawPlacas); $(i).addEventListener('input', drawPlacas); });
+  $('placasForm').addEventListener('click', function(){ openPlacas(readMel().filter(function(m){return m.medida}), ($('fMelColor').value||'Melamina')+' · '+($('fPedido').value||'pedido nuevo')); });
+  document.addEventListener('click', function(e){ var b = e.target.closest && e.target.closest('[data-placas]'); if(!b) return; e.preventDefault(); var o = state.orders.find(function(x){return x.id===b.getAttribute('data-placas')}); if(o) openPlacas(Array.isArray(o.melamina)?o.melamina:[], (o.melColor||'Melamina')+' · '+o.cliente+' · '+o.pedido); });
+
   /* ---------- Resumen del mes ---------- */
   var resMes = null;
   function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
@@ -1927,6 +2144,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       if(cts.length) h += '<dt>Cortes de madera</dt><dd class="cut">'+cts.map(function(c){return '<b>'+esc(num(c.cant)||1)+'</b> de '+esc(c.medida||'—')}).join('<br>')+'</dd>';
       if(tbs.length) h += '<dt>Tablas de pino</dt><dd class="cut">'+tbs.map(function(t){return '<b>'+esc(t.cant)+'</b> de '+esc(t.medida)+ok(t.comprado)}).join('<br>')+'</dd>';
       if(mls.length) h += '<dt>Cortes de melamina</dt><dd class="cut">'+(o.melColor?'<small style="color:var(--muted)">'+esc(o.melColor)+'</small><br>':'')+mls.map(function(m){return '<b>'+esc(m.cant)+'</b> de '+esc(m.medida)+ok(m.comprado)}).join('<br>')+'</dd>';
+      if(mls.length) h += '<dt></dt><dd><button type="button" class="btn placas-btn" data-placas="'+esc(o.id)+'">📐 Calcular placas</button></dd>';
       if(num(o.tapacanto)) h += '<dt>Tapacanto</dt><dd class="cut"><b>'+esc(String(num(o.tapacanto)).replace('.',','))+' m</b>'+(o.melColor?' · '+esc(o.melColor):'')+ok(o.tapaComprado)+'</dd>';
     }
     if(o.fecha || o.entrega || o.notas){
@@ -2442,6 +2660,14 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(c.emprendimiento) h += '<br><span class="cli-emp">'+esc(c.emprendimiento)+'</span>';
     if(c.telefono) h += '<br><span class="cli-tel">'+esc(c.telefono)+'</span>';
     h += '</span><span class="cli-n">'+peds.length+(peds.length===1?' pedido':' pedidos')+'</span></summary><div class="more">';
+    var conf = peds.filter(function(o){ var e = estado(o); return e!=='presupuesto' && e!=='rechazado'; });
+    if(conf.length){
+      var totC = conf.reduce(function(a,o){ return a+num(o.precio); },0), debe = conf.reduce(function(a,o){ return a+saldo(o); },0);
+      var ult = conf.map(function(o){ return o.fecha||String(o.creado||'').slice(0,10); }).filter(Boolean).sort().pop();
+      h += '<div class="cli-stats"><div><small>Te compró en total</small><b>'+money.format(totC)+'</b></div><div><small>Pedidos</small><b>'+conf.length+'</b></div><div><small>Promedio por pedido</small><b>'+money.format(Math.round(totC/conf.length))+'</b></div><div><small>Último pedido</small><b>'+(ult?esc(fmtDate(ult)):'—')+'</b></div></div>';
+      if(debe>0) h += '<p class="cli-debe">Te debe '+money.format(debe)+'</p>';
+      if(conf.length>=3) h += '<p class="cli-fiel">⭐ Cliente frecuente</p>';
+    }
     if(c.telefono) h += '<p class="sub">Teléfono</p><p class="cli-tel-big">'+esc(c.telefono)+'</p>';
     if(c.notas) h += '<p class="sub">Notas</p><p class="cli-notas">'+esc(c.notas)+'</p>';
     if(peds.length){
