@@ -724,6 +724,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .tmr-x{margin:0 0 12px;font-size:.84rem;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .tmr-x b{color:var(--ok)}
 .tmr-x .actf{display:inline-block}
+.tmr-warn{color:#B4541E;font-weight:600}
 .due-line.tmr-chip{background:#F3E2CB;color:#8A5A34;margin-left:4px;animation:tpulse 2s ease-in-out infinite}
 @keyframes tpulse{50%{opacity:.55}}
 :root[data-theme="dark"] .tmr.run{background:var(--soft)} @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tmr.run{background:var(--soft)} }
@@ -1059,7 +1060,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 48</p>
+  <p class="ver">versión app 49</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -2055,6 +2056,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 
   /* ---------- Horas de trabajo por pedido (con pausa) ---------- */
   function segTrab(o){ var t = o.tiempo||{}, s0 = num(t.seg); if(t.desde){ var d = (Date.now() - new Date(t.desde).getTime())/1000; if(d>0) s0 += d; } return s0; }
+  function fmtVivo(sg){ sg = Math.max(0, Math.floor(sg)); var h = Math.floor(sg/3600), m = Math.floor(sg%3600/60), ss = sg%60; return h ? h+' h '+m+' min' : m ? m+' min '+ss+' s' : ss+' s'; }
   function fmtHoras(sg){ var m = Math.round(sg/60), h = Math.floor(m/60), mm = m%60; return h ? h+' h'+(mm?' '+mm+' min':'') : mm+' min'; }
   function gananciaDe(o){ return num(o.precio) - materiales(o); }
   async function timerAct(o, act){
@@ -2069,13 +2071,17 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   function timerHtml(o){
     var t = o.tiempo||{}, sg = segTrab(o), run = !!t.desde, st = estado(o);
     if(st==='presupuesto' || st==='rechazado') return '';
-    var h = '<div class="tmr'+(run?' run':'')+'"><span class="tmr-ic">⏱</span><span class="tmr-t"><b data-tmr="'+esc(o.id)+'">'+(sg>=60||run ? fmtHoras(sg) : 'Sin horas')+'</b><small>'+(run?'Trabajando ahora…':sg?'Horas trabajadas en este pedido':'Tocá Empezar cuando arranques')+'</small></span>';
+    var h = '<div class="tmr'+(run?' run':'')+'"><span class="tmr-ic">⏱</span><span class="tmr-t"><b data-tmr="'+esc(o.id)+'">'+(run ? fmtVivo(sg) : sg>=60 ? fmtHoras(sg) : 'Sin horas')+'</b><small>'+(run?'Trabajando ahora…':sg?'Horas trabajadas en este pedido':'Tocá Empezar cuando arranques')+'</small></span>';
     h += run ? actBtn('tpause',o.id,'btn tmr-b','⏸ Pausar') : actBtn('tstart',o.id,'btn tmr-b primary', sg>=60 ? '▶ Retomar' : '▶ Empezar');
     h += '</div>';
-    if(sg>=600){ var g = gananciaDe(o), hs = sg/3600; if(num(o.precio)>0 && g>0) h += '<p class="tmr-x">Ganás <b>'+money.format(Math.round(g/hs))+' por hora</b> en este pedido'+(run?' (por ahora)':'')+'.'+' '+actBtn('tfix',o.id,'linkbtn','Corregir horas')+'</p>'; else h += '<p class="tmr-x">'+actBtn('tfix',o.id,'linkbtn','Corregir horas')+'</p>'; }
+    var fixL = actBtn('tfix',o.id,'linkbtn','Corregir horas')+' · '+actBtn('treset',o.id,'linkbtn','Poner en cero');
+    var ses = run ? (Date.now() - new Date(t.desde).getTime())/1000 : 0;
+    if(ses > 10*3600) h += '<p class="tmr-x tmr-warn">⚠️ El contador lleva más de 10 horas sin pausar. ¿Te olvidaste de pausarlo? '+fixL+'</p>';
+    else if(sg>=600){ var g = gananciaDe(o), hs = sg/3600; if(num(o.precio)>0 && g>0) h += '<p class="tmr-x">Ganás <b>'+money.format(Math.round(g/hs))+' por hora</b> en este pedido'+(run?' (por ahora)':'')+'. '+fixL+'</p>'; else h += '<p class="tmr-x">'+fixL+'</p>'; }
+    else if(sg>=60 && !run) h += '<p class="tmr-x">'+fixL+'</p>';
     return h;
   }
-  setInterval(function(){ document.querySelectorAll('[data-tmr]').forEach(function(el){ var o = state.orders.find(function(x){return x.id===el.getAttribute('data-tmr')}); if(o && o.tiempo && o.tiempo.desde) el.textContent = fmtHoras(segTrab(o)); }); }, 30000);
+  setInterval(function(){ document.querySelectorAll('[data-tmr]').forEach(function(el){ var o = state.orders.find(function(x){return x.id===el.getAttribute('data-tmr')}); if(o && o.tiempo && o.tiempo.desde) el.textContent = fmtVivo(segTrab(o)); }); }, 1000);
   function valorHoraReal(){
     var tot = 0, hs = 0;
     state.orders.forEach(function(o){ var sg = segTrab(o); if(sg>=1800 && estado(o)!=='presupuesto' && estado(o)!=='rechazado' && num(o.precio)>0){ var g = gananciaDe(o); if(g>0){ tot += g; hs += sg/3600; } } });
@@ -3108,8 +3114,9 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     }
     if(act==='tstart' && o){ await timerAct(o,'start'); return; }
     if(act==='tpause' && o){ await timerAct(o,'pause'); return; }
+    if(act==='treset' && o){ if(!window.confirm('¿Poner el contador de este pedido en cero?')) return; o.tiempo = {seg:0, desde:''}; await saveOrder(o).catch(showErr); return; }
     if(act==='tfix' && o){
-      var cur = Math.round(segTrab(o)/360)/10, v = window.prompt('¿Cuántas horas le dedicaste a este pedido? (ej: 6,5)', String(cur).replace('.',','));
+      var cur = Math.round(segTrab(o)/360)/10, v = window.prompt('¿Cuántas horas le dedicaste a este pedido? (ej: 6,5 = 6 h 30 min · 0,5 = 30 min)', String(cur).replace('.',','));
       if(v===null) return; var nh = parseFloat(String(v).replace(',','.')); if(isNaN(nh) || nh<0) return;
       var t = JSON.parse(JSON.stringify(o.tiempo||{})); t.seg = Math.round(nh*3600); if(t.desde) t.desde = new Date().toISOString(); o.tiempo = t; await saveOrder(o).catch(showErr); return;
     }
