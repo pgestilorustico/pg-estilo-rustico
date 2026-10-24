@@ -713,6 +713,32 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .pl-cost p{margin:8px 0 10px;font-size:.76rem;color:var(--muted)}
 :root[data-theme="dark"] .pl-cost{background:var(--soft);border-color:var(--line)} :root[data-theme="dark"] .pl-cost div b{color:var(--ink)}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .pl-cost{background:var(--soft);border-color:var(--line)} :root:not([data-theme="light"]) .pl-cost div b{color:var(--ink)} }
+
+.tmr{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 8px;background:var(--surface)}
+.tmr.run{border-color:#C9A06E;background:#FBF4EA}
+.tmr-ic{font-size:1.3rem}
+.tmr-t{flex:1;display:flex;flex-direction:column}.tmr-t b{font-family:var(--head);font-size:1.05rem}.tmr-t small{font-size:.74rem;color:var(--muted)}
+.tmr.run .tmr-t small{color:#A86A2E;font-weight:700}
+.tmr .actf{display:block}
+.tmr-b{white-space:nowrap}
+.tmr-x{margin:0 0 12px;font-size:.84rem;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tmr-x b{color:var(--ok)}
+.tmr-x .actf{display:inline-block}
+.due-line.tmr-chip{background:#F3E2CB;color:#8A5A34;margin-left:4px;animation:tpulse 2s ease-in-out infinite}
+@keyframes tpulse{50%{opacity:.55}}
+:root[data-theme="dark"] .tmr.run{background:var(--soft)} @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tmr.run{background:var(--soft)} }
+.psug{margin-top:6px;border-top:1px dashed var(--line);padding-top:12px}
+.psug-t{margin:0 0 8px;font-weight:800;font-size:.9rem}
+.psug-row{display:grid;grid-template-columns:1fr 1fr 0.8fr;gap:8px}
+.psug-row label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px;font-size:.72rem;color:var(--muted);font-weight:600}
+.psug-row input{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:.95rem}
+.psug-hint{margin:8px 0 0;font-size:.78rem;color:var(--muted)}
+.psug-res{margin-top:10px;border:1px solid #E3CBA8;background:#FBF6EF;border-radius:14px;padding:8px 12px 12px}
+.psug-res > div{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid #EADBC6;font-size:.86rem}
+.psug-res .tot{border-bottom:0}.psug-res .tot span{font-weight:800;color:#5A3B24}.psug-res .tot b{font-family:var(--head);font-size:1.3rem;color:#3B2A1E}
+.psug-acts{display:flex!important;gap:8px;flex-wrap:wrap;border:0!important;padding-top:8px!important}
+:root[data-theme="dark"] .psug-res{background:var(--soft);border-color:var(--line)} :root[data-theme="dark"] .psug-res .tot b,:root[data-theme="dark"] .psug-res .tot span{color:var(--ink)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .psug-res{background:var(--soft);border-color:var(--line)} :root:not([data-theme="light"]) .psug-res .tot b,:root:not([data-theme="light"]) .psug-res .tot span{color:var(--ink)} }
 </style>
 </head>
 <body>
@@ -859,6 +885,21 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       <div class="csum"><span>Suma</span><strong id="fCostoTotal">$ 0</strong></div>
       <div class="csum gan" id="fGanRow" hidden><span>Ganancia con el precio total</span><strong id="fGanancia">$ 0</strong></div>
       <button type="submit" formnovalidate class="btn" id="usarSuma">Usar la suma como precio total</button>
+      <div class="psug">
+        <p class="psug-t">💡 Precio sugerido</p>
+        <div class="psug-row">
+          <label>Horas estimadas<input type="number" id="fHorasEst" inputmode="decimal" min="0" step="0.5" placeholder="0"></label>
+          <label>Tu valor hora ($)<input type="number" id="fValorHora" inputmode="numeric" min="0" step="any" placeholder="0"></label>
+          <label>Margen (%)<input type="number" id="fMargen" inputmode="numeric" min="0" step="1" placeholder="0"></label>
+        </div>
+        <p class="psug-hint" id="psugHint"></p>
+        <div class="psug-res" id="psugRes" hidden>
+          <div><span>Mano de obra (horas × valor hora)</span><b id="psugMano">$ 0</b></div>
+          <div><span>Materiales y desgastes</span><b id="psugMat">$ 0</b></div>
+          <div class="tot"><span>Precio sugerido</span><b id="psugTot">$ 0</b></div>
+          <div class="psug-acts"><button type="button" class="btn" id="psugManoBtn">Poner en Mano de obra</button><button type="button" class="btn primary" id="psugPrecioBtn">Usar como precio total</button></div>
+        </div>
+      </div>
     </fieldset>
 
     <div class="two">
@@ -1018,7 +1059,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 46</p>
+  <p class="ver">versión app 47</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -2011,6 +2052,55 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   $('placasForm').addEventListener('click', function(){ openPlacas(readMel().filter(function(m){return m.medida}), ($('fMelColor').value||'Melamina')+' · '+($('fPedido').value||'pedido nuevo'), true); });
   document.addEventListener('click', function(e){ var b = e.target.closest && e.target.closest('[data-placas]'); if(!b) return; e.preventDefault(); var o = state.orders.find(function(x){return x.id===b.getAttribute('data-placas')}); if(o) openPlacas(Array.isArray(o.melamina)?o.melamina:[], (o.melColor||'Melamina')+' · '+o.cliente+' · '+o.pedido); });
 
+
+  /* ---------- Horas de trabajo por pedido (con pausa) ---------- */
+  function segTrab(o){ var t = o.tiempo||{}, s0 = num(t.seg); if(t.desde){ var d = (Date.now() - new Date(t.desde).getTime())/1000; if(d>0) s0 += d; } return s0; }
+  function fmtHoras(sg){ var m = Math.round(sg/60), h = Math.floor(m/60), mm = m%60; return h ? h+' h'+(mm?' '+mm+' min':'') : mm+' min'; }
+  function gananciaDe(o){ return num(o.precio) - materiales(o); }
+  async function timerAct(o, act){
+    var t = JSON.parse(JSON.stringify(o.tiempo||{seg:0}));
+    if(act==='start'){
+      // si hay otro pedido corriendo, se pausa solo
+      for(var i=0;i<state.orders.length;i++){ var x = state.orders[i]; if(x.id!==o.id && x.tiempo && x.tiempo.desde){ var tx = JSON.parse(JSON.stringify(x.tiempo)); tx.seg = segTrab(x); tx.desde = ''; x.tiempo = tx; await saveOrder(x).catch(function(){}); } }
+      t.desde = new Date().toISOString(); if(!t.inicio) t.inicio = hoyStr();
+    } else if(act==='pause'){ t.seg = segTrab(o); t.desde = ''; }
+    o.tiempo = t; await saveOrder(o).catch(showErr);
+  }
+  function timerHtml(o){
+    var t = o.tiempo||{}, sg = segTrab(o), run = !!t.desde, st = estado(o);
+    if(st==='presupuesto' || st==='rechazado') return '';
+    var h = '<div class="tmr'+(run?' run':'')+'"><span class="tmr-ic">⏱</span><span class="tmr-t"><b data-tmr="'+esc(o.id)+'">'+(sg>=60||run ? fmtHoras(sg) : 'Sin horas')+'</b><small>'+(run?'Trabajando ahora…':sg?'Horas trabajadas en este pedido':'Tocá Empezar cuando arranques')+'</small></span>';
+    h += run ? actBtn('tpause',o.id,'btn tmr-b','⏸ Pausar') : actBtn('tstart',o.id,'btn tmr-b primary', sg>=60 ? '▶ Retomar' : '▶ Empezar');
+    h += '</div>';
+    if(sg>=600){ var g = gananciaDe(o), hs = sg/3600; if(num(o.precio)>0 && g>0) h += '<p class="tmr-x">Ganás <b>'+money.format(Math.round(g/hs))+' por hora</b> en este pedido'+(run?' (por ahora)':'')+'.'+' '+actBtn('tfix',o.id,'linkbtn','Corregir horas')+'</p>'; else h += '<p class="tmr-x">'+actBtn('tfix',o.id,'linkbtn','Corregir horas')+'</p>'; }
+    return h;
+  }
+  setInterval(function(){ document.querySelectorAll('[data-tmr]').forEach(function(el){ var o = state.orders.find(function(x){return x.id===el.getAttribute('data-tmr')}); if(o && o.tiempo && o.tiempo.desde) el.textContent = fmtHoras(segTrab(o)); }); }, 30000);
+  function valorHoraReal(){
+    var tot = 0, hs = 0;
+    state.orders.forEach(function(o){ var sg = segTrab(o); if(sg>=1800 && estado(o)!=='presupuesto' && estado(o)!=='rechazado' && num(o.precio)>0){ var g = gananciaDe(o); if(g>0){ tot += g; hs += sg/3600; } } });
+    return hs>=1 ? {v:Math.round(tot/hs), hs:hs} : null;
+  }
+
+  /* ---------- Precio sugerido ---------- */
+  var prefs = {};
+  try{ prefs = JSON.parse(localStorage.getItem('pg-prefs')||'{}')||{}; }catch(_){}
+  function savePrefs(){ try{ localStorage.setItem('pg-prefs', JSON.stringify(prefs)); }catch(_){} try{ if(state.db) state.db.collection('ajustes').doc('prefs').set(prefs, {merge:true}); }catch(_){} }
+  setTimeout(function(){ try{ if(state.db) state.db.collection('ajustes').doc('prefs').get().then(function(d){ if(d && d.exists){ var x = JSON.parse(JSON.stringify(d.data()||{})); Object.keys(x).forEach(function(k){ prefs[k] = x[k]; }); try{ localStorage.setItem('pg-prefs', JSON.stringify(prefs)); }catch(_){} } }).catch(function(){}); }catch(_){} }, 3500);
+  function updSug(){
+    var hs = num($('fHorasEst').value), vh = num($('fValorHora').value), mg = num($('fMargen').value);
+    var mat = num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fOtrosPrecio').value);
+    var mano = Math.round(hs*vh), tot = Math.round((mat + mano)*(1+mg/100)/100)*100;
+    var real = valorHoraReal();
+    $('psugHint').innerHTML = real ? 'Según los pedidos que cronometraste, ganás en promedio <b>'+money.format(real.v)+' por hora</b>.' : 'Usá el ⏱ en tus pedidos y acá te voy a mostrar cuánto ganás por hora en realidad.';
+    $('psugRes').hidden = !(mano>0 || (mat>0 && mg>0));
+    $('psugMano').textContent = money.format(mano); $('psugMat').textContent = money.format(mat); $('psugTot').textContent = money.format(tot);
+    $('psugTot').setAttribute('data-v', tot); $('psugMano').setAttribute('data-v', mano);
+  }
+  ['fHorasEst','fValorHora','fMargen','fMadPrecio','fMelPrecio','fTapaPrecio','fOtrosPrecio'].forEach(function(i){ $(i).addEventListener('input', function(){ if(i==='fValorHora'){ prefs.valorHora = num($('fValorHora').value); savePrefs(); } if(i==='fMargen'){ prefs.margen = num($('fMargen').value); savePrefs(); } updSug(); }); });
+  $('psugManoBtn').addEventListener('click', function(){ $('fManoPrecio').value = $('psugMano').getAttribute('data-v')||''; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); updSug(); });
+  $('psugPrecioBtn').addEventListener('click', function(){ var mv = $('psugMano').getAttribute('data-v'); if(num(mv) && !num($('fManoPrecio').value)){ $('fManoPrecio').value = mv; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); } $('fPrecio').value = $('psugTot').getAttribute('data-v')||''; $('fPrecio').dispatchEvent(new Event('input',{bubbles:true})); try{ $('fPrecio').scrollIntoView({block:'center', behavior:'smooth'}); $('fPrecio').classList.add('calc-flash'); setTimeout(function(){ $('fPrecio').classList.remove('calc-flash'); }, 1200); }catch(_){} });
+
   /* ---------- Resumen del mes ---------- */
   var resMes = null;
   function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
@@ -2160,7 +2250,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var st = estado(o);
     var h = '<details class="order st-'+st+'" id="o-'+esc(o.id)+'" data-id="'+esc(o.id)+'"'+(isOpen?' open':'')+'>';
     h += '<summary class="order-sum">';
-    h += '<span class="order-head"><span class="who"><span class="name">'+esc(o.cliente)+'</span><span class="what">'+esc(o.pedido)+'</span>'+(st==='proceso'?dueLine(o):'')+(cobroPend(o)?(function(v){return '<span class="due-line pay '+v.c+'">💰 '+v.t+'</span>'})(venceTxt(o)):'')+'</span>';
+    h += '<span class="order-head"><span class="who"><span class="name">'+esc(o.cliente)+'</span><span class="what">'+esc(o.pedido)+'</span>'+(st==='proceso'?dueLine(o):'')+((o.tiempo&&o.tiempo.desde)?'<span class="due-line tmr-chip">⏱ Trabajando</span>':'')+(cobroPend(o)?(function(v){return '<span class="due-line pay '+v.c+'">💰 '+v.t+'</span>'})(venceTxt(o)):'')+'</span>';
     h += '<span class="price-col"><span class="amt">'+money.format(num(o.precio))+'</span>';
     h += st==='presupuesto' ? '<span class="badge pres">Presupuesto enviado</span>' : st==='rechazado' ? '<span class="badge rech">No aceptado</span>' : st==='pagado' ? '<span class="badge paid">Pagado</span>' : st==='saldo' ? (s>0 ? '<span class="badge due">Debe '+money.format(s)+'</span>' : '<span class="badge paid">Cobrado ✓</span>') : '<span class="badge proc">En proceso</span>';
     h += '</span></span>';
@@ -2214,6 +2304,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     h += '<dt class="sep">Falta abonar</dt><dd class="sep saldo-f'+(paid||s<=0?' ok':'')+'">'+(paid||s<=0?'Pagado completo ✓':money.format(s))+'</dd>';
     if(!paid && s>0 && st!=='presupuesto' && st!=='rechazado') h += '<dt>Fecha de pago</dt><dd class="fpago">'+(o.vence ? esc(fmtDate(o.vence))+(venceTxt(o).c?' <small class="vence-'+venceTxt(o).c+'">'+esc(venceTxt(o).t.split(' · ')[0])+'</small>':'') : '<span style="color:var(--muted)">Al entregar el pedido</span>')+'</dd>';
     h += '</dl>';
+    h += timerHtml(o);
     if(state.zoom && photos.indexOf(state.zoom)>=0 && blob(state.zoom)) h += '<div class="bigph"><img src="'+blob(state.zoom)+'" alt="Foto del mueble agrandada">'+actBtn('unzoom',o.id,'btn','Cerrar foto')+'</div>';
     if(photos.length) h += '<div class="gallery">'+photos.map(function(p){return thumb(p,'zoom')}).join('')+'</div>';
     else h += '<p class="nophotos">Este pedido no tiene fotos.</p>';
@@ -2304,7 +2395,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     $('formTitle').textContent = o ? 'Editar pedido' : 'Nuevo pedido';
     $('fCliente').value = d.cliente||''; $('fPedido').value = d.pedido||''; $('fMedidas').value = d.medidas||'';
     $('fPrecio').value = d.precio||''; $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
-    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
+    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||''; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
     drawPhotos();
@@ -2478,7 +2569,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(!pedido){err.textContent='Escribí qué pedido te hizo.';$('fPedido').focus();return}
     if(sena>precio && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('fSena').focus();return}
     delete d._editando; d.cliente=cliente; d.pedido=pedido; d.medidas=$('fMedidas').value.trim(); d.cortes=readCortes().filter(function(c){return c.medida || num(c.cant)}).map(function(c){return {cant: Math.max(1, parseInt(c.cant,10)||1), medida: c.medida}});
-    d.precio=precio; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){return {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}}); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value);
+    d.precio=precio; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){return {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}}); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
     $('saveBtn').disabled = true;
     try{
       state.open = d.id; state.openSet[d.id]=true;
@@ -3014,6 +3105,13 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       o.sena = o.pagos.reduce(function(acc,p){ return acc+num(p.monto); },0);
       if(o.pagado && saldo(Object.assign({},o,{pagado:false}))>0){ o.pagado = false; o.estado = 'saldo'; }
       await saveOrder(o).catch(showErr); return;
+    }
+    if(act==='tstart' && o){ await timerAct(o,'start'); return; }
+    if(act==='tpause' && o){ await timerAct(o,'pause'); return; }
+    if(act==='tfix' && o){
+      var cur = Math.round(segTrab(o)/360)/10, v = window.prompt('¿Cuántas horas le dedicaste a este pedido? (ej: 6,5)', String(cur).replace('.',','));
+      if(v===null) return; var nh = parseFloat(String(v).replace(',','.')); if(isNaN(nh) || nh<0) return;
+      var t = JSON.parse(JSON.stringify(o.tiempo||{})); t.seg = Math.round(nh*3600); if(t.desde) t.desde = new Date().toISOString(); o.tiempo = t; await saveOrder(o).catch(showErr); return;
     }
     if(act==='payclose'){ state.payOpen = null; state.payMsg=''; lastHtml=null; render(); return; }
     if(act==='paysave' && o){
