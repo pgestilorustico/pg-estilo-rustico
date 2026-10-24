@@ -1060,7 +1060,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 49</p>
+  <p class="ver">versión app 50</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -2063,9 +2063,9 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var t = JSON.parse(JSON.stringify(o.tiempo||{seg:0}));
     if(act==='start'){
       // si hay otro pedido corriendo, se pausa solo
-      for(var i=0;i<state.orders.length;i++){ var x = state.orders[i]; if(x.id!==o.id && x.tiempo && x.tiempo.desde){ var tx = JSON.parse(JSON.stringify(x.tiempo)); tx.seg = segTrab(x); tx.desde = ''; x.tiempo = tx; await saveOrder(x).catch(function(){}); } }
+      for(var i=0;i<state.orders.length;i++){ var x = state.orders[i]; if(x.id!==o.id && x.tiempo && x.tiempo.desde){ var tx = JSON.parse(JSON.stringify(x.tiempo)); tx.seg = Math.round(segTrab(x)); tx.desde = ''; x.tiempo = tx; await saveOrder(x).catch(function(){}); } }
       t.desde = new Date().toISOString(); if(!t.inicio) t.inicio = hoyStr();
-    } else if(act==='pause'){ t.seg = segTrab(o); t.desde = ''; }
+    } else if(act==='pause'){ t.seg = Math.round(segTrab(o)); t.desde = ''; }
     o.tiempo = t; await saveOrder(o).catch(showErr);
   }
   function timerHtml(o){
@@ -2580,6 +2580,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     try{
       state.open = d.id; state.openSet[d.id]=true;
       state.filter = q0 ? state.filter : estado(d);
+      var curO = state.orders.find(function(x){return x.id===d.id}); if(curO) d.tiempo = curO.tiempo ? JSON.parse(JSON.stringify(curO.tiempo)) : d.tiempo;
       await saveOrder(d);
       ensureCliente(d.cliente).catch(function(){});
       state.open = d.id; state.openSet[d.id]=true; showEditor(false);
