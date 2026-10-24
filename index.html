@@ -700,6 +700,17 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .av-hoy{border-color:#E3CBA8;background:#FBF6EF}
 :root[data-theme="dark"] .av-late,:root[data-theme="dark"] .av-hoy,:root[data-theme="dark"] .av-perm{background:var(--soft)}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .av-late,:root:not([data-theme="light"]) .av-hoy,:root:not([data-theme="light"]) .av-perm{background:var(--soft)} }
+
+.pl-cfg2{padding-top:8px}
+.pl-cfg2 input[type=number]{width:130px}
+.pl-cfg2 label:last-child input{width:90px}
+.pl-cost{border:1px solid #E3CBA8;background:#FBF6EF;border-radius:16px;padding:10px 14px 12px;margin-bottom:12px}
+.pl-cost div{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid #EADBC6}
+.pl-cost div span{font-size:.88rem;color:#7A5A3E;font-weight:600}
+.pl-cost div b{font-family:var(--head);font-size:1.3rem;color:#3B2A1E}
+.pl-cost p{margin:8px 0 10px;font-size:.76rem;color:var(--muted)}
+:root[data-theme="dark"] .pl-cost{background:var(--soft);border-color:var(--line)} :root[data-theme="dark"] .pl-cost div b{color:var(--ink)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .pl-cost{background:var(--soft);border-color:var(--line)} :root:not([data-theme="light"]) .pl-cost div b{color:var(--ink)} }
 </style>
 </head>
 <body>
@@ -1005,7 +1016,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 42</p>
+  <p class="ver">versión app 43</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1027,6 +1038,10 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       <label>Placa<select id="plSize"><option value="183x260">183 × 260 cm</option><option value="183x275">183 × 275 cm</option><option value="152x244">152 × 244 cm</option><option value="122x244">122 × 244 cm</option></select></label>
       <label>Sierra (mm)<input type="number" id="plKerf" inputmode="decimal" min="0" step="0.5" value="4"></label>
       <label class="pl-rot"><input type="checkbox" id="plRot" checked> Se pueden girar</label>
+    </div>
+    <div class="pl-cfg pl-cfg2">
+      <label>Precio de la placa ($)<input type="number" id="plPrecio" inputmode="numeric" min="0" step="any" placeholder="Ej: 162000"></label>
+      <label>Desperdicio (%)<input type="number" id="plMerma" inputmode="numeric" min="0" step="1" value="0"></label>
     </div>
     <div class="res-body" id="plBody"></div>
   </div>
@@ -1901,7 +1916,13 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   try{ if('Notification' in window && Notification.permission==='granted') navigator.serviceWorker.ready.then(function(reg){ if(reg.periodicSync) reg.periodicSync.register('pg-avisos', {minInterval: 6*60*60*1000}).catch(function(){}); }); }catch(_){}
 
   /* ---------- Calculadora de placas de melamina (acomoda los cortes en placas) ---------- */
-  var plCuts = [], plTitle = '';
+  var plCuts = [], plTitle = '', plFromForm = false, plLast = 0, plPrecios = {};
+  try{ plPrecios = JSON.parse(localStorage.getItem('pg-placa-precios')||'{}') || {}; }catch(_){}
+  function plLoadPrecio(){ var k = $('plSize').value; $('plPrecio').value = plPrecios[k] || ''; }
+  function plSavePrecio(){ var k = $('plSize').value, v = num($('plPrecio').value); if(v) plPrecios[k] = v; else delete plPrecios[k]; plPrecios._merma = num($('plMerma').value);
+    try{ localStorage.setItem('pg-placa-precios', JSON.stringify(plPrecios)); }catch(_){}
+    try{ if(state.db) state.db.collection('ajustes').doc('placas').set({precios:plPrecios}); }catch(_){} }
+  try{ setTimeout(function(){ if(state.db) state.db.collection('ajustes').doc('placas').get().then(function(d){ var x = d && d.exists ? (d.data()||{}).precios : null; if(x){ plPrecios = JSON.parse(JSON.stringify(x)); try{ localStorage.setItem('pg-placa-precios', JSON.stringify(plPrecios)); }catch(_){} } }).catch(function(){}); }, 3000); }catch(_){}
   function parseMed(t){ var m = String(t||'').replace(/×/g,'x').match(/(\d+(?:[.,]\d+)?)\s*x\s*(\d+(?:[.,]\d+)?)/i); return m ? [parseFloat(m[1].replace(',','.')), parseFloat(m[2].replace(',','.'))] : null; }
   function packSheets(cuts, SW, SH, kerf, rot){
     var pieces = [], bad = [];
@@ -1964,16 +1985,27 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var area = r.sheets.reduce(function(a,sh){ return a + sh.parts.reduce(function(b,p){ return b+p.w*p.h; },0); },0), tot = r.sheets.length*SW*SH;
     h += '<div class="pl-big"><small>Necesitás</small><b>'+r.sheets.length+(r.sheets.length===1?' placa':' placas')+'</b><span>'+r.n+' cortes · aprovechamiento '+(tot?Math.round(area/tot*100):0)+'%</span></div>';
     if(r.bad.length) h += '<p class="err">'+r.bad.length+(r.bad.length===1?' corte no entra':' cortes no entran')+' en la placa elegida: '+esc(r.bad.map(function(b){return b.label}).join(', '))+'.</p>';
+    var pPlaca = num($('plPrecio').value), merma = num($('plMerma').value);
+    if(pPlaca){
+      var porCm = pPlaca/(SW*SH), val = area*porCm, conM = val*(1+merma/100), r100 = function(v){ return Math.round(v/100)*100; };
+      plLast = r100(merma ? conM : val);
+      h += '<div class="pl-cost"><div><span>Valor de los cortes</span><b>'+money.format(r100(val))+'</b></div>'+(merma?'<div><span>Con '+merma+'% de desperdicio</span><b>'+money.format(r100(conM))+'</b></div>':'')+
+        '<p>'+r.n+(r.n===1?' corte':' cortes')+' = '+String(Math.round(area)).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' cm² de '+String(SW*SH).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' cm² ('+(Math.round(area/(SW*SH)*1000)/10).toString().replace('.',',')+'% de la placa). Placa entera: '+money.format(pPlaca)+' · '+r.sheets.length+(r.sheets.length===1?' placa':' placas')+' = '+money.format(pPlaca*r.sheets.length)+'.</p>'+
+        (plFromForm ? '<button type="button" class="btn primary" id="plUsar">Usar '+money.format(plLast)+' en el costo de Melamina</button>' : '')+'</div>';
+    } else h += '<p class="hint">Poné el precio de la placa entera y te calculo cuánto cobrar solo por estos cortes.</p>';
     h += r.sheets.map(function(sh,i){ return sheetSvg(sh, SW, SH, i); }).join('');
     h += '<p class="hint">Medidas en cm. El dibujo es una guía para acomodar los cortes; tené en cuenta el sentido de la veta si la melamina tiene diseño.</p>';
     $('plBody').innerHTML = h;
   }
-  function openPlacas(cuts, title){ plCuts = cuts; plTitle = title||''; $('placas').hidden = false; document.documentElement.classList.add('ov-open'); drawPlacas(); }
+  function openPlacas(cuts, title, fromForm){ plCuts = cuts; plTitle = title||''; plFromForm = !!fromForm; plLoadPrecio(); if(plPrecios._merma!=null) $('plMerma').value = plPrecios._merma; $('placas').hidden = false; document.documentElement.classList.add('ov-open'); drawPlacas(); }
   function closePlacas(){ $('placas').hidden = true; document.documentElement.classList.remove('ov-open'); }
   $('plClose').addEventListener('click', closePlacas);
   $('placas').addEventListener('click', function(e){ if(e.target===$('placas')) closePlacas(); });
-  ['plSize','plKerf','plRot'].forEach(function(i){ $(i).addEventListener('change', drawPlacas); $(i).addEventListener('input', drawPlacas); });
-  $('placasForm').addEventListener('click', function(){ openPlacas(readMel().filter(function(m){return m.medida}), ($('fMelColor').value||'Melamina')+' · '+($('fPedido').value||'pedido nuevo')); });
+  ['plKerf','plRot'].forEach(function(i){ $(i).addEventListener('change', drawPlacas); $(i).addEventListener('input', drawPlacas); });
+  $('plSize').addEventListener('change', function(){ plLoadPrecio(); drawPlacas(); });
+  ['plPrecio','plMerma'].forEach(function(i){ $(i).addEventListener('input', function(){ plSavePrecio(); drawPlacas(); }); });
+  $('placas').addEventListener('click', function(e){ if(e.target.closest && e.target.closest('#plUsar')){ $('fMelPrecio').value = plLast; $('fMelPrecio').dispatchEvent(new Event('input',{bubbles:true})); closePlacas(); try{ $('fMelPrecio').scrollIntoView({block:'center', behavior:'smooth'}); $('fMelPrecio').classList.add('calc-flash'); setTimeout(function(){ $('fMelPrecio').classList.remove('calc-flash'); }, 1200); }catch(_){} } });
+  $('placasForm').addEventListener('click', function(){ openPlacas(readMel().filter(function(m){return m.medida}), ($('fMelColor').value||'Melamina')+' · '+($('fPedido').value||'pedido nuevo'), true); });
   document.addEventListener('click', function(e){ var b = e.target.closest && e.target.closest('[data-placas]'); if(!b) return; e.preventDefault(); var o = state.orders.find(function(x){return x.id===b.getAttribute('data-placas')}); if(o) openPlacas(Array.isArray(o.melamina)?o.melamina:[], (o.melColor||'Melamina')+' · '+o.cliente+' · '+o.pedido); });
 
   /* ---------- Resumen del mes ---------- */
