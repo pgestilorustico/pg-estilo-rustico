@@ -1,6 +1,6 @@
 /* Service worker: permite instalar la app y abrirla aunque falle la conexión.
    Los datos (pedidos, clientes, etc.) los guarda Firebase, no este archivo. */
-const CACHE = 'pg-app-v44';
+const CACHE = 'pg-app-v45';
 const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest', './icon-v2-192.png', './icon-v2-512.png'];
 
 self.addEventListener('install', e => {
@@ -25,7 +25,7 @@ async function revisarAvisos(){
     if (it.tipo === 'compra' && d <= 3 && d >= 0) L.push('🛒 Falta comprar material para ' + it.nom);
   });
   if (!L.length) return;
-  await self.registration.showNotification('PG Estilo Rústico · ' + (L.length === 1 ? '1 aviso' : L.length + ' avisos'), { body: L.slice(0, 5).join('\n'), icon: 'icon-v2-192.png', badge: 'icon-v2-192.png', tag: 'pg-avisos' });
+  await self.registration.showNotification('PG Estilo Rústico · ' + (L.length === 1 ? '1 aviso' : L.length + ' avisos'), { body: L.slice(0, 5).join('\n'), icon: 'notif-icon.png', badge: 'notif-badge.png', tag: 'pg-avisos' });
   await c.put('./__avisado.txt', new Response(hoy));
 }
 self.addEventListener('periodicsync', e => { if (e.tag === 'pg-avisos') e.waitUntil(revisarAvisos()); });

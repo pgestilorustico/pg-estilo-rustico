@@ -1016,7 +1016,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     </div>
   </div>
   </details>
-  <p class="ver">versión app 44</p>
+  <p class="ver">versión app 45</p>
   <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
 </div>
 
@@ -1896,7 +1896,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
         var reg = await navigator.serviceWorker.ready;
         try{ if(reg.periodicSync) await reg.periodicSync.register('pg-avisos', {minInterval: 6*60*60*1000}); }catch(_){}
         var L = avisosList().filter(function(a){ return a.k==='late' || a.k==='hoy'; });
-        reg.showNotification('PG Estilo Rústico', {body: L.length ? L.slice(0,4).map(function(a){ return a.ic+' '+a.t; }).join('\n') : '¡Listo! Te voy a avisar de entregas, pagos y compras.', icon:'icon-v2-192.png', badge:'icon-v2-192.png', tag:'pg-avisos'});
+        reg.showNotification('PG Estilo Rústico', {body: L.length ? L.slice(0,4).map(function(a){ return a.ic+' '+a.t; }).join('\n') : '¡Listo! Te voy a avisar de entregas, pagos y compras.', icon:'notif-icon.png', badge:'notif-badge.png', tag:'pg-avisos'});
       }
     }catch(_){}
     $('avBody').innerHTML = avHtml(avisosList());
