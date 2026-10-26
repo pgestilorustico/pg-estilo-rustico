@@ -1,6 +1,6 @@
 /* Service worker: permite instalar la app y abrirla aunque falle la conexión.
    Los datos (pedidos, clientes, etc.) los guarda Firebase, no este archivo. */
-const CACHE = 'pg-app-v52';
+const CACHE = 'pg-app-v53';
 const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest', './icon-v2-192.png', './icon-v2-512.png'];
 
 self.addEventListener('install', e => {
@@ -23,6 +23,7 @@ async function revisarAvisos(){
     if (it.tipo === 'entrega' && d <= 1) L.push((d < 0 ? '⏰ Entrega atrasada: ' : d === 0 ? '🚚 Hoy entregás ' : '🚚 Mañana entregás ') + it.ped + ' (' + it.nom + ')');
     if (it.tipo === 'pago' && d <= 1) L.push((d < 0 ? '💰 Pago vencido de ' : d === 0 ? '💰 Hoy te paga ' : '💰 Mañana te paga ') + it.nom + ' · ' + it.monto);
     if (it.tipo === 'compra' && d <= 3 && d >= 0) L.push('🛒 Falta comprar material para ' + it.nom);
+    if (it.tipo === 'presu' && d <= 0 && d >= -10) L.push('📩 ' + it.nom + ' no respondió el presupuesto (' + it.ped + ')');
   });
   if (!L.length) return;
   await self.registration.showNotification('PG Estilo Rústico · ' + (L.length === 1 ? '1 aviso' : L.length + ' avisos'), { body: L.slice(0, 5).join('\n'), icon: 'notif-icon.png', badge: 'notif-badge.png', tag: 'pg-avisos' });
