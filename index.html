@@ -870,6 +870,12 @@ body.editing nav.views{display:none}
 .fbar-tot b{font-family:var(--head);font-size:1.2rem;color:var(--ink)}
 .fbar .btn{padding:11px 16px}
 .fbar #saveBtn{padding:11px 22px}
+
+#compBody .compra{border:0;background:transparent;margin:0;padding:0}
+#compBody .compra > summary{display:none}
+#compBody .compra-body{padding:0}
+
+@media (max-width:520px){ header.brand .brand-txt{max-width:calc(100vw - 252px);min-width:0} header.brand .brand-txt > *{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} header.brand .brand-txt #hoyTxt{font-size:.82rem} header.brand .hbtns{gap:5px;right:12px} header.brand .hbtn{height:36px;min-width:36px;padding:0 7px;border-radius:12px} header.brand .hbtn .calc-ic{width:19px;height:19px} }
 </style>
 </head>
 <body>
@@ -889,7 +895,7 @@ body.editing nav.views{display:none}
   <header class="brand">
     <img class="logo" alt="Logo PG Estilo Rústico" src="logo.png">
     <div class="brand-txt"><span class="brand-mini">PG Estilo Rústico</span><h1 id="hola">Hola, Pablo</h1><p id="hoyTxt"></p></div>
-    <div class="hbtns"><button type="button" class="hbtn hbell" id="bellBtn" aria-label="Avisos"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="bell-n" id="bellN" hidden></span><span class="calc-txt"> Avisos</span></button><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
+    <div class="hbtns"><button type="button" class="hbtn hbell" id="compBtn" aria-haspopup="dialog" aria-label="Lista de compras"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.2l2.2 11h10.4l2-8H6.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19" r="1.4" fill="currentColor"/><circle cx="16.5" cy="19" r="1.4" fill="currentColor"/></svg><span class="bell-n" id="compN" hidden></span><span class="calc-txt"> Compras</span></button><button type="button" class="hbtn hbell" id="bellBtn" aria-label="Avisos"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="bell-n" id="bellN" hidden></span><span class="calc-txt"> Avisos</span></button><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
     <div class="stats" id="stats">
       <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="proceso"><small>En proceso</small><b id="stProc">–</b></button></form>
       <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="st" data-st="presupuesto"><small>Presupuestos</small><b id="stPres">–</b></button></form>
@@ -1208,7 +1214,7 @@ body.editing nav.views{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 58</p>
+    <p class="ver">versión app 59</p>
   </div>
 </div>
 
@@ -1220,6 +1226,12 @@ body.editing nav.views{display:none}
 <div id="docView" hidden role="dialog" aria-label="Vista de la foto">
   <div class="dv-bar"><button type="button" class="btn" id="dvClose">✕ Cerrar</button><span>Tocá para acercar</span><button type="button" class="btn primary" id="dvShare">📤 Enviar</button></div>
   <img alt="Foto que se va a enviar">
+</div>
+<div id="compras" class="catov" hidden role="dialog" aria-label="Lista de compras">
+  <div class="cat-box res-box">
+    <div class="cat-top"><strong>🛒 Lista de compras</strong><span class="cat-acts"><button type="button" class="calc-x" id="compClose" aria-label="Cerrar">✕</button></span></div>
+    <div class="res-body" id="compBody"></div>
+  </div>
 </div>
 <div id="avisos" class="catov" hidden role="dialog" aria-label="Avisos">
   <div class="cat-box res-box">
@@ -1677,8 +1689,8 @@ body.editing nav.views{display:none}
              : '<div class="empty"><strong>Todavía no hay pedidos pagados</strong></div>')
         : '<div class="empty"><strong>Todavía no cargaste pedidos</strong>Tocá “Nuevo pedido” para anotar el primero.</div>';
     }else html = list.map(cardHtml).join('');
-    if(!q && state.filter==='proceso' && !(state.loading && !state.orders.length)) html = compraHtml(list) + html;
     setList(html);
+    updCompras();
   }
   /* Solo redibuja si algo cambió */
   var lastHtml = null;
@@ -2180,7 +2192,7 @@ body.editing nav.views{display:none}
     function vis(id){ var e = document.getElementById(id); return !!(e && !e.hidden); }
     function atras(){
       if(vis('docView')){ closeDocView(); return true; }
-      var ov = [['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
+      var ov = [['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
       for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
       if(state.editing){ if(document.querySelector('.pgd-bg')) return true; pgDialog({title:'¿Salir sin guardar?', msg:'Los cambios que hiciste se van a perder.', cancel:'Seguir editando', ok:'Salir', danger:true}).then(function(si){ if(si){ showEditor(false); window.scrollTo(0,0); } }); return true; }
       if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
@@ -2461,6 +2473,19 @@ body.editing nav.views{display:none}
     return h + '<p class="hint">Son los pedidos con fecha para pagar el resto. Cuando te pague, abrí el pedido y tocá “💰 Registrar pago”.</p></div></details>';
   }
   function normMed(m){ return String(m||'').toLowerCase().replace(/×/g,'x').replace(/\s+/g,'').replace(/cm$/,''); }
+  function updCompras(){
+    try{
+      var list = state.orders.filter(function(o){ return estado(o)==='proceso'; });
+      var h = compraHtml(list), m = h.match(/faltan (\d+)/), n = m ? parseInt(m[1],10) : 0;
+      $('compN').textContent = n; $('compN').hidden = !n;
+      if(!$('compras').hidden){ var b = $('compBody'); var nh = h.replace('<details class="compra"', '<details open class="compra"'); if(b._last !== nh){ b._last = nh; b.innerHTML = nh; wire(b); } }
+    }catch(_){}
+  }
+  function abrirCompras(){ $('compBody')._last = null; $('compras').hidden = false; document.documentElement.classList.add('ov-open'); updCompras(); }
+  function cerrarCompras(){ $('compras').hidden = true; document.documentElement.classList.remove('ov-open'); }
+  $('compBtn').addEventListener('click', abrirCompras);
+  $('compClose').addEventListener('click', cerrarCompras);
+  $('compras').addEventListener('click', function(e){ if(e.target===$('compras')) cerrarCompras(); });
   function compraHtml(list){
     var grupos = {}, orden = [];
     function add(key, base, ref){ if(!grupos[key]){ grupos[key] = Object.assign({n:0, quien:[], refs:[]}, base); orden.push(key); } var g = grupos[key]; g.n += ref.cant; g.refs.push(ref); if(g.quien.indexOf(ref.cliente)<0) g.quien.push(ref.cliente); }
