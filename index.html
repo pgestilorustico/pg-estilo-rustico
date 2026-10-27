@@ -1231,7 +1231,7 @@ body:not(.v-pedidos) .pagbar{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 61</p>
+    <p class="ver">versión app 62</p>
   </div>
 </div>
 
@@ -2096,8 +2096,11 @@ body:not(.v-pedidos) .pagbar{display:none}
     }); }, 'image/jpeg', 0.9); });
   }
   function docName(o){ var k = docKind(o); return ({presu:'Presupuesto', saldo:'Trabajo finalizado', pago:'Trabajo finalizado', pedido:'Pedido'}[k])+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.jpg'; }
-  async function shareDoc(o, b){
+  function waTxtFor(o){ var ta = document.getElementById('wa-'+o.id); return ta ? ta.value : waCorto(o); }
+  async function shareDoc(o, b, txt){
     var f = new File([b], docName(o), {type:'image/jpeg'});
+    if(txt){ try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).catch(function(){}); }catch(_){} }
+    if(txt && navigator.canShare && navigator.canShare({files:[f], text:txt})){ await navigator.share({files:[f], text:txt}); return 'shared'; }
     if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title:docName(o)}); return 'shared'; }
     var u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(u)}, 4000); return 'downloaded';
   }
@@ -2200,7 +2203,7 @@ body:not(.v-pedidos) .pagbar{display:none}
   document.addEventListener('click', function(e){ var dv = e.target.closest('[data-docview]'); if(dv){ e.preventDefault(); e.stopPropagation(); openDocView(); } }, true);
   $('docView').addEventListener('click', function(e){
     if(e.target.closest('#dvClose')){ closeDocView(); return; }
-    if(e.target.closest('#dvShare')){ var o = state.orders.find(function(x){return state.pdfB && x.id===state.pdfB.id}); if(o) shareDoc(o, state.pdfB.blob).catch(function(){}); return; }
+    if(e.target.closest('#dvShare')){ var o = state.orders.find(function(x){return state.pdfB && x.id===state.pdfB.id}); if(o) shareDoc(o, state.pdfB.blob, waTxtFor(o)).catch(function(){}); return; }
     if(e.target.tagName==='IMG'){ e.target.classList.toggle('zoom'); return; }
   });
   /* Botón "atrás" del celular: cierra lo que esté abierto y vuelve al inicio, sin salir de la app */
@@ -2634,8 +2637,8 @@ body:not(.v-pedidos) .pagbar{display:none}
         h += '<p class="wa-step"><span>1</span>La foto del '+dlab+'</p>';
         var rdy = state.pdfB && state.pdfB.id===o.id;
         h += '<div class="wa-photo">'+(rdy ? '<button type="button" class="wa-thumb" data-docview="'+esc(o.id)+'"><img src="'+state.pdfB.prev+'" alt="Vista previa"><span>🔍 Ver en grande</span></button>' : '<div class="wa-thumb wa-wait"><span>Armando la foto…</span></div>');
-        h += '<div class="wa-pacts">'+(rdy ? actBtn('wapdfshare',o.id,'btn primary wa-share','📤 Enviar foto') + actBtn('wapdfsave',o.id,'btn','Guardar en el celular') + '<small>Tocá la foto para revisarla antes de mandarla.</small>' : '<small>En un segundo vas a poder verla y enviarla.</small>')+'</div></div>';
-        h += '<p class="wa-step"><span>2</span>'+(full?'Texto completo':'Mensaje para acompañar la foto')+'</p>';
+        h += '<div class="wa-pacts">'+(rdy ? actBtn('wapdfshare',o.id,'btn primary wa-share','📤 Enviar foto y mensaje') + actBtn('wapdfsave',o.id,'btn','Guardar en el celular') + '<small>Se manda la foto junto con el mensaje de abajo. Tocá la foto para revisarla.</small>' : '<small>En un segundo vas a poder verla y enviarla.</small>')+'</div></div>';
+        h += '<p class="wa-step"><span>2</span>'+(full?'Texto completo (va con la foto)':'Mensaje que va con la foto')+'</p>';
         h += '<textarea autocapitalize="sentences" id="wa-'+esc(o.id)+'" aria-label="Texto para WhatsApp" class="'+(full?'':'wa-short')+'">'+esc(wt)+'</textarea>';
         if(wnum && state.waEdit!==o.id){
           h += '<div class="actions"><a class="btn primary wa-go" href="'+waUrl(wnum,wt)+'" target="_blank" rel="noopener">Abrir chat de '+esc(String(o.cliente).split(' ')[0])+'</a>'+actBtn('wacopy',o.id,'btn','Copiar texto')+'</div>';
@@ -3476,12 +3479,12 @@ body:not(.v-pedidos) .pagbar{display:none}
         var cv = await makeDoc(o), pb = await new Promise(function(res){ cv.toBlob(res, 'image/jpeg', 0.92); });
         var pv = document.createElement('canvas'); pv.width = 420; pv.height = Math.round(420*cv.height/cv.width); pv.getContext('2d').drawImage(cv,0,0,pv.width,pv.height);
         state.pdfB = {id:id, blob:pb, prev:pv.toDataURL('image/jpeg',.85)};
-        var rr = await shareDoc(o, pb); state.waMsg = rr==='shared' ? '' : 'La foto se descargó. Mandala por WhatsApp desde tu galería o descargas.';
+        var rr = await shareDoc(o, pb, waTxtFor(o)); state.waMsg = rr==='shared' ? '' : 'La foto se descargó. Mandala por WhatsApp desde tu galería o descargas.';
       }catch(e){ state.waMsg = (e && e.name==='AbortError') ? '' : (state.pdfB && state.pdfB.id===id ? 'Lista la foto. Tocá “Compartir foto” y elegí WhatsApp.' : 'No pude armar la foto.'); }
       lastHtml=null; render(); return;
     }
     if(act==='wapdfshare' && o && state.pdfB && state.pdfB.id===id){
-      try{ var r3 = await shareDoc(o, state.pdfB.blob); state.waMsg = r3==='shared' ? '' : 'La foto se descargó. Mandala por WhatsApp desde tu galería o descargas.'; }catch(e){ if(!(e && e.name==='AbortError')) state.waMsg = 'No se pudo compartir. Probá con “Descargar”.'; }
+      try{ var r3 = await shareDoc(o, state.pdfB.blob, waTxtFor(o)); state.waMsg = r3==='shared' ? 'Si en WhatsApp no te aparece el mensaje, ya quedó copiado: mantené apretado donde se escribe y tocá Pegar.' : 'La foto se descargó. Mandala por WhatsApp desde tu galería o descargas.'; }catch(e){ if(!(e && e.name==='AbortError')) state.waMsg = 'No se pudo compartir. Probá con “Descargar”.'; }
       lastHtml=null; render(); return;
     }
     if(act==='wapdfsave' && o && state.pdfB && state.pdfB.id===id){
