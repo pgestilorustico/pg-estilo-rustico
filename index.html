@@ -816,6 +816,25 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .envio-monto[hidden],.envio-tot[hidden]{display:none}
 .envio-monto input{width:110px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
 .envio-tot{flex-basis:100%;margin:0;font-size:.86rem;color:var(--muted)}.envio-tot b{color:var(--accent)}
+
+/* Cartel de confirmación */
+.pgd-bg{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(20,14,10,0);-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0);transition:background .18s,backdrop-filter .18s}
+.pgd-bg.on{background:rgba(20,14,10,.42);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.pgd{width:100%;max-width:320px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:22px;padding:22px 20px 16px;text-align:center;box-shadow:0 24px 60px -18px rgba(40,22,10,.5);transform:scale(.94);opacity:0;transition:transform .18s,opacity .18s}
+.pgd-bg.on .pgd{transform:scale(1);opacity:1}
+.pgd-ic{width:46px;height:46px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--accent)}
+.pgd-ic.d{color:var(--danger)}
+.pgd-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pgd h3{margin:0 0 6px;font-family:var(--head);font-size:1.08rem;font-weight:700;letter-spacing:.005em}
+.pgd p{margin:0 0 4px;font-size:.88rem;line-height:1.4;color:var(--muted)}
+.pgd-in{width:100%;box-sizing:border-box;margin:12px 0 4px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:1.1rem;text-align:center}
+.pgd-in:focus{outline:2px solid var(--accent-line);border-color:var(--accent)}
+.pgd small{display:block;font-size:.74rem;color:var(--muted)}
+.pgd-b{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.pgd-b button{padding:12px 6px;border-radius:12px;font:inherit;font-size:.86rem;white-space:nowrap;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.pgd-b .pgd-ok{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pgd-b .pgd-ok.d{background:#B3402F;border-color:#B3402F;color:#fff}
+.pgd-b button:active{transform:scale(.97)}
 </style>
 </head>
 <body>
@@ -1149,7 +1168,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 56</p>
+    <p class="ver">versión app 57</p>
   </div>
 </div>
 
@@ -1451,6 +1470,21 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 (function(){
   var money = new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0});
   var $ = function(id){return document.getElementById(id)};
+  /* Cartel de confirmación propio (en lugar del cartel del navegador) */
+  window.pgDialog = function(o){
+    return new Promise(function(res){
+      var bg = document.createElement('div'); bg.className = 'pgd-bg';
+      var ic = o.icon || (o.danger ? '<svg viewBox="0 0 24 24"><path d="M12 8v5"/><path d="M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg>' : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>');
+      bg.innerHTML = '<div class="pgd" role="alertdialog" aria-modal="true"><div class="pgd-ic'+(o.danger?' d':'')+'">'+ic+'</div><h3>'+o.title+'</h3>'+(o.msg?'<p>'+o.msg+'</p>':'')+(o.input?'<input class="pgd-in" type="text" inputmode="decimal" value="'+(o.input.value||'')+'" placeholder="'+(o.input.placeholder||'')+'">'+(o.input.hint?'<small>'+o.input.hint+'</small>':''):'')+'<div class="pgd-b"><button type="button" class="pgd-no">'+(o.cancel||'Cancelar')+'</button><button type="button" class="pgd-ok'+(o.danger?' d':'')+'">'+(o.ok||'Aceptar')+'</button></div></div>';
+      document.body.appendChild(bg); requestAnimationFrame(function(){ bg.classList.add('on'); });
+      var inp = bg.querySelector('.pgd-in'); if(inp) setTimeout(function(){ try{ inp.focus(); inp.select(); }catch(_){} }, 120);
+      function fin(v){ bg.classList.remove('on'); setTimeout(function(){ bg.remove(); }, 180); res(v); }
+      bg.querySelector('.pgd-no').onclick = function(){ fin(o.input ? null : false); };
+      bg.querySelector('.pgd-ok').onclick = function(){ fin(o.input ? inp.value : true); };
+      bg.addEventListener('click', function(e){ if(e.target===bg) fin(o.input ? null : false); });
+      if(inp) inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); fin(inp.value); } });
+    });
+  };
   var state = {orders:[], filter:'proceso', q:'', open:null, draft:null, confirmDel:null, db:null, assets:null, col:null, mem:false, fotos:{}};
 
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -2108,7 +2142,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       if(vis('docView')){ closeDocView(); return true; }
       var ov = [['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
       for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
-      if(state.editing){ if(!window.confirm('¿Salir sin guardar los cambios?')) return true; showEditor(false); window.scrollTo(0,0); return true; }
+      if(state.editing){ if(document.querySelector('.pgd-bg')) return true; pgDialog({title:'¿Salir sin guardar?', msg:'Los cambios que hiciste se van a perder.', cancel:'Seguir editando', ok:'Salir', danger:true}).then(function(si){ if(si){ showEditor(false); window.scrollTo(0,0); } }); return true; }
       if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
       var ab = document.querySelectorAll('#list details[open]');
       if(ab.length || state.waOpen || state.open){ ab.forEach(function(d){ d.open = false; }); state.openSet = {}; state.open = null; state.waOpen = null; state.payOpen = null; state.vencOpen = null; state.zoom = null; lastHtml = null; render(); window.scrollTo(0,0); return true; }
@@ -3191,7 +3225,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   $('nlist').addEventListener('click', async function(e){
     var ed = e.target.closest('[data-ned]'), dl = e.target.closest('[data-ndel]');
     if(ed){ var n = state.notas.find(function(x){return x.id===ed.getAttribute('data-ned')}); if(!n) return; state.nEdit = n.id; $('nMat').value=n.mat||''; $('nMed').value=n.med||''; $('nPre').value=n.pre||''; $('nDonde').value=n.donde||''; $('nTxt').value=n.txt||''; $('nTit').textContent='Editar nota'; $('nSave').textContent='Guardar cambios'; $('nCancel').hidden=false; $('gNotas').scrollIntoView({behavior:'smooth'}); return; }
-    if(dl){ var n2 = state.notas.find(function(x){return x.id===dl.getAttribute('data-ndel')}); if(!n2) return; if(!window.confirm('¿Borrar la nota de "'+n2.mat+'"?')) return; try{ if(nCol) await nCol.doc(n2.id).delete(); else { state.notas = state.notas.filter(function(x){return x.id!==n2.id}); renderNotas(); } }catch(_){} }
+    if(dl){ var n2 = state.notas.find(function(x){return x.id===dl.getAttribute('data-ndel')}); if(!n2) return; if(!(await pgDialog({title:'¿Borrar esta nota?', msg:'Se va a borrar la nota de “'+esc(n2.mat||'')+'”.', ok:'Borrar', danger:true}))) return; try{ if(nCol) await nCol.doc(n2.id).delete(); else { state.notas = state.notas.filter(function(x){return x.id!==n2.id}); renderNotas(); } }catch(_){} }
   });
   document.querySelectorAll('.gsb').forEach(function(b){ b.addEventListener('click', function(){
     var v = b.getAttribute('data-gs'); document.querySelectorAll('.gsb').forEach(function(x){ x.classList.toggle('on', x===b); });
@@ -3305,7 +3339,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(act==='vencent' && o){ o.vence = ''; state.vencOpen = null; await saveOrder(o).catch(showErr); return; }
     if(act==='paydel' && o){
       var pi = parseInt(a.getAttribute('data-i'),10), lst = pagosDe(o), pdel = lst[pi]; if(!pdel) return;
-      if(!window.confirm('¿Borrar el pago de '+money.format(num(pdel.monto))+(pdel.fecha?' del '+fmtDate(pdel.fecha):'')+'?')) return;
+      if(!(await pgDialog({title:'¿Borrar este pago?', msg:'Pago de <b>'+money.format(num(pdel.monto))+'</b>'+(pdel.fecha?' del '+fmtDate(pdel.fecha):'')+'.', ok:'Borrar', danger:true}))) return;
       lst.splice(pi,1);
       o.pagos = lst.map(function(p){ return {fecha:p.fecha||'', monto:num(p.monto), nota:p.nota||''}; });
       o.sena = o.pagos.reduce(function(acc,p){ return acc+num(p.monto); },0);
@@ -3314,9 +3348,9 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     }
     if(act==='tstart' && o){ await timerAct(o,'start'); return; }
     if(act==='tpause' && o){ await timerAct(o,'pause'); return; }
-    if(act==='treset' && o){ if(!window.confirm('¿Poner el contador de este pedido en cero?')) return; o.tiempo = {seg:0, desde:''}; await saveOrder(o).catch(showErr); return; }
+    if(act==='treset' && o){ if(!(await pgDialog({title:'¿Poner el contador en cero?', msg:'Se borran las horas registradas en este pedido.', ok:'Poner en cero', danger:true}))) return; o.tiempo = {seg:0, desde:''}; await saveOrder(o).catch(showErr); return; }
     if(act==='tfix' && o){
-      var cur = Math.round(segTrab(o)/360)/10, v = window.prompt('¿Cuántas horas le dedicaste a este pedido? (ej: 6,5 = 6 h 30 min · 0,5 = 30 min)', String(cur).replace('.',','));
+      var cur = Math.round(segTrab(o)/360)/10, v = await pgDialog({title:'Corregir horas', msg:'¿Cuántas horas le dedicaste a este pedido?', input:{value:String(cur).replace('.',','), hint:'Ej: 6,5 = 6 h 30 min · 0,5 = 30 min'}, ok:'Guardar', icon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5"/><path d="M10 2h4"/></svg>'});
       if(v===null) return; var nh = parseFloat(String(v).replace(',','.')); if(isNaN(nh) || nh<0) return;
       var t = JSON.parse(JSON.stringify(o.tiempo||{})); t.seg = Math.round(nh*3600); if(t.desde) t.desde = new Date(ahora()).toISOString(); o.tiempo = t; await saveOrder(o).catch(showErr); return;
     }
