@@ -876,6 +876,21 @@ body.editing nav.views{display:none}
 #compBody .compra-body{padding:0}
 
 @media (max-width:520px){ header.brand .brand-txt{max-width:calc(100vw - 252px);min-width:0} header.brand .brand-txt > *{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} header.brand .brand-txt #hoyTxt{font-size:.82rem} header.brand .hbtns{gap:5px;right:12px} header.brand .hbtn{height:36px;min-width:36px;padding:0 7px;border-radius:12px} header.brand .hbtn .calc-ic{width:19px;height:19px} }
+
+/* Tarjetas de arriba: Terminados ancho completo + barra de cobrados */
+.stats .st-wide{grid-column:1 / -1}
+.st.st-term{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+.st-term .stt{align-items:flex-start}
+.st-term .stt{display:flex;flex-direction:column;gap:2px}
+.st-term em{font-style:normal;font-size:.74rem;font-weight:600;opacity:.75;text-align:left}
+.st.st-term b{font-size:1.6rem}
+#resBtn[hidden]{display:none}
+.st.pagbar{margin-top:12px;display:flex;flex-direction:row;align-items:center;gap:8px;padding:10px 13px;border-radius:16px;font-size:.86rem;font-weight:600}
+.st.pagbar .nav-ic{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.st.pagbar .pb-t{flex:1;text-align:left}
+.st.pagbar b{font-size:1.05rem;line-height:1}
+.st.pagbar .rb-arrow{font-size:1.2rem;opacity:.7;margin-left:4px}
+body:not(.v-pedidos) .pagbar{display:none}
 </style>
 </head>
 <body>
@@ -899,10 +914,10 @@ body.editing nav.views{display:none}
     <div class="stats" id="stats">
       <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="proceso"><small>En proceso</small><b id="stProc">–</b></button></form>
       <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="st" data-st="presupuesto"><small>Presupuestos</small><b id="stPres">–</b></button></form>
-      <form class="actf tabf" data-filter="saldo"><button type="submit" class="st" data-st="saldo"><small>Por cobrar</small><b id="stCobrar">–</b></button></form>
-      <form class="actf tabf" data-filter="pagado"><button type="submit" class="st" data-st="pagado"><small>Pagados</small><b id="stPag">–</b></button></form>
+      <form class="actf tabf st-wide" data-filter="saldo"><button type="submit" class="st st-term" data-st="saldo"><span class="stt"><small>Terminados</small><em>Falta cobrar y entregar</em></span><b id="stCobrar">–</b></button></form>
     </div>
-    <button type="button" class="resbar" id="resBtn"><svg class="nav-ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span id="resBarTxt">Resumen del mes</span><span class="rb-arrow">›</span></button>
+    <form class="actf tabf" data-filter="pagado"><button type="submit" class="st pagbar" data-st="pagado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.6 2.6L16.2 9.5"/></svg><span class="pb-t">Terminados y cobrados</span><b id="stPag">–</b><span class="rb-arrow">›</span></button></form>
+    <button type="button" class="resbar" id="resBtn" hidden><svg class="nav-ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span id="resBarTxt">Resumen del mes</span><span class="rb-arrow">›</span></button>
   </header>
 
   <div id="notice"></div>
@@ -1198,6 +1213,8 @@ body.editing nav.views{display:none}
       <label class="aj-row" for="importFile"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span><span class="aj-tx"><b>Importar datos</b><small id="importMsg">Desde un archivo .json</small></span><span class="aj-chev">›</span></label>
       <input type="file" id="importFile" accept=".json,application/json" hidden>
     </div>
+    <p class="aj-sec">Resumen</p>
+    <div class="aj-grp"><button type="button" class="aj-row" id="resBtn2"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="aj-tx"><b>Resumen del mes</b><small id="resAjTxt">Cobrado, ganancia y gastos del mes</small></span><span class="aj-chev">›</span></button></div>
     <p class="aj-sec">Presupuestos</p>
     <div class="aj-grp"><div class="aj-row aj-static"><span class="aj-tx"><b>Validez del presupuesto</b><small>Se agrega en la foto y en el texto de WhatsApp</small></span></div></div>
     <div class="themesw aj-val" role="group" aria-label="Validez del presupuesto"><button type="button" data-val="7">7 días</button><button type="button" data-val="10">10 días</button><button type="button" data-val="15">15 días</button></div>
@@ -1214,7 +1231,7 @@ body.editing nav.views{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 60</p>
+    <p class="ver">versión app 61</p>
   </div>
 </div>
 
@@ -2422,7 +2439,8 @@ body.editing nav.views{display:none}
     return h;
   }
   function drawResumen(){ $('resBody').innerHTML = resumenHtml(resMes); }
-  function updResBar(){ try{ var m = ymd(new Date()), d = mesData(m); $('resBarTxt').innerHTML = 'Resumen de '+esc(MESES[new Date().getMonth()])+' · <b>'+money.format(d.cob)+'</b> cobrado'; }catch(_){} }
+  function updResBar(){ try{ var m = ymd(new Date()), d = mesData(m); $('resBarTxt').innerHTML = 'Resumen de '+esc(MESES[new Date().getMonth()])+' · <b>'+money.format(d.cob)+'</b> cobrado'; $('resAjTxt').innerHTML = esc(MESES[new Date().getMonth()].charAt(0).toUpperCase()+MESES[new Date().getMonth()].slice(1))+' · '+money.format(d.cob)+' cobrado'; }catch(_){} }
+  $('resBtn2').addEventListener('click', function(){ $('resBtn').click(); });
   $('resBtn').addEventListener('click', function(){ resMes = ymd(new Date()); drawResumen(); $('resumen').hidden = false; document.documentElement.classList.add('ov-open'); });
   $('resClose').addEventListener('click', function(){ $('resumen').hidden = true; document.documentElement.classList.remove('ov-open'); });
   $('resumen').addEventListener('click', function(e){ if(e.target===$('resumen')){ $('resumen').hidden = true; document.documentElement.classList.remove('ov-open'); } var b = e.target.closest && e.target.closest('[data-rm]'); if(b && !b.disabled){ resMes = mesMas(resMes, parseInt(b.getAttribute('data-rm'),10)); drawResumen(); } });
