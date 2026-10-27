@@ -835,6 +835,41 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .pgd-b .pgd-ok{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .pgd-b .pgd-ok.d{background:#B3402F;border-color:#B3402F;color:#fff}
 .pgd-b button:active{transform:scale(.97)}
+
+/* Formulario por secciones */
+.sheet h3#formTitle{font-size:1.25rem;margin:0 0 12px}
+.estchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px}
+.estchips .est{display:inline-flex;align-items:center;gap:0;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:.84rem;font-weight:600;cursor:pointer}
+.estchips .est input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.estchips .est:has(input:checked){border-color:transparent;box-shadow:inset 0 0 0 1.5px currentColor}
+.estchips .est-rechazado{color:var(--muted);opacity:.85}
+.fsec{border:1px solid var(--line);border-radius:16px;margin:0 0 12px;background:var(--surface);overflow:hidden}
+.fsec > summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
+.fsec > summary::-webkit-details-marker{display:none}
+.fs-n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--accent);font-weight:700;font-size:.82rem}
+.fsec[open] .fs-n{background:var(--accent);color:var(--accent-ink)}
+.fs-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.fs-t b{font-family:var(--head);font-size:.98rem;font-weight:600;color:var(--ink)}
+.fs-t small{font-size:.76rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fsec[open] .fs-t small{display:none}
+.fs-ar{flex:none;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .15s}
+.fsec[open] .fs-ar{transform:rotate(-135deg) translateY(-2px)}
+.fs-b,.fs-b *{box-sizing:border-box}
+.fs-b{padding:2px 14px 14px;border-top:1px solid var(--line);padding-top:14px}
+.fs-b fieldset.cortes{margin-bottom:12px}
+.fs-b fieldset.cortes:last-child{margin-bottom:0}
+.fs-b .costos{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+.fs-b .fprecio{margin-top:4px}
+.fs-b .fprecio input{font-size:1.25rem;font-weight:700;color:var(--accent)}
+.fs-b .envio-box{margin-bottom:0}
+.fs-b > *:last-child{margin-bottom:0}
+body.editing nav.views{display:none}
+.fbar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:8px;margin:8px -16px -18px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -10px 24px -16px rgba(60,35,15,.35);border-radius:0 0 var(--r) var(--r)}
+.fbar-tot{flex:1;display:flex;flex-direction:column;line-height:1.1}
+.fbar-tot small{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.fbar-tot b{font-family:var(--head);font-size:1.2rem;color:var(--ink)}
+.fbar .btn{padding:11px 16px}
+.fbar #saveBtn{padding:11px 22px}
 </style>
 </head>
 <body>
@@ -892,6 +927,15 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   <form class="sheet" id="form" novalidate>
     <button type="submit" class="defbtn" tabindex="-1" aria-hidden="true"></button>
     <h3 id="formTitle">Nuevo pedido</h3>
+    <div class="estchips" role="radiogroup" aria-label="Estado del pedido">
+      <label class="est est-presupuesto"><input type="radio" name="fEstado" id="fEstPresu" value="presupuesto"><span>Presupuesto</span></label>
+      <label class="est est-proceso"><input type="radio" name="fEstado" id="fEstProceso" value="proceso"><span>En proceso</span></label>
+      <label class="est est-saldo"><input type="radio" name="fEstado" id="fEstSaldo" value="saldo"><span>Terminado</span></label>
+      <label class="est est-pagado"><input type="radio" name="fEstado" id="fEstPagado" value="pagado"><span>Pagado</span></label>
+      <label class="est est-rechazado"><input type="radio" name="fEstado" id="fEstRech" value="rechazado"><span>No aceptado</span></label>
+    </div>
+    <details class="fsec" id="sec1" open><summary><span class="fs-n">1</span><span class="fs-t"><b>Cliente y pedido</b><small id="sec1Sum"></small></span><span class="fs-ar" aria-hidden="true"></span></summary>
+    <div class="fs-b">
     <label class="f">Nombre del cliente
       <input type="text" id="fCliente" class="capw" autocapitalize="words" autocomplete="off" list="cliList" placeholder="Ej: Marta Gómez">
       <datalist id="cliList"></datalist>
@@ -908,13 +952,20 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     <label class="f">Medidas del mueble
       <input type="text" autocapitalize="sentences" id="fMedidas" autocomplete="off" placeholder="Ej: 180 x 80 x 75 cm">
     </label>
-
+    <div class="f" style="margin-bottom:12px">
+      <span style="font-weight:500;font-size:.92rem">Fotos del mueble</span>
+      <div class="photos" id="fPhotos"></div>
+      <input type="file" id="fFile" accept="image/*" multiple hidden>
+      <p class="hint" id="photoHint"></p>
+    </div>
+    </div></details>
+    <details class="fsec" id="sec2"><summary><span class="fs-n">2</span><span class="fs-t"><b>Cortes y materiales</b><small id="sec2Sum"></small></span><span class="fs-ar" aria-hidden="true"></span></summary>
+    <div class="fs-b">
     <fieldset class="cortes">
       <legend>Cortes</legend>
       <div id="fCortes"></div>
       <button type="submit" formnovalidate class="btn" id="addCorte">+ Agregar corte</button>
     </fieldset>
-
     <fieldset class="cortes compras-f">
       <legend>Para comprar</legend>
       <p class="sub2">Tablas de pino (3 metros)</p>
@@ -934,16 +985,10 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
         <span class="de">metros</span>
       </div>
     </fieldset>
-
-    <div class="f" style="margin-bottom:12px">
-      <span style="font-weight:500;font-size:.92rem">Fotos del mueble</span>
-      <div class="photos" id="fPhotos"></div>
-      <input type="file" id="fFile" accept="image/*" multiple hidden>
-      <p class="hint" id="photoHint"></p>
-    </div>
-
-    <fieldset class="costos">
-      <legend>Materiales y mano de obra</legend>
+    </div></details>
+    <details class="fsec" id="sec3" open><summary><span class="fs-n">3</span><span class="fs-t"><b>Costos y precio</b><small id="sec3Sum"></small></span><span class="fs-ar" aria-hidden="true"></span></summary>
+    <div class="fs-b">
+    <div class="costos">
       <details class="ptablas">
         <summary>Ver precios de tablas ▾</summary>
         <p class="pt-note">Tablas de 3 metros · espesor 1" = 2 cm</p>
@@ -978,11 +1023,11 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       </div>
         <input type="hidden" id="fTorPrecio" value="">
       </div>
-      <div class="csum"><span>Suma</span><strong id="fCostoTotal">$ 0</strong></div>
+      <div class="csum"><span>Suma de costos</span><strong id="fCostoTotal">$ 0</strong></div>
       <div class="csum gan" id="fGanRow" hidden><span>Ganancia con el precio total</span><strong id="fGanancia">$ 0</strong></div>
       <button type="submit" formnovalidate class="btn" id="usarSuma">Usar la suma como precio total</button>
       <div class="psug">
-        <p class="psug-t">💡 Precio sugerido</p>
+        <p class="psug-t">💡 Calcular el precio</p>
         <div class="psug-row">
           <label>Horas estimadas<input type="number" id="fHorasEst" inputmode="decimal" min="0" step="0.5" placeholder="0"></label>
           <label>Tu valor hora ($)<input type="number" id="fValorHora" inputmode="numeric" min="0" step="any" placeholder="0"></label>
@@ -996,21 +1041,22 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
           <div class="psug-acts"><button type="button" class="btn" id="psugManoBtn">Poner en Mano de obra</button><button type="button" class="btn primary" id="psugPrecioBtn">Usar como precio total</button></div>
         </div>
       </div>
-    </fieldset>
-
-    <div class="two">
-      <label class="f">Precio total ($)
+    </div>
+    <label class="f fprecio">Precio total ($)
         <input type="number" id="fPrecio" inputmode="numeric" min="0" step="any" placeholder="0">
       </label>
-      <label class="f">Seña ($)
-        <input type="number" id="fSena" inputmode="numeric" min="0" step="any" placeholder="0">
-      </label>
-    </div>
     <div class="envio-box">
       <label class="envio-chk"><input type="checkbox" id="fEnvioOn"><span>🚚 Con envío a domicilio</span></label>
       <label class="envio-monto" id="fEnvioWrap" hidden>$ <input type="number" id="fEnvio" inputmode="numeric" min="0" step="any" value="5000" aria-label="Precio del envío"></label>
       <p class="envio-tot" id="fEnvioTot" hidden></p>
     </div>
+
+    </div></details>
+    <details class="fsec" id="sec4"><summary><span class="fs-n">4</span><span class="fs-t"><b>Cobro, fechas y notas</b><small id="sec4Sum"></small></span><span class="fs-ar" aria-hidden="true"></span></summary>
+    <div class="fs-b">
+    <label class="f">Seña ($)
+        <input type="number" id="fSena" inputmode="numeric" min="0" step="any" placeholder="0">
+      </label>
     <label class="f">Paga el resto el (opcional)
       <input type="date" id="fVence">
       <span class="hint">Si te paga el saldo más adelante, poné la fecha y te aviso arriba de todo cuando se acerque.</span>
@@ -1026,19 +1072,13 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     <label class="f">Notas (opcional)
       <textarea autocapitalize="sentences" id="fNotas" rows="2" placeholder="Color, barniz, detalles del retiro…"></textarea>
     </label>
-    <fieldset class="estados">
-      <legend>Estado</legend>
-      <label class="est est-presupuesto"><input type="radio" name="fEstado" id="fEstPresu" value="presupuesto"> Presupuesto enviado</label>
-      <label class="est est-rechazado"><input type="radio" name="fEstado" id="fEstRech" value="rechazado"> Presupuesto no aceptado</label>
-      <label class="est est-proceso"><input type="radio" name="fEstado" id="fEstProceso" value="proceso"> En proceso</label>
-      <label class="est est-saldo"><input type="radio" name="fEstado" id="fEstSaldo" value="saldo"> Terminado, falta cobrar</label>
-      <label class="est est-pagado"><input type="radio" name="fEstado" id="fEstPagado" value="pagado"> Pagado, listo</label>
-    </fieldset>
+    </div></details>
 
     <p class="err" id="formErr" role="alert"></p>
-    <div class="actions">
-      <button type="submit" class="btn primary" id="saveBtn">Guardar pedido</button>
+    <div class="fbar">
+      <div class="fbar-tot"><small>Total</small><b id="fbarTot">$ 0</b></div>
       <button type="submit" formnovalidate class="btn" id="cancelBtn" value="cancel">Cancelar</button>
+      <button type="submit" class="btn primary" id="saveBtn">Guardar</button>
     </div>
   </form>
   </section>
@@ -1168,7 +1208,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 57</p>
+    <p class="ver">versión app 58</p>
   </div>
 </div>
 
@@ -2626,6 +2666,24 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   }
 
   /* ---------- Formulario ---------- */
+  function updSecs(){
+    try{
+      var c = $('fCliente').value.trim(), pd = $('fPedido').value.trim(), md = $('fMedidas').value.trim();
+      $('sec1Sum').textContent = [c, pd, md].filter(Boolean).join(' · ') || 'Nombre, pedido, medidas y fotos';
+      var nc = readCortes().filter(function(x){ return x.medida || num(x.cant); }).length, nt = readTablas().filter(function(x){ return (parseInt(x.cant,10)||0)>0; }).reduce(function(a,x){ return a+(parseInt(x.cant,10)||0); },0), nm = readMel().filter(function(x){ return x.medida; }).length, tp = num($('fTapa').value);
+      var p2 = []; if(nc) p2.push(nc+(nc===1?' corte':' cortes')); if(nt) p2.push(nt+(nt===1?' tabla':' tablas')); if(nm) p2.push(nm+' de melamina'); if(tp) p2.push(tp+' m de tapacanto');
+      $('sec2Sum').textContent = p2.join(' · ') || 'Opcional · cortes, tablas, melamina y placas';
+      var pr = num($('fPrecio').value), ev = $('fEnvioOn').checked ? num($('fEnvio').value) : 0, tot = pr + ev;
+      $('sec3Sum').textContent = pr ? 'Precio '+money.format(pr)+(ev?' + envío '+money.format(ev):'') : 'Costos, precio sugerido y envío';
+      var sn = num($('fSena').value), en = $('fEntrega').value, p4 = [];
+      if(sn) p4.push('Seña '+money.format(sn)); if(en) p4.push('Entrega '+fmtDate(en).slice(0,5)); if($('fVence').value) p4.push('Paga el resto '+fmtDate($('fVence').value).slice(0,5));
+      $('sec4Sum').textContent = p4.join(' · ') || 'Seña, fecha de pago, entrega y notas';
+      $('fbarTot').textContent = money.format(tot);
+    }catch(_){}
+  }
+  $('form').addEventListener('input', function(){ updSecs(); });
+  $('form').addEventListener('change', function(){ updSecs(); });
+  $('form').addEventListener('click', function(){ setTimeout(updSecs, 50); });
   function openForm(o){
     state.draft = o ? JSON.parse(JSON.stringify(o)) : {id:newId(), fotos:[], creado:new Date().toISOString(), fecha:(function(){var n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')})()};
     var d = state.draft;
@@ -2635,8 +2693,9 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||10000; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
+    $('sec1').open = true; $('sec3').open = true; $('sec2').open = !!(o && ((d.cortes||[]).length || (d.tablas||[]).length || (d.melamina||[]).length)); $('sec4').open = !!o;
     drawPhotos();
-    showEditor(true);
+    showEditor(true); setTimeout(updSecs, 0);
   }
   /* ---------- Copiar datos de un pedido anterior ---------- */
   function tieneDatos(o){ return ((Array.isArray(o.cortes)&&o.cortes.length)?2:0) + ((Array.isArray(o.tablas)&&o.tablas.length)||(Array.isArray(o.melamina)&&o.melamina.length)?2:0) + ((num(o.costoMadera)||num(o.costoMano))?2:0) + (o.medidas?1:0); }
@@ -2731,6 +2790,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(show){ var g = p-mat; $('fGanancia').textContent = money.format(g); $('fGanancia').classList.toggle('neg', g<0); }
   }
   function showEditor(on){
+    document.body.classList.toggle('editing', !!on);
     diag('showEditor', {on:on, editorTop:$('editor').getBoundingClientRect().top, h:innerHeight});
     state.editing = on;
     $('editor').hidden = !on; $('list').hidden = on;
@@ -2805,7 +2865,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(!cliente){err.textContent='Escribí el nombre del cliente.';$('fCliente').focus();return}
     if(!pedido){err.textContent='Escribí qué pedido te hizo.';$('fPedido').focus();return}
     var envioF = $('fEnvioOn').checked ? num($('fEnvio').value) : 0;
-    if(sena>precio+envioF && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('fSena').focus();return}
+    if(sena>precio+envioF && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('sec4').open=true;$('fSena').focus();return}
     delete d._editando; d.cliente=cliente; d.pedido=pedido; d.medidas=$('fMedidas').value.trim(); d.cortes=readCortes().filter(function(c){return c.medida || num(c.cant)}).map(function(c){return {cant: Math.max(1, parseInt(c.cant,10)||1), medida: c.medida}});
     d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){return {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}}); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
     $('saveBtn').disabled = true;
