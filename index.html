@@ -808,6 +808,14 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
 .dv-bar .btn.primary{background:#A26A40;border-color:#A26A40;color:#FFF7EC}
 #docView img{display:block;width:100%;max-width:900px;margin:0 auto 30px;cursor:zoom-in}
 #docView img.zoom{width:220%;max-width:none;cursor:zoom-out}
+
+.envio-box{margin:2px 0 14px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--soft);display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.envio-chk{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;color:var(--ink);cursor:pointer}
+.envio-chk input{width:20px;height:20px;accent-color:var(--accent)}
+.envio-monto{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--muted)}
+.envio-monto[hidden],.envio-tot[hidden]{display:none}
+.envio-monto input{width:110px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.envio-tot{flex-basis:100%;margin:0;font-size:.86rem;color:var(--muted)}.envio-tot b{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -979,6 +987,11 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
         <input type="number" id="fSena" inputmode="numeric" min="0" step="any" placeholder="0">
       </label>
     </div>
+    <div class="envio-box">
+      <label class="envio-chk"><input type="checkbox" id="fEnvioOn"><span>🚚 Con envío a domicilio</span></label>
+      <label class="envio-monto" id="fEnvioWrap" hidden>$ <input type="number" id="fEnvio" inputmode="numeric" min="0" step="any" value="5000" aria-label="Precio del envío"></label>
+      <p class="envio-tot" id="fEnvioTot" hidden></p>
+    </div>
     <label class="f">Paga el resto el (opcional)
       <input type="date" id="fVence">
       <span class="hint">Si te paga el saldo más adelante, poné la fecha y te aviso arriba de todo cuando se acerque.</span>
@@ -1136,7 +1149,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 54</p>
+    <p class="ver">versión app 55</p>
   </div>
 </div>
 
@@ -1444,7 +1457,10 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   function num(v){var n=parseFloat(v);return isNaN(n)||n<0?0:n}
   function blob(id){return state.fotos[id]||''}
   function estado(o){ if(o.pagado) return 'pagado'; if(o.estado==='presupuesto') return 'presupuesto'; if(o.estado==='rechazado') return 'rechazado'; if(o.estado==='saldo' || (!o.estado && o.importado)) return 'saldo'; return 'proceso'; }
-  function saldo(o){return o.pagado?0:Math.max(0,num(o.precio)-num(o.sena))}
+  function updEnvio(){ try{ var on = $('fEnvioOn').checked, e = num($('fEnvio').value), pr = num($('fPrecio').value); $('fEnvioWrap').hidden = !on; $('fEnvioTot').hidden = !(on && pr>0); if(on && pr>0) $('fEnvioTot').innerHTML = 'Total a abonar con envío: <b>'+money.format(pr+e)+'</b>'; }catch(_){} }
+  ['fEnvioOn','fEnvio','fPrecio'].forEach(function(i){ var el = document.getElementById(i); if(el){ el.addEventListener('input', updEnvio); el.addEventListener('change', updEnvio); } });
+  function totalDe(o){ return num(o.precio) + num(o.envio); }
+  function saldo(o){return o.pagado?0:Math.max(0,totalDe(o)-num(o.sena))}
   function pagosDe(o){
     var P = Array.isArray(o.pagos) ? o.pagos.filter(function(p){return p && num(p.monto)>0}) : [];
     var sumP = P.reduce(function(a,p){return a+num(p.monto)},0), tot = num(o.sena);
@@ -1544,7 +1560,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     state.orders.forEach(function(o){
       var s = saldo(o);
       tDue += s;
-      tPaid += o.pagado ? num(o.precio) : Math.min(num(o.sena), num(o.precio)||num(o.sena));
+      tPaid += o.pagado ? totalDe(o) : Math.min(num(o.sena), totalDe(o)||num(o.sena));
     });
     if($('tDue')) $('tDue').textContent = money.format(tDue);
     try{
@@ -1661,7 +1677,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
       var ped = state.orders.slice().sort(function(a,b){return String(b.creado||'').localeCompare(String(a.creado||''))}).map(function(o){
         return {'Cliente':o.cliente||'', 'Pedido':o.pedido||'', 'Estado':ESTADOS[estado(o)]||'', 'Fecha del pedido':o.fecha?fmtDate(o.fecha):'', 'Entrega':o.entrega?fmtDate(o.entrega):'',
           'Medidas':o.medidas||'', 'Cortes':(Array.isArray(o.cortes)?o.cortes:[]).map(function(c){return (c.cant||1)+' de '+(c.medida||'')}).join('; '),
-          'Precio':num(o.precio), 'Seña':num(o.sena), 'Saldo':saldo(o), 'Madera':o.madera||'', '$ Madera':num(o.costoMadera), '$ Tornillos':num(o.costoTornillos),
+          'Precio':num(o.precio), 'Envío':num(o.envio), 'Seña':num(o.sena), 'Saldo':saldo(o), 'Madera':o.madera||'', '$ Madera':num(o.costoMadera), '$ Tornillos':num(o.costoTornillos),
           'Tablas de pino':(Array.isArray(o.tablas)?o.tablas:[]).map(function(t){return t.cant+' de '+t.medida}).join('; '), 'Melamina':((o.melColor?o.melColor+': ':'')+(Array.isArray(o.melamina)?o.melamina:[]).map(function(m){return m.cant+' de '+m.medida}).join('; ')), 'Tapacanto (m)':num(o.tapacanto), '$ Melamina':num(o.costoMelamina), '$ Tapacanto':num(o.costoTapacanto), '$ Otros desgastes':num(o.costoOtros), '$ Mano de obra':num(o.costoMano), 'Notas':o.notas||'', 'Fotos':(Array.isArray(o.fotos)?o.fotos.length:0)};
       });
       var cli = state.clientes.slice().sort(function(a,b){return String(a.nombre||'').localeCompare(String(b.nombre||''),'es')}).map(function(c){
@@ -1724,7 +1740,8 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     L.push('');
     L.push('• Trabajo: '+(o.pedido||''));
     if(o.medidas && !esSaldo) L.push('• Medidas: '+o.medidas);
-    if(num(o.precio)) L.push('• Precio total: '+money.format(num(o.precio)));
+    if(num(o.envio)){ L.push('• Precio del trabajo: '+money.format(num(o.precio))); L.push('• Envío a domicilio: '+money.format(num(o.envio))); L.push('• *Total: '+money.format(totalDe(o))+'*'); }
+    else if(num(o.precio)) L.push('• Precio total: '+money.format(num(o.precio)));
     var sinSena = st!=='pagado' && !esSaldo && !num(o.sena);
     if(sinSena){
       if(num(o.precio)) L.push('• Seña para tomar el pedido (50%): '+money.format(Math.round(num(o.precio)/2)));
@@ -1738,7 +1755,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     }
     if(o.entrega && !esSaldo && st!=='pagado') L.push('• Entrega estimada: '+fmtDate(o.entrega));
     L.push('');
-    L.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.');
+    if(!num(o.envio)) L.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.');
     if(st==='presupuesto') L.push('Presupuesto válido por '+validezDias()+' días (hasta el '+fmtDate(validoHasta(o))+').');
     L.push('');
     if(sinSena || esSaldo){
@@ -1776,7 +1793,8 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     meas.font = BODY+'34px '+FB;
     var trabajo = wrapLines(meas, o.pedido||'', CW-40), medidas = o.medidas ? wrapLines(meas, o.medidas, CW-40) : [];
     var rows = [];
-    if(num(o.precio)) rows.push(['Precio total', money.format(num(o.precio)), '']);
+    if(num(o.envio)){ rows.push(['Precio del trabajo', money.format(num(o.precio)), '']); rows.push(['Envío a domicilio', money.format(num(o.envio)), '']); rows.push(['Precio total', money.format(totalDe(o)), '']); }
+    else if(num(o.precio)) rows.push(['Precio total', money.format(num(o.precio)), '']);
     if(sinSena){ if(num(o.precio) && st!=='pagado') rows.push(['Seña para confirmar (50%)', money.format(Math.round(num(o.precio)/2)), '']); }
     else {
       var PG = pagosDe(o);
@@ -1789,7 +1807,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(st!=='pagado' && saldo(o)>0 && o.vence) extra.push(['Fecha para abonar el saldo', fmtDate(o.vence)]);
     if(o.entrega && !esSaldo && st!=='pagado') extra.push(['Entrega estimada', fmtDate(o.entrega)]);
     var notas = [];
-    if(st!=='pagado' && !esSaldo) notas.push('Si es con envío, tiene un costo adicional de $ 5.000.');
+    if(st!=='pagado' && !esSaldo && !num(o.envio)) notas.push('Si es con envío, tiene un costo adicional de $ 5.000.');
     notas.push(st==='pagado' || esSaldo ? '¡Muchas gracias por tu compra!' : '¡Gracias por tu consulta!');
     var fotoH = foto ? Math.round(CW * 0.62) : 0;
     var H = 300 + 150 + 120 + trabajo.length*46 + (medidas.length ? 70 + medidas.length*46 : 0) + (foto ? fotoH + 40 : 0) + 60 + rows.length*84 + extra.length*62 + 50 + notas.length*48 + 110;
@@ -1886,7 +1904,8 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     y += 24; x.fillStyle = LINE; x.fillRect(P, y, CW, 2);
     // totales
     var rows = [];
-    if(num(o.precio)) rows.push(['Total', money.format(num(o.precio)), 'tot']);
+    if(num(o.envio)){ rows.push(['Envío a domicilio', '+ '+money.format(num(o.envio)), '']); rows.push(['Total', money.format(totalDe(o)), 'tot']); }
+    else if(num(o.precio)) rows.push(['Total', money.format(num(o.precio)), 'tot']);
     if(sinSena){ if(num(o.precio) && st!=='pagado') rows.push(['Seña para confirmar (50%)', money.format(Math.round(num(o.precio)/2)), 'big']); }
     else {
       var PG = pagosDe(o);
@@ -1899,7 +1918,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     // condiciones
     var cond = [];
     if(kind==='presu'){ cond.push('Para confirmar el pedido se abona una seña del 50%.'); }
-    cond.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.');
+    if(!num(o.envio)) cond.push('Si es con envío a domicilio, tiene un costo adicional de $ 5.000.');
     if(kind==='presu') cond.push('Presupuesto válido por '+validezDias()+' días (hasta el '+fmtDate(validoHasta(o))+').');
     if(o.notas && kind==='presu' && false) cond.push(o.notas);
     // fotos (se achican para que todo entre en la hoja)
@@ -2257,7 +2276,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
   function cobrosDe(o){
     var ev = [], P = Array.isArray(o.pagos) ? o.pagos.filter(function(p){ return p && num(p.monto)>0; }) : [];
     var dated = P.filter(function(p){ return /^\d{4}-\d{2}/.test(p.fecha||''); }), sumD = dated.reduce(function(a,p){ return a+num(p.monto); },0);
-    var total = o.pagado ? Math.max(num(o.precio), num(o.sena)) : num(o.sena), rest = total - sumD;
+    var total = o.pagado ? Math.max(totalDe(o), num(o.sena)) : num(o.sena), rest = total - sumD;
     var base = (o.fecha && /^\d{4}-\d{2}/.test(o.fecha)) ? o.fecha : String(o.creado||'').slice(0,10);
     if(rest > 0.5 && base) ev.push({mes:base.slice(0,7), monto:rest});
     dated.forEach(function(p){ ev.push({mes:p.fecha.slice(0,7), monto:num(p.monto)}); });
@@ -2401,7 +2420,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var h = '<details class="order st-'+st+'" id="o-'+esc(o.id)+'" data-id="'+esc(o.id)+'"'+(isOpen?' open':'')+'>';
     h += '<summary class="order-sum">';
     h += '<span class="order-head"><span class="who"><span class="name">'+esc(o.cliente)+'</span><span class="what">'+esc(o.pedido)+'</span>'+(st==='proceso'?dueLine(o):'')+((o.tiempo&&o.tiempo.desde)?'<span class="due-line tmr-chip">⏱ Trabajando</span>':'')+(cobroPend(o)?(function(v){return '<span class="due-line pay '+v.c+'">💰 '+v.t+'</span>'})(venceTxt(o)):'')+'</span>';
-    h += '<span class="price-col"><span class="amt">'+money.format(num(o.precio))+'</span>';
+    h += '<span class="price-col"><span class="amt">'+money.format(totalDe(o))+'</span>';
     h += st==='presupuesto' ? '<span class="badge pres">Presupuesto enviado</span>' : st==='rechazado' ? '<span class="badge rech">No aceptado</span>' : st==='pagado' ? '<span class="badge paid">Pagado</span>' : st==='saldo' ? (s>0 ? '<span class="badge due">Debe '+money.format(s)+'</span>' : '<span class="badge paid">Cobrado ✓</span>') : '<span class="badge proc">En proceso</span>';
     h += '</span></span>';
     if(photos.length) h += '<span class="thumb-line">'+photos.slice(0,4).map(function(p){return thumb(p,'')}).join('')+'</span>';
@@ -2445,7 +2464,8 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     }
     /* 3) La plata, al final de todo */
     h += sec('Cobro');
-    h += '<dt>Precio total</dt><dd>'+money.format(num(o.precio))+'</dd>';
+    if(num(o.envio)){ h += '<dt>Precio del trabajo</dt><dd>'+money.format(num(o.precio))+'</dd><dt>Envío a domicilio</dt><dd>'+money.format(num(o.envio))+'</dd>'; }
+    h += '<dt>'+(num(o.envio)?'Total a abonar':'Precio total')+'</dt><dd>'+money.format(totalDe(o))+'</dd>';
     var PG = pagosDe(o);
     if(PG.length > 1 || (PG.length===1 && PG[0].fecha)){
       h += '<dt>Pagos</dt><dd>'+PG.map(function(p,i){ return '<span class="payl">'+money.format(num(p.monto))+(p.fecha?' · '+esc(fmtDate(p.fecha).slice(0,5)):'')+(p.nota?' <small style="color:var(--muted)">'+esc(p.nota)+'</small>':'')+'<form class="actf payx" data-act="paydel" data-id="'+esc(o.id)+'" data-i="'+i+'"><button type="submit" aria-label="Borrar este pago" title="Borrar este pago">✕</button></form></span>'; }).join('')+'</dd>';
@@ -2559,7 +2579,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var d = state.draft;
     $('formTitle').textContent = o ? 'Editar pedido' : 'Nuevo pedido';
     $('fCliente').value = d.cliente||''; $('fPedido').value = d.pedido||''; $('fMedidas').value = d.medidas||'';
-    $('fPrecio').value = d.precio||''; $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
+    $('fPrecio').value = d.precio||''; $('fEnvioOn').checked = num(d.envio)>0; $('fEnvio').value = num(d.envio)>0 ? num(d.envio) : 5000; updEnvio(); $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
     $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||10000; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
@@ -2732,9 +2752,10 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     var precio = num($('fPrecio').value), sena = num($('fSena').value), est = $('fEstPagado').checked ? 'pagado' : $('fEstSaldo').checked ? 'saldo' : $('fEstPresu').checked ? 'presupuesto' : $('fEstRech').checked ? 'rechazado' : 'proceso', pagado = est==='pagado';
     if(!cliente){err.textContent='Escribí el nombre del cliente.';$('fCliente').focus();return}
     if(!pedido){err.textContent='Escribí qué pedido te hizo.';$('fPedido').focus();return}
-    if(sena>precio && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('fSena').focus();return}
+    var envioF = $('fEnvioOn').checked ? num($('fEnvio').value) : 0;
+    if(sena>precio+envioF && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('fSena').focus();return}
     delete d._editando; d.cliente=cliente; d.pedido=pedido; d.medidas=$('fMedidas').value.trim(); d.cortes=readCortes().filter(function(c){return c.medida || num(c.cant)}).map(function(c){return {cant: Math.max(1, parseInt(c.cant,10)||1), medida: c.medida}});
-    d.precio=precio; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){return {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}}); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
+    d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){return {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}}); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
     $('saveBtn').disabled = true;
     try{
       state.open = d.id; state.openSet[d.id]=true;
@@ -2954,7 +2975,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     h += '</span><span class="cli-n">'+peds.length+(peds.length===1?' pedido':' pedidos')+'</span></summary><div class="more">';
     var conf = peds.filter(function(o){ var e = estado(o); return e!=='presupuesto' && e!=='rechazado'; });
     if(conf.length){
-      var totC = conf.reduce(function(a,o){ return a+num(o.precio); },0), debe = conf.reduce(function(a,o){ return a+saldo(o); },0);
+      var totC = conf.reduce(function(a,o){ return a+totalDe(o); },0), debe = conf.reduce(function(a,o){ return a+saldo(o); },0);
       var ult = conf.map(function(o){ return o.fecha||String(o.creado||'').slice(0,10); }).filter(Boolean).sort().pop();
       h += '<div class="cli-stats"><div><small>Te compró en total</small><b>'+money.format(totC)+'</b></div><div><small>Pedidos</small><b>'+conf.length+'</b></div><div><small>Promedio por pedido</small><b>'+money.format(Math.round(totC/conf.length))+'</b></div><div><small>Último pedido</small><b>'+(ult?esc(fmtDate(ult)):'—')+'</b></div></div>';
       if(debe>0) h += '<p class="cli-debe">Te debe '+money.format(debe)+'</p>';
