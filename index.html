@@ -1149,7 +1149,7 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 55</p>
+    <p class="ver">versión app 56</p>
   </div>
 </div>
 
@@ -2100,6 +2100,24 @@ i.bc{background:#B9834F}i.bg{background:#D9C7B2}
     if(e.target.closest('#dvShare')){ var o = state.orders.find(function(x){return state.pdfB && x.id===state.pdfB.id}); if(o) shareDoc(o, state.pdfB.blob).catch(function(){}); return; }
     if(e.target.tagName==='IMG'){ e.target.classList.toggle('zoom'); return; }
   });
+  /* Botón "atrás" del celular: cierra lo que esté abierto y vuelve al inicio, sin salir de la app */
+  (function(){
+    try{ history.replaceState({pg:'base'}, ''); history.pushState({pg:'app'}, ''); }catch(_){}
+    function vis(id){ var e = document.getElementById(id); return !!(e && !e.hidden); }
+    function atras(){
+      if(vis('docView')){ closeDocView(); return true; }
+      var ov = [['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
+      for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
+      if(state.editing){ if(!window.confirm('¿Salir sin guardar los cambios?')) return true; showEditor(false); window.scrollTo(0,0); return true; }
+      if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
+      var ab = document.querySelectorAll('#list details[open]');
+      if(ab.length || state.waOpen || state.open){ ab.forEach(function(d){ d.open = false; }); state.openSet = {}; state.open = null; state.waOpen = null; state.payOpen = null; state.vencOpen = null; state.zoom = null; lastHtml = null; render(); window.scrollTo(0,0); return true; }
+      if(state.filter!=='proceso' || state.q){ state.filter = 'proceso'; state.q = ''; if($('q')) $('q').value = ''; document.querySelectorAll('.tab').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-filter')==='proceso'?'true':'false'); }); lastHtml = null; render(); window.scrollTo(0,0); return true; }
+      if(window.pageYOffset > 150){ window.scrollTo({top:0, behavior:'smooth'}); return true; }
+      return false;
+    }
+    window.addEventListener('popstate', function(){ var h = false; try{ h = atras(); }catch(_){ h = true; } if(h){ try{ history.pushState({pg:'app'}, ''); }catch(_){} } else { history.back(); } });
+  })();
   $('avisos').addEventListener('click', function(e){
     if(e.target===$('avisos')){ avClose(); return; }
     if(e.target.closest('#avOn')){ activarAvisos(); return; }
