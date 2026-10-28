@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PG Estilo Rústico</title>
-<meta name="theme-color" content="#F4E9DA" id="themeColor">
+<meta name="theme-color" content="#FFFDF9" id="themeColor">
 <script>try{var __t=localStorage.getItem("pg-theme");if(__t==="light"||__t==="dark")document.documentElement.setAttribute("data-theme",__t);}catch(_){}</script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -891,6 +891,48 @@ body.editing nav.views{display:none}
 .st.pagbar b{font-size:1.05rem;line-height:1}
 .st.pagbar .rb-arrow{font-size:1.2rem;opacity:.7;margin-left:4px}
 body:not(.v-pedidos) .pagbar{display:none}
+
+/* Diseño claro: marfil y blanco (v63) */
+@media (prefers-color-scheme: light){
+:root:not([data-theme="dark"]){--bg:#F7F2EA;--line:#EFE7DC}
+:root:not([data-theme="dark"]) details.order, :root:not([data-theme="dark"]) details.order.st-proceso, :root:not([data-theme="dark"]) details.order.st-presupuesto, :root:not([data-theme="dark"]) details.order.st-saldo, :root:not([data-theme="dark"]) details.order.st-pagado{background:#FFFFFF;border-color:transparent;border-radius:18px;box-shadow:0 1px 2px rgba(60,40,20,.05),0 10px 24px -14px rgba(60,40,20,.22)}
+:root:not([data-theme="dark"]) details.order.st-rechazado{background:#FFFFFF;border:1px dashed #E6DACB;box-shadow:none}
+:root:not([data-theme="dark"]) #list{gap:14px}
+:root:not([data-theme="dark"]) .badge{background:transparent;padding:0}
+:root:not([data-theme="dark"]) .due-line:not(.late):not(.tmr-chip){background:transparent;padding-left:0;padding-right:0}
+:root:not([data-theme="dark"]) .search{background:#FFFFFF;border-color:transparent;box-shadow:0 1px 2px rgba(60,40,20,.05),0 6px 16px -12px rgba(60,40,20,.25)}
+:root:not([data-theme="dark"]) .views{background:rgba(255,253,249,.96);border-top-color:#EFE7DC}
+:root:not([data-theme="dark"]) .ajustes, :root:not([data-theme="dark"]) .fsec, :root:not([data-theme="dark"]) .editor{border-color:transparent;box-shadow:0 1px 2px rgba(60,40,20,.05),0 10px 24px -14px rgba(60,40,20,.2)}
+:root:not([data-theme="dark"]) header.brand{background:linear-gradient(180deg,#FFFDF9 0%,#F7F2EA 100%);box-shadow:0 1px 0 #EADFD2}
+:root:not([data-theme="dark"]) header.brand h1{color:#2E241D}
+:root:not([data-theme="dark"]) header.brand .brand-mini{color:#A0714A}
+:root:not([data-theme="dark"]) header.brand p{color:#8A7764}
+:root:not([data-theme="dark"]) header.brand .hbtn{background:#FFFFFF;border-color:#EADFD2;color:#7A4E2D}
+:root:not([data-theme="dark"]) header.brand .st{background:#FFFFFF;border-color:#EFE6DA;color:#2E241D;box-shadow:0 1px 2px rgba(60,40,20,.04)}
+:root:not([data-theme="dark"]) header.brand .st small{color:#A0714A}
+:root:not([data-theme="dark"]) header.brand .st.on{background:#6E4528;border-color:#6E4528;color:#FFFFFF}
+:root:not([data-theme="dark"]) header.brand .st.on small{color:#EBD3B8}
+:root:not([data-theme="dark"]) .bell-n{border-color:#FFFDF9}
+}
+:root[data-theme="light"]{--bg:#F7F2EA;--line:#EFE7DC}
+:root[data-theme="light"] details.order, :root[data-theme="light"] details.order.st-proceso, :root[data-theme="light"] details.order.st-presupuesto, :root[data-theme="light"] details.order.st-saldo, :root[data-theme="light"] details.order.st-pagado{background:#FFFFFF;border-color:transparent;border-radius:18px;box-shadow:0 1px 2px rgba(60,40,20,.05),0 10px 24px -14px rgba(60,40,20,.22)}
+:root[data-theme="light"] details.order.st-rechazado{background:#FFFFFF;border:1px dashed #E6DACB;box-shadow:none}
+:root[data-theme="light"] #list{gap:14px}
+:root[data-theme="light"] .badge{background:transparent;padding:0}
+:root[data-theme="light"] .due-line:not(.late):not(.tmr-chip){background:transparent;padding-left:0;padding-right:0}
+:root[data-theme="light"] .search{background:#FFFFFF;border-color:transparent;box-shadow:0 1px 2px rgba(60,40,20,.05),0 6px 16px -12px rgba(60,40,20,.25)}
+:root[data-theme="light"] .views{background:rgba(255,253,249,.96);border-top-color:#EFE7DC}
+:root[data-theme="light"] .ajustes, :root[data-theme="light"] .fsec, :root[data-theme="light"] .editor{border-color:transparent;box-shadow:0 1px 2px rgba(60,40,20,.05),0 10px 24px -14px rgba(60,40,20,.2)}
+:root[data-theme="light"] header.brand{background:linear-gradient(180deg,#FFFDF9 0%,#F7F2EA 100%);box-shadow:0 1px 0 #EADFD2}
+:root[data-theme="light"] header.brand h1{color:#2E241D}
+:root[data-theme="light"] header.brand .brand-mini{color:#A0714A}
+:root[data-theme="light"] header.brand p{color:#8A7764}
+:root[data-theme="light"] header.brand .hbtn{background:#FFFFFF;border-color:#EADFD2;color:#7A4E2D}
+:root[data-theme="light"] header.brand .st{background:#FFFFFF;border-color:#EFE6DA;color:#2E241D;box-shadow:0 1px 2px rgba(60,40,20,.04)}
+:root[data-theme="light"] header.brand .st small{color:#A0714A}
+:root[data-theme="light"] header.brand .st.on{background:#6E4528;border-color:#6E4528;color:#FFFFFF}
+:root[data-theme="light"] header.brand .st.on small{color:#EBD3B8}
+:root[data-theme="light"] .bell-n{border-color:#FFFDF9}
 </style>
 </head>
 <body>
@@ -1231,7 +1273,7 @@ body:not(.v-pedidos) .pagbar{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 62</p>
+    <p class="ver">versión app 63</p>
   </div>
 </div>
 
@@ -1527,7 +1569,7 @@ body:not(.v-pedidos) .pagbar{display:none}
   /* Color de la barra de arriba del celular (hora, batería) igual al encabezado */
   function syncBar(){
     var dark = document.documentElement.getAttribute('data-theme')==='dark' || (!document.documentElement.getAttribute('data-theme') && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
-    var m = document.getElementById('themeColor'); if(m) m.setAttribute('content', dark ? '#5A3F2B' : '#F4E9DA');
+    var m = document.getElementById('themeColor'); if(m) m.setAttribute('content', dark ? '#5A3F2B' : '#FFFDF9');
   }
   try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncBar); }catch(_){}
   (function(){ var t='auto'; try{ t = localStorage.getItem('pg-theme')||'auto'; }catch(_){} setTheme(t);
