@@ -966,6 +966,14 @@ body:not(.v-pedidos) .pagbar{display:none}
 .av-empty-ic svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 :root[data-theme="dark"] .av-card .av-late .av-ic{background:#3A1F1A;color:#F0A08F} :root[data-theme="dark"] .av-card .av-hoy .av-ic{background:#33281A;color:#E8B878}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .av-card .av-late .av-ic{background:#3A1F1A;color:#F0A08F} :root:not([data-theme="light"]) .av-card .av-hoy .av-ic{background:#33281A;color:#E8B878} }
+
+/* Orden de trabajo: el siguiente pedido resaltado */
+details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40,.45)!important}
+.next-tag{display:inline-flex;align-items:center;gap:6px;margin:14px 16px 0;padding:4px 10px 4px 8px;border-radius:999px;background:#6E4528;color:#FFF6EA;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.next-tag svg{width:12px;height:12px;fill:currentColor}
+.turno{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;margin-right:8px;border-radius:999px;background:var(--soft);color:var(--muted);font-size:.72rem;font-weight:700;vertical-align:2px}
+:root[data-theme="dark"] .next-tag{background:#E8C9A4;color:#3B2A1E} :root[data-theme="dark"] details.order.next{box-shadow:0 0 0 2px #C99B6E!important}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .next-tag{background:#E8C9A4;color:#3B2A1E} :root:not([data-theme="light"]) details.order.next{box-shadow:0 0 0 2px #C99B6E!important} }
 </style>
 </head>
 <body>
@@ -1306,7 +1314,7 @@ body:not(.v-pedidos) .pagbar{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 66</p>
+    <p class="ver">versión app 67</p>
   </div>
 </div>
 
@@ -1764,11 +1772,15 @@ body:not(.v-pedidos) .pagbar{display:none}
       var ra = estado(a)==='rechazado'?1:0, rb = estado(b)==='rechazado'?1:0;
       if(ra!==rb) return ra-rb;
       if(!q && state.filter==='proceso'){
+        var fa = a.fecha||String(a.creado||'').slice(0,10)||'9999', fb = b.fecha||String(b.creado||'').slice(0,10)||'9999';
+        if(fa!==fb) return fa<fb?-1:1;
         var ea = a.entrega||'9999', eb = b.entrega||'9999';
         if(ea!==eb) return ea<eb?-1:1;
+        return String(a.creado||'').localeCompare(String(b.creado||''));
       }
       return String(b.creado||'').localeCompare(String(a.creado||''));
     });
+    state.turno = {}; if(!q && state.filter==='proceso') list.forEach(function(o,i){ state.turno[o.id] = i+1; });
 
     var html;
     if(!list.length){
@@ -2643,9 +2655,11 @@ body:not(.v-pedidos) .pagbar{display:none}
     var paid = !!o.pagado, s = saldo(o), isOpen = isOpenId(o.id);
     var photos = Array.isArray(o.fotos)?o.fotos:[];
     var st = estado(o);
-    var h = '<details class="order st-'+st+'" id="o-'+esc(o.id)+'" data-id="'+esc(o.id)+'"'+(isOpen?' open':'')+'>';
+    var tn = (st==='proceso' && state.turno) ? state.turno[o.id] : 0;
+    var h = '<details class="order st-'+st+(tn===1?' next':'')+'" id="o-'+esc(o.id)+'" data-id="'+esc(o.id)+'"'+(isOpen?' open':'')+'>';
     h += '<summary class="order-sum">';
-    h += '<span class="order-head"><span class="who"><span class="name">'+esc(o.cliente)+'</span><span class="what">'+esc(o.pedido)+'</span>'+(st==='proceso'?dueLine(o):'')+((o.tiempo&&o.tiempo.desde)?'<span class="due-line tmr-chip">⏱ Trabajando</span>':'')+(cobroPend(o)?(function(v){return '<span class="due-line pay '+v.c+'">💰 '+v.t+'</span>'})(venceTxt(o)):'')+'</span>';
+    if(tn===1) h += '<span class="next-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>Siguiente para trabajar</span>';
+    h += '<span class="order-head"><span class="who"><span class="name">'+(tn>1?'<span class="turno">'+tn+'º</span>':'')+esc(o.cliente)+'</span><span class="what">'+esc(o.pedido)+'</span>'+(st==='proceso'?dueLine(o):'')+((o.tiempo&&o.tiempo.desde)?'<span class="due-line tmr-chip">⏱ Trabajando</span>':'')+(cobroPend(o)?(function(v){return '<span class="due-line pay '+v.c+'">💰 '+v.t+'</span>'})(venceTxt(o)):'')+'</span>';
     h += '<span class="price-col"><span class="amt">'+money.format(totalDe(o))+'</span>';
     h += st==='presupuesto' ? '<span class="badge pres">Presupuesto enviado</span>' : st==='rechazado' ? '<span class="badge rech">No aceptado</span>' : st==='pagado' ? '<span class="badge paid">Pagado</span>' : st==='saldo' ? (s>0 ? '<span class="badge due">Debe '+money.format(s)+'</span>' : '<span class="badge paid">Cobrado ✓</span>') : '<span class="badge proc">En proceso</span>';
     h += '</span></span>';
