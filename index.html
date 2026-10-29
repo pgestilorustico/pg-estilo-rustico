@@ -975,10 +975,10 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
 :root[data-theme="dark"] .next-tag{background:#E8C9A4;color:#3B2A1E} :root[data-theme="dark"] details.order.next{box-shadow:0 0 0 2px #C99B6E!important}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .next-tag{background:#E8C9A4;color:#3B2A1E} :root:not([data-theme="light"]) details.order.next{box-shadow:0 0 0 2px #C99B6E!important} }
 
-.trow .tpre-w{grid-column:1 / -1;display:flex;align-items:center;gap:6px;margin:-2px 0 4px;font-size:.8rem;color:var(--muted)}
-.trow .tpre-w span:first-child{flex:1}
-.trow .tpre-w .cpeso{color:var(--accent);font-weight:600}
-.trow .tpre-w input{width:110px;flex:none}
+.trow .tpre-w{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-2px 0 6px;font-size:.8rem;color:var(--muted)}
+.trow .tpre-w label{display:flex;align-items:center;gap:6px;min-width:0}
+.trow .tpre-w input{flex:1;min-width:0;width:auto}
+.trow .tpre-w .cpeso,.trow .tpre-w .u{color:var(--accent);font-weight:600}
 </style>
 </head>
 <body>
@@ -1319,7 +1319,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 68</p>
+    <p class="ver">versión app 69</p>
   </div>
 </div>
 
@@ -1873,7 +1873,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
         return {'Cliente':o.cliente||'', 'Pedido':o.pedido||'', 'Estado':ESTADOS[estado(o)]||'', 'Fecha del pedido':o.fecha?fmtDate(o.fecha):'', 'Entrega':o.entrega?fmtDate(o.entrega):'',
           'Medidas':o.medidas||'', 'Cortes':(Array.isArray(o.cortes)?o.cortes:[]).map(function(c){return (c.cant||1)+' de '+(c.medida||'')}).join('; '),
           'Precio':num(o.precio), 'Envío':num(o.envio), 'Seña':num(o.sena), 'Saldo':saldo(o), 'Madera':o.madera||'', '$ Madera':num(o.costoMadera), '$ Tornillos':num(o.costoTornillos),
-          'Madera de pino':(Array.isArray(o.tablas)?o.tablas:[]).map(function(t){return t.cant+' '+nomMad(t.cant,t.medida)}).join('; '), 'Melamina':((o.melColor?o.melColor+': ':'')+(Array.isArray(o.melamina)?o.melamina:[]).map(function(m){return m.cant+' de '+m.medida}).join('; ')), 'Tapacanto (m)':num(o.tapacanto), '$ Melamina':num(o.costoMelamina), '$ Tapacanto':num(o.costoTapacanto), '$ Otros desgastes':num(o.costoOtros), '$ Mano de obra':num(o.costoMano), 'Notas':o.notas||'', 'Fotos':(Array.isArray(o.fotos)?o.fotos.length:0)};
+          'Madera de pino':(Array.isArray(o.tablas)?o.tablas:[]).map(function(t){return t.cant+' '+nomMad(t.cant,t.medida,t.largo)}).join('; '), 'Melamina':((o.melColor?o.melColor+': ':'')+(Array.isArray(o.melamina)?o.melamina:[]).map(function(m){return m.cant+' de '+m.medida}).join('; ')), 'Tapacanto (m)':num(o.tapacanto), '$ Melamina':num(o.costoMelamina), '$ Tapacanto':num(o.costoTapacanto), '$ Otros desgastes':num(o.costoOtros), '$ Mano de obra':num(o.costoMano), 'Notas':o.notas||'', 'Fotos':(Array.isArray(o.fotos)?o.fotos.length:0)};
       });
       var cli = state.clientes.slice().sort(function(a,b){return String(a.nombre||'').localeCompare(String(b.nombre||''),'es')}).map(function(c){
         return {'Nombre':c.nombre||'', 'Emprendimiento':c.emprendimiento||'', 'Teléfono':c.telefono||'', 'Notas':c.notas||'', 'Pedidos':pedidosDe(c).length};
@@ -2616,7 +2616,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     var grupos = {}, orden = [];
     function add(key, base, ref){ if(!grupos[key]){ grupos[key] = Object.assign({n:0, quien:[], refs:[]}, base); orden.push(key); } var g = grupos[key]; g.n += ref.cant; g.refs.push(ref); if(g.quien.indexOf(ref.cliente)<0) g.quien.push(ref.cliente); }
     list.forEach(function(o){
-      (Array.isArray(o.tablas)?o.tablas:[]).forEach(function(t,i){ add('T|'+t.medida, {tipo:'T', med:t.medida}, {oid:o.id, tipo:'tablas', i:i, cant:Math.max(1,parseInt(t.cant,10)||1), pu:precioMad(t), cliente:o.cliente, done:!!t.comprado}); });
+      (Array.isArray(o.tablas)?o.tablas:[]).forEach(function(t,i){ add('T|'+t.medida+'|'+nrm(String(t.largo||'')), {tipo:'T', med:t.medida, largo:t.largo||''}, {oid:o.id, tipo:'tablas', i:i, cant:Math.max(1,parseInt(t.cant,10)||1), pu:precioMad(t), cliente:o.cliente, done:!!t.comprado}); });
       if(num(o.tapacanto)>0){ var colT = String(o.melColor||'').trim(); add('C|'+nrm(colT), {tipo:'C', med:'tapacanto', color:colT}, {oid:o.id, tipo:'tapa', i:0, cant:num(o.tapacanto), cliente:o.cliente, done:!!o.tapaComprado}); }
       (Array.isArray(o.melamina)?o.melamina:[]).forEach(function(m,i){ var col = String(o.melColor||'').trim(); add('M|'+nrm(col)+'|'+normMed(m.medida), {tipo:'M', med:m.medida, color:col}, {oid:o.id, tipo:'melamina', i:i, cant:Math.max(1,parseInt(m.cant,10)||1), cliente:o.cliente, done:!!m.comprado}); });
     });
@@ -2631,14 +2631,14 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     function item(k){
       var g = grupos[k], idx = state.compraGroups.push(g)-1;
       if(g.tipo==='C'){ var mts = Math.round(g.n*100)/100; var t0 = '<b>'+String(mts).replace('.',',')+' m</b> de tapacanto'+(g.color?' · '+esc(g.color):''); }
-      var t = g.tipo==='C' ? t0 : g.tipo==='T' ? '<b>'+g.n+'</b> '+esc(nomMad(g.n, g.med)) : '<b>'+g.n+'</b> de <b>'+esc(g.med)+'</b>'+(g.color?' · '+esc(g.color):'');
+      var t = g.tipo==='C' ? t0 : g.tipo==='T' ? '<b>'+g.n+'</b> '+esc(nomMad(g.n, g.med, g.largo)) : '<b>'+g.n+'</b> de <b>'+esc(g.med)+'</b>'+(g.color?' · '+esc(g.color):'');
       return '<div class="citem'+(g.done?' done':'')+'"><form class="actf" data-act="comprado" data-id="'+idx+'"><button type="submit" class="chk" aria-pressed="'+g.done+'" aria-label="'+(g.done?'Marcar como no comprado':'Marcar como comprado')+'">'+(g.done?'✓':'')+'</button></form>'+
         '<span class="ctext">'+t+'<small>Para '+esc(g.quien.join(', '))+'</small></span>'+(g.precio?'<span class="cprice">'+money.format(g.precio)+'</span>':'')+'</div>';
     }
     function ordenar(arr){ return arr.sort(function(a,b){ return (grupos[a].done?1:0)-(grupos[b].done?1:0) || grupos[a].med.localeCompare(grupos[b].med,'es',{numeric:true}); }); }
     var T = ordenar(keys.filter(function(k){return grupos[k].tipo==='T'})), M = ordenar(keys.filter(function(k){return grupos[k].tipo==='M'}));
     var h = '<details class="compra" data-id="__compra"'+(isOpenId('__compra')?' open':'')+'><summary><span>🛒 Lista de compras</span><span>'+(pend?'faltan '+pend+' ▾':'todo comprado ✓')+'</span></summary><div class="compra-body">';
-    if(T.length){ h += '<div class="compra-sec"><h4>Madera de pino</h4>'+T.map(item).join('')+'</div>'; if(tabPend) h += '<p class="hint" style="margin:0 0 10px">Falta comprar madera por '+money.format(tabPend)+' según la lista de precios.</p>'; }
+    if(T.length){ h += '<div class="compra-sec"><h4>Madera de pino</h4>'+T.map(item).join('')+'</div>'; if(tabPend) h += '<p class="hint" style="margin:0 0 10px">Falta comprar madera por '+money.format(tabPend)+'.</p>'; }
     if(M.length) h += '<div class="compra-sec"><h4>Cortes de melamina</h4>'+M.map(item).join('')+'</div>';
     var C = ordenar(keys.filter(function(k){return grupos[k].tipo==='C'}));
     if(C.length) h += '<div class="compra-sec"><h4>Tapacanto</h4>'+C.map(item).join('')+'</div>';
@@ -2681,7 +2681,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
       h += sec('Medidas y cortes');
       if(o.medidas) h += '<dt>Medidas</dt><dd class="big">'+esc(o.medidas)+'</dd>';
       if(cts.length) h += '<dt>Cortes de madera</dt><dd class="cut">'+cts.map(function(c){return '<b>'+esc(num(c.cant)||1)+'</b> de '+esc(c.medida||'—')}).join('<br>')+'</dd>';
-      if(tbs.length) h += '<dt>Madera de pino</dt><dd class="cut">'+tbs.map(function(t){return '<b>'+esc(t.cant)+'</b> '+esc(nomMad(t.cant, t.medida))+ok(t.comprado)}).join('<br>')+'</dd>';
+      if(tbs.length) h += '<dt>Madera de pino</dt><dd class="cut">'+tbs.map(function(t){return '<b>'+esc(t.cant)+'</b> '+esc(nomMad(t.cant, t.medida, t.largo))+ok(t.comprado)}).join('<br>')+'</dd>';
       if(mls.length) h += '<dt>Cortes de melamina</dt><dd class="cut">'+(o.melColor?'<small style="color:var(--muted)">'+esc(o.melColor)+'</small><br>':'')+mls.map(function(m){return '<b>'+esc(m.cant)+'</b> de '+esc(m.medida)+ok(m.comprado)}).join('<br>')+'</dd>';
       if(mls.length) h += '<dt></dt><dd><button type="button" class="btn placas-btn" data-placas="'+esc(o.id)+'">📐 Calcular placas</button></dd>';
       if(num(o.tapacanto)) h += '<dt>Tapacanto</dt><dd class="cut"><b>'+esc(String(num(o.tapacanto)).replace('.',','))+' m</b>'+(o.melColor?' · '+esc(o.melColor):'')+ok(o.tapaComprado)+'</dd>';
@@ -2878,7 +2878,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     if(conPedido) $('fPedido').value = o.pedido||'';
     $('fMedidas').value = o.medidas||'';
     drawCortes(Array.isArray(o.cortes) ? JSON.parse(JSON.stringify(o.cortes)) : []);
-    drawTablas((Array.isArray(o.tablas)?o.tablas:[]).map(function(t){return {cant:t.cant, medida:t.medida, precio:t.precio}}));
+    drawTablas((Array.isArray(o.tablas)?o.tablas:[]).map(function(t){return {cant:t.cant, medida:t.medida, precio:t.precio, largo:t.largo}}));
     drawMel((Array.isArray(o.melamina)?o.melamina:[]).map(function(m){return {cant:m.cant, medida:m.medida}}));
     $('fMelColor').value = o.melColor||''; $('fMelPrecio').value = o.costoMelamina||''; $('fTapa').value = o.tapacanto||'';
     $('fMadera').value = o.madera||''; $('fMadPrecio').value = o.costoMadera||''; $('fTorPrecio').value = o.costoTornillos||''; $('fTapaPrecio').value = o.costoTapacanto||''; $('fOtrosPrecio').value = (num(o.costoOtros)+num(o.costoTornillos))||''; $('fTorPrecio').value = ''; $('fManoPrecio').value = o.costoMano||''; updSuma();
@@ -2892,10 +2892,11 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
   function esTabla(m){ return PRECIOS_TABLAS.some(function(x){ return x[0]===m; }); }
   function precioGuardado(m){ try{ var mp = (prefs && prefs.madPrecios) || {}; return num(mp[m]); }catch(_){ return 0; } }
   function precioMad(t){ return esTabla(t.medida) ? precioTabla(t.medida) : (num(t.precio) || precioGuardado(t.medida)); }
-  function nomMad(n, m){ if(esTabla(m)) return (n==1?'tabla':'tablas')+' de '+m; var p = String(m).split(' '); return (n==1 ? p[0].toLowerCase() : p[0].replace(/or$/,'ores').replace(/e$/,'es').toLowerCase())+' '+(p.slice(1).join(' ')); }
+  function fmtLargo(l){ l = String(l||'').trim(); if(!l) return ''; return /^[\d.,]+$/.test(l) ? l+' cm' : l; }
+  function nomMad(n, m, l){ var lg = fmtLargo(l); if(esTabla(m)) return (n==1?'tabla':'tablas')+' de '+m+(lg?' de '+lg:''); var p = String(m).split(' '); return (n==1 ? p[0].toLowerCase() : p[0].replace(/or$/,'ores').replace(/e$/,'es').toLowerCase())+' '+(p.slice(1).join(' '))+(lg?' de '+lg:''); }
   function readTablas(){
     var out = [];
-    $('fTablas').querySelectorAll('.trow').forEach(function(r){ var pr = r.querySelector('.tpre'); out.push({cant:r.querySelector('.tcant').value, medida:r.querySelector('.tmed').value, precio: pr ? pr.value : '', comprado:r.getAttribute('data-comprado')==='1'}); });
+    $('fTablas').querySelectorAll('.trow').forEach(function(r){ var pr = r.querySelector('.tpre'); var lg = r.querySelector('.tlar'); out.push({cant:r.querySelector('.tcant').value, medida:r.querySelector('.tmed').value, precio: pr ? pr.value : '', largo: lg ? lg.value.trim() : '', comprado:r.getAttribute('data-comprado')==='1'}); });
     return out;
   }
   function drawTablas(list){
@@ -2905,7 +2906,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
         OTRAS_MADERAS.map(function(g){ return '<optgroup label="'+g[0]+'">'+g[1].map(function(m){ return '<option value="'+m+'"'+(m===t.medida?' selected':'')+'>'+m+'</option>'; }).join('')+'</optgroup>'; }).join('')+
         (t.medida && !esTabla(t.medida) && !OTRAS_MADERAS.some(function(g){ return g[1].indexOf(t.medida)>=0; }) ? '<option value="'+esc(t.medida)+'" selected>'+esc(t.medida)+'</option>' : '')+'</select>'+
         '<button type="submit" formnovalidate class="crm" data-trm="'+i+'" aria-label="Quitar">×</button>'+
-        (esTabla(t.medida) ? '' : '<label class="tpre-w"><span>Precio de cada uno</span><span class="cpeso">$</span><input type="number" class="tpre" inputmode="numeric" min="0" step="any" placeholder="0" value="'+esc(num(t.precio)||precioGuardado(t.medida)||'')+'"></label>')+'</div>';
+        (esTabla(t.medida) ? '' : '<div class="tpre-w"><label class="tl"><span>Largo</span><input type="text" class="tlar" inputmode="decimal" placeholder="Ej: 70" value="'+esc(t.largo||'')+'"><span class="u">cm</span></label><label class="tp"><span>c/u</span><span class="cpeso">$</span><input type="number" class="tpre" inputmode="numeric" min="0" step="any" placeholder="0" value="'+esc(num(t.precio)||precioGuardado(t.medida)||'')+'"></label></div>')+'</div>';
     }).join('');
     $('fTablas').querySelectorAll('input,select').forEach(function(el){ el.addEventListener('input', updTablas); el.addEventListener('change', updTablas); });
     $('fTablas').querySelectorAll('.tmed').forEach(function(el){ el.addEventListener('change', function(){ drawTablas(readTablas()); }); });
@@ -3030,7 +3031,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     var envioF = $('fEnvioOn').checked ? num($('fEnvio').value) : 0;
     if(sena>precio+envioF && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('sec4').open=true;$('fSena').focus();return}
     delete d._editando; d.cliente=cliente; d.pedido=pedido; d.medidas=$('fMedidas').value.trim(); d.cortes=readCortes().filter(function(c){return c.medida || num(c.cant)}).map(function(c){return {cant: Math.max(1, parseInt(c.cant,10)||1), medida: c.medida}});
-    d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){ var r = {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}; if(!esTabla(x.medida)) r.precio = num(x.precio); return r; }); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
+    d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){ var r = {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}; if(!esTabla(x.medida)){ r.precio = num(x.precio); if(x.largo) r.largo = x.largo; } return r; }); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
     $('saveBtn').disabled = true;
     try{
       state.open = d.id; state.openSet[d.id]=true;
