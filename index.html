@@ -975,10 +975,16 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
 :root[data-theme="dark"] .next-tag{background:#E8C9A4;color:#3B2A1E} :root[data-theme="dark"] details.order.next{box-shadow:0 0 0 2px #C99B6E!important}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .next-tag{background:#E8C9A4;color:#3B2A1E} :root:not([data-theme="light"]) details.order.next{box-shadow:0 0 0 2px #C99B6E!important} }
 
-.trow .tpre-w{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-2px 0 6px;font-size:.8rem;color:var(--muted)}
+.trow .tpre-w{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,190px);gap:8px;margin:-2px 0 6px;font-size:.8rem;color:var(--muted)}
 .trow .tpre-w label{display:flex;align-items:center;gap:6px;min-width:0}
 .trow .tpre-w input{flex:1;min-width:0;width:auto}
 .trow .tpre-w .cpeso,.trow .tpre-w .u{color:var(--accent);font-weight:600}
+
+.otras-mad{display:flex;align-items:center;gap:8px;margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:.84rem;font-weight:600;color:var(--ink)}
+.otras-mad[hidden]{display:none}
+.otras-mad span:first-child{flex:1}
+.otras-mad .cpeso{color:var(--accent)}
+.otras-mad input{width:120px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-weight:600}
 </style>
 </head>
 <body>
@@ -1079,6 +1085,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
       <legend>Para comprar</legend>
       <p class="sub2">Madera de pino <span style="font-weight:500;color:var(--muted)">· tablas, clavadores y tirantes</span></p>
       <div id="fTablas" class="rowlist"></div>
+      <label class="otras-mad" id="fOtrasWrap" hidden><span>Precio total de clavadores y tirantes</span><span class="cpeso">$</span><input type="number" id="fOtrasMad" inputmode="numeric" min="0" step="any" placeholder="0"></label>
       <button type="submit" formnovalidate class="btn" id="addTabla">+ Agregar madera</button>
       <div class="tsum" id="fTablasSum" hidden>
         <span>Total de la madera: <strong id="fTablasTotal">$ 0</strong></span>
@@ -1319,7 +1326,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 69</p>
+    <p class="ver">versión app 70</p>
   </div>
 </div>
 
@@ -2842,7 +2849,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     var d = state.draft;
     $('formTitle').textContent = o ? 'Editar pedido' : 'Nuevo pedido';
     $('fCliente').value = d.cliente||''; $('fPedido').value = d.pedido||''; $('fMedidas').value = d.medidas||'';
-    $('fPrecio').value = d.precio||''; $('fEnvioOn').checked = num(d.envio)>0; $('fEnvio').value = num(d.envio)>0 ? num(d.envio) : 5000; updEnvio(); $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
+    $('fPrecio').value = d.precio||''; $('fOtrasMad').value = d.precioOtrasMad||''; $('fEnvioOn').checked = num(d.envio)>0; $('fEnvio').value = num(d.envio)>0 ? num(d.envio) : 5000; updEnvio(); $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
     $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||10000; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
@@ -2891,7 +2898,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
   var OTRAS_MADERAS = [['Clavadores',['Clavador 1x1','Clavador 1x2','Clavador 2x2']],['Tirantes',['Tirante 2x2','Tirante 2x3','Tirante 2x4','Tirante 3x3','Tirante 3x4','Tirante 4x4']]];
   function esTabla(m){ return PRECIOS_TABLAS.some(function(x){ return x[0]===m; }); }
   function precioGuardado(m){ try{ var mp = (prefs && prefs.madPrecios) || {}; return num(mp[m]); }catch(_){ return 0; } }
-  function precioMad(t){ return esTabla(t.medida) ? precioTabla(t.medida) : (num(t.precio) || precioGuardado(t.medida)); }
+  function precioMad(t){ return esTabla(t.medida) ? precioTabla(t.medida) : num(t.precio); }
   function fmtLargo(l){ l = String(l||'').trim(); if(!l) return ''; return /^[\d.,]+$/.test(l) ? l+' cm' : l; }
   function nomMad(n, m, l){ var lg = fmtLargo(l); if(esTabla(m)) return (n==1?'tabla':'tablas')+' de '+m+(lg?' de '+lg:''); var p = String(m).split(' '); return (n==1 ? p[0].toLowerCase() : p[0].replace(/or$/,'ores').replace(/e$/,'es').toLowerCase())+' '+(p.slice(1).join(' '))+(lg?' de '+lg:''); }
   function readTablas(){
@@ -2906,16 +2913,18 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
         OTRAS_MADERAS.map(function(g){ return '<optgroup label="'+g[0]+'">'+g[1].map(function(m){ return '<option value="'+m+'"'+(m===t.medida?' selected':'')+'>'+m+'</option>'; }).join('')+'</optgroup>'; }).join('')+
         (t.medida && !esTabla(t.medida) && !OTRAS_MADERAS.some(function(g){ return g[1].indexOf(t.medida)>=0; }) ? '<option value="'+esc(t.medida)+'" selected>'+esc(t.medida)+'</option>' : '')+'</select>'+
         '<button type="submit" formnovalidate class="crm" data-trm="'+i+'" aria-label="Quitar">×</button>'+
-        (esTabla(t.medida) ? '' : '<div class="tpre-w"><label class="tl"><span>Largo</span><input type="text" class="tlar" inputmode="decimal" placeholder="Ej: 70" value="'+esc(t.largo||'')+'"><span class="u">cm</span></label><label class="tp"><span>c/u</span><span class="cpeso">$</span><input type="number" class="tpre" inputmode="numeric" min="0" step="any" placeholder="0" value="'+esc(num(t.precio)||precioGuardado(t.medida)||'')+'"></label></div>')+'</div>';
+        (esTabla(t.medida) ? '' : '<div class="tpre-w"><label class="tl"><span>Largo</span><input type="text" class="tlar" inputmode="decimal" placeholder="Ej: 70" value="'+esc(t.largo||'')+'"><span class="u">cm</span></label></div>')+'</div>';
     }).join('');
     $('fTablas').querySelectorAll('input,select').forEach(function(el){ el.addEventListener('input', updTablas); el.addEventListener('change', updTablas); });
     $('fTablas').querySelectorAll('.tmed').forEach(function(el){ el.addEventListener('change', function(){ drawTablas(readTablas()); }); });
     $('fTablas').querySelectorAll('.tpre').forEach(function(el){ el.addEventListener('change', function(){ var m = el.closest('.trow').querySelector('.tmed').value; try{ prefs.madPrecios = prefs.madPrecios || {}; prefs.madPrecios[m] = num(el.value); savePrefs(); }catch(_){} }); });
     updTablas();
   }
+  $('fOtrasMad').addEventListener('input', updTablas);
   function tablasTotal(list){ return list.reduce(function(t,x){ return t + (parseInt(x.cant,10)||0)*precioMad(x); },0); }
   function updTablas(){
-    var t = tablasTotal(readTablas());
+    var L = readTablas(), hay = L.some(function(x){ return !esTabla(x.medida); }); $('fOtrasWrap').hidden = !hay;
+    var t = tablasTotal(L.filter(function(x){ return esTabla(x.medida); })) + (hay ? num($('fOtrasMad').value) : 0);
     $('fTablasSum').hidden = !t; $('fTablasTotal').textContent = money.format(t);
   }
   function readMel(){
@@ -3016,7 +3025,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     if(sb && sb.hasAttribute('data-tpl')){ var to = state.orders.find(function(x){return x.id===sb.getAttribute('data-tpl')}); if(to) copiarDe(to, true); return; }
     if(sb && sb.id==='addTabla'){ var tl = readTablas(); tl.push({cant:'', medida:'1x6'}); drawTablas(tl); try{ var ti=$('fTablas').querySelectorAll('.tcant'); ti[ti.length-1].focus(); }catch(_){} return; }
     if(sb && sb.hasAttribute('data-trm')){ var tl2 = readTablas(); tl2.splice(parseInt(sb.getAttribute('data-trm'),10),1); drawTablas(tl2); return; }
-    if(sb && sb.id==='usarTablas'){ var tt = tablasTotal(readTablas()); if(tt>0){ $('fMadPrecio').value = tt; if(!$('fMadera').value.trim()) $('fMadera').value = readTablas().filter(function(x){return parseInt(x.cant,10)>0}).map(function(x){return x.cant+' tablas '+x.medida}).join(', '); updSuma(); } return; }
+    if(sb && sb.id==='usarTablas'){ var LT = readTablas(), tt = tablasTotal(LT.filter(function(x){ return esTabla(x.medida); })) + (LT.some(function(x){ return !esTabla(x.medida); }) ? num($('fOtrasMad').value) : 0); if(tt>0){ $('fMadPrecio').value = tt; if(!$('fMadera').value.trim()) $('fMadera').value = readTablas().filter(function(x){return parseInt(x.cant,10)>0}).map(function(x){return x.cant+' '+nomMad(x.cant, x.medida, x.largo)}).join(', '); updSuma(); } return; }
     if(sb && sb.id==='addMel'){ var ml = readMel(); ml.push({cant:'', medida:''}); drawMel(ml); try{ var mi=$('fMelamina').querySelectorAll('.mcant'); mi[mi.length-1].focus(); }catch(_){} return; }
     if(sb && sb.hasAttribute('data-mrm')){ var ml2 = readMel(); ml2.splice(parseInt(sb.getAttribute('data-mrm'),10),1); drawMel(ml2); return; }
     if(sb && sb.id==='addCorte'){ var cl = readCortes(); cl.push({cant:'', medida:''}); drawCortes(cl); try{ var ins = $('fCortes').querySelectorAll('.ccant'); ins[ins.length-1].focus(); }catch(_){} return; }
@@ -3031,7 +3040,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     var envioF = $('fEnvioOn').checked ? num($('fEnvio').value) : 0;
     if(sena>precio+envioF && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('sec4').open=true;$('fSena').focus();return}
     delete d._editando; d.cliente=cliente; d.pedido=pedido; d.medidas=$('fMedidas').value.trim(); d.cortes=readCortes().filter(function(c){return c.medida || num(c.cant)}).map(function(c){return {cant: Math.max(1, parseInt(c.cant,10)||1), medida: c.medida}});
-    d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){ var r = {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}; if(!esTabla(x.medida)){ r.precio = num(x.precio); if(x.largo) r.largo = x.largo; } return r; }); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
+    d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.precioOtrasMad = num($('fOtrasMad').value); d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){ var r = {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}; if(!esTabla(x.medida)){ r.precio = num(x.precio); if(x.largo) r.largo = x.largo; } return r; }); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
     $('saveBtn').disabled = true;
     try{
       state.open = d.id; state.openSet[d.id]=true;
