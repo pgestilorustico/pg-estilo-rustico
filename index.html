@@ -985,6 +985,8 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
 .otras-mad span:first-child{flex:1}
 .otras-mad .cpeso{color:var(--accent)}
 .otras-mad input{width:120px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-weight:600}
+
+.st-term em b.st-debe{font-weight:800;opacity:1;font-size:.86rem;margin-left:2px}
 </style>
 </head>
 <body>
@@ -1008,7 +1010,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     <div class="stats" id="stats">
       <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="proceso"><small>En proceso</small><b id="stProc">–</b></button></form>
       <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="st" data-st="presupuesto"><small>Presupuestos</small><b id="stPres">–</b></button></form>
-      <form class="actf tabf st-wide" data-filter="saldo"><button type="submit" class="st st-term" data-st="saldo"><span class="stt"><small>Terminados</small><em>Falta cobrar y entregar</em></span><b id="stCobrar">–</b></button></form>
+      <form class="actf tabf st-wide" data-filter="saldo"><button type="submit" class="st st-term" data-st="saldo"><span class="stt"><small>Terminados</small><em id="stCobrarM">Falta cobrar y entregar</em></span><b id="stCobrar">–</b></button></form>
     </div>
     <form class="actf tabf" data-filter="pagado"><button type="submit" class="st pagbar" data-st="pagado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.6 2.6L16.2 9.5"/></svg><span class="pb-t">Terminados y cobrados</span><b id="stPag">–</b><span class="rb-arrow">›</span></button></form>
     <button type="button" class="resbar" id="resBtn" hidden><svg class="nav-ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span id="resBarTxt">Resumen del mes</span><span class="rb-arrow">›</span></button>
@@ -1326,7 +1328,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 70</p>
+    <p class="ver">versión app 71</p>
   </div>
 </div>
 
@@ -1764,7 +1766,7 @@ details.order.next{box-shadow:0 0 0 2px #B07A4F,0 12px 26px -14px rgba(110,69,40
     try{
       var cnt0 = {presupuesto:0, rechazado:0, proceso:0, saldo:0, pagado:0}; state.orders.forEach(function(o){ cnt0[estado(o)]++; });
       updResBar(); updBell();
-      $('stProc').textContent = cnt0.proceso; $('stPres').textContent = cnt0.presupuesto + cnt0.rechazado; $('stCobrar').textContent = cnt0.saldo; $('stPag').textContent = cnt0.pagado;
+      $('stProc').textContent = cnt0.proceso; $('stPres').textContent = cnt0.presupuesto + cnt0.rechazado; $('stCobrar').textContent = cnt0.saldo; try{ var debeT = state.orders.reduce(function(a,o){ return a + (estado(o)==='saldo' ? saldo(o) : 0); },0); $('stCobrarM').innerHTML = debeT>0 ? 'Falta cobrar <b class="st-debe">'+money.format(debeT)+'</b>' : 'Falta cobrar y entregar'; }catch(_){} $('stPag').textContent = cnt0.pagado;
       document.querySelectorAll('.st[data-st]').forEach(function(t){ t.classList.toggle('on', !state.q.trim() && t.getAttribute('data-st')===state.filter); });
     }catch(_){}
     if($('tPaid')) $('tPaid').textContent = money.format(tPaid);
