@@ -767,12 +767,12 @@ i.bc{background:#948474}i.bg{background:#CDC5BE}
 .aj-tx small{font-size:.76rem;color:var(--muted);overflow-wrap:anywhere}
 .aj-chev{color:var(--muted);font-size:1.3rem;line-height:1}
 .aj-out .aj-tx b{color:var(--danger)}.aj-out .aj-ic{color:var(--danger)}
-.ajustes .themesw{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
-.ajustes .themesw button{display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:9px 4px;background:transparent;color:var(--muted);font-size:.8rem;font-weight:600}
-.ajustes .themesw button svg{width:16px;height:16px}
-.ajustes .themesw button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(42,38,33,.15)}
+.aj-body .themesw{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+.aj-body .themesw button{display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:9px 4px;background:transparent;color:var(--muted);font-size:.8rem;font-weight:600}
+.aj-body .themesw button svg{width:16px;height:16px}
+.aj-body .themesw button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(42,38,33,.15)}
 .aj-foot{margin:26px 0 6px;text-align:center}
-.ajustes .aj-val{margin-top:8px}
+.aj-body .aj-val{margin-top:8px}
 .aj-rule{display:flex;align-items:center;gap:14px;margin:0 auto 8px;max-width:240px}
 .aj-rule::before,.aj-rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--accent-line))}
 .aj-rule::after{background:linear-gradient(90deg,var(--accent-line),transparent)}
@@ -1203,6 +1203,15 @@ details.order.next{box-shadow:0 0 0 2px #90806F,0 12px 26px -14px rgba(84,75,66,
 :root[data-theme="dark"] .login.splash{background:#0F0E0D}
 body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos) .list-title{display:none!important}
 @media (min-width:900px){ html:root nav.views{left:50%!important;right:auto!important;width:min(560px,calc(100% - 40px))!important} html:root .stats{max-width:560px} }
+
+/* Ajustes como ventana flotante */
+.ajustes .aj-arrow{display:none}
+.ajustes summary::after{content:"";width:8px;height:8px;margin-left:auto;margin-right:4px;border-right:2px solid var(--muted);border-top:2px solid var(--muted);transform:rotate(45deg);opacity:.7}
+#ajOv{align-items:center!important;padding:16px!important}
+#ajOv .aj-box{height:auto!important;max-height:86vh;border-radius:24px!important;width:100%;max-width:440px;display:flex;flex-direction:column;overflow:hidden}
+#ajOv .res-body{overflow:auto}
+#ajOvBody{padding:0 16px 24px}
+#ajOvBody .aj-body{border-top:0;padding:0 0 10px}
 </style>
 </head>
 <body>
@@ -1546,7 +1555,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 72</p>
+    <p class="ver">versión app 73</p>
   </div>
 </div>
 
@@ -1558,6 +1567,12 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
 <div id="docView" hidden role="dialog" aria-label="Vista de la foto">
   <div class="dv-bar"><button type="button" class="btn" id="dvClose">✕ Cerrar</button><span>Tocá para acercar</span><button type="button" class="btn primary" id="dvShare">📤 Enviar</button></div>
   <img alt="Foto que se va a enviar">
+</div>
+<div id="ajOv" class="catov" hidden role="dialog" aria-label="Ajustes">
+  <div class="cat-box res-box aj-box">
+    <div class="cat-top av-top"><strong>Ajustes</strong><span class="cat-acts"><button type="button" class="calc-x" id="ajClose" aria-label="Cerrar">✕</button></span></div>
+    <div class="res-body" id="ajOvBody"></div>
+  </div>
 </div>
 <div id="compras" class="catov" hidden role="dialog" aria-label="Lista de compras">
   <div class="cat-box res-box">
@@ -2545,7 +2560,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     function vis(id){ var e = document.getElementById(id); return !!(e && !e.hidden); }
     function atras(){
       if(vis('docView')){ closeDocView(); return true; }
-      var ov = [['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
+      var ov = [['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
       for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
       if(state.editing){ if(document.querySelector('.pgd-bg')) return true; pgDialog({title:'¿Salir sin guardar?', msg:'Los cambios que hiciste se van a perder.', cancel:'Seguir editando', ok:'Salir', danger:true}).then(function(si){ if(si){ showEditor(false); window.scrollTo(0,0); } }); return true; }
       if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
@@ -2835,6 +2850,15 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
       if(!$('compras').hidden){ var b = $('compBody'); var nh = h.replace('<details class="compra"', '<details open class="compra"'); if(b._last !== nh){ b._last = nh; b.innerHTML = nh; wire(b); } }
     }catch(_){}
   }
+  (function(){
+    var det = $('ajustes'), body = $('backupBox'), ov = $('ajOv');
+    $('ajOvBody').appendChild(body); body.classList.add('aj-in-ov');
+    det.removeAttribute('open');
+    det.querySelector('summary').addEventListener('click', function(e){ e.preventDefault(); ov.hidden = false; document.documentElement.classList.add('ov-open'); try{ updResBar(); }catch(_){} });
+    function cerrar(){ ov.hidden = true; document.documentElement.classList.remove('ov-open'); }
+    $('ajClose').addEventListener('click', cerrar);
+    ov.addEventListener('click', function(e){ if(e.target===ov) cerrar(); });
+  })();
   function abrirCompras(){ $('compBody')._last = null; $('compras').hidden = false; document.documentElement.classList.add('ov-open'); updCompras(); }
   function cerrarCompras(){ $('compras').hidden = true; document.documentElement.classList.remove('ov-open'); }
   $('compBtn').addEventListener('click', abrirCompras);
