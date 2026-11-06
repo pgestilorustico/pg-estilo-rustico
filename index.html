@@ -1251,6 +1251,10 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
 #calcFab.drag{transform:scale(1.12);box-shadow:0 16px 34px -8px rgba(30,24,20,.55);cursor:grabbing}
 body.editing #calcFab{display:grid}
 html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
+
+header.brand .st.pagbar.rechbar{margin-top:0;padding-top:2px}
+header.brand .st.pagbar.rechbar,header.brand .st.pagbar.rechbar .pb-t{color:var(--muted)}
+header.brand .st.pagbar.rechbar.on{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -1278,6 +1282,7 @@ html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
     </div>
     <span class="debe-line" id="debeLine" hidden></span>
     <form class="actf tabf" data-filter="pagado"><button type="submit" class="st pagbar" data-st="pagado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.6 2.6L16.2 9.5"/></svg><span class="pb-t">Terminados y cobrados</span><b id="stPag">–</b><span class="rb-arrow">›</span></button></form>
+    <form class="actf tabf" data-filter="rechazado"><button type="submit" class="st pagbar rechbar" data-st="rechazado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg><span class="pb-t">Presupuestos no aceptados</span><b id="stRech">–</b><span class="rb-arrow">›</span></button></form>
     <button type="button" class="resbar" id="resBtn" hidden><svg class="nav-ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span id="resBarTxt">Resumen del mes</span><span class="rb-arrow">›</span></button>
   </header>
 
@@ -1596,7 +1601,7 @@ html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 76</p>
+    <p class="ver">versión app 77</p>
   </div>
 </div>
 
@@ -2047,7 +2052,7 @@ html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
     try{
       var cnt0 = {presupuesto:0, rechazado:0, proceso:0, saldo:0, pagado:0}; state.orders.forEach(function(o){ cnt0[estado(o)]++; });
       updResBar(); updBell();
-      $('stProc').textContent = cnt0.proceso; $('stPres').textContent = cnt0.presupuesto + cnt0.rechazado; $('stCobrar').textContent = cnt0.saldo; try{ var debeT = state.orders.reduce(function(a,o){ return a + (estado(o)==='saldo' ? saldo(o) : 0); },0); $('debeLine').hidden = !(debeT>0); $('debeLine').innerHTML = debeT>0 ? 'Terminados: falta cobrar <b>'+money.format(debeT)+'</b>' : ''; $('stCobrarM').innerHTML = debeT>0 ? 'Falta cobrar <b class="st-debe">'+money.format(debeT)+'</b>' : 'Falta cobrar y entregar'; }catch(_){} $('stPag').textContent = cnt0.pagado;
+      $('stProc').textContent = cnt0.proceso; $('stPres').textContent = cnt0.presupuesto; if($('stRech')) $('stRech').textContent = cnt0.rechazado; $('stCobrar').textContent = cnt0.saldo; try{ var debeT = state.orders.reduce(function(a,o){ return a + (estado(o)==='saldo' ? saldo(o) : 0); },0); $('debeLine').hidden = !(debeT>0); $('debeLine').innerHTML = debeT>0 ? 'Terminados: falta cobrar <b>'+money.format(debeT)+'</b>' : ''; $('stCobrarM').innerHTML = debeT>0 ? 'Falta cobrar <b class="st-debe">'+money.format(debeT)+'</b>' : 'Falta cobrar y entregar'; }catch(_){} $('stPag').textContent = cnt0.pagado;
       document.querySelectorAll('.st[data-st]').forEach(function(t){ t.classList.toggle('on', !state.q.trim() && t.getAttribute('data-st')===state.filter); });
     }catch(_){}
     if($('tPaid')) $('tPaid').textContent = money.format(tPaid);
@@ -2055,14 +2060,14 @@ html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
     var q = state.q.trim().toLowerCase();
     var cnt = {presupuesto:0, rechazado:0, proceso:0, saldo:0, pagado:0};
     state.orders.forEach(function(o){ cnt[estado(o)]++; });
-    if($('cPresu')) $('cPresu').textContent = cnt.presupuesto + cnt.rechazado;
+    if($('cPresu')) $('cPresu').textContent = cnt.presupuesto;
     if($('cProceso')) $('cProceso').textContent = cnt.proceso;
     if($('cSaldo')) $('cSaldo').textContent = cnt.saldo;
     if($('cPagado')) $('cPagado').textContent = cnt.pagado;
     var list = state.orders.filter(function(o){
       if(q) return (String(o.cliente||'')+' '+String(o.pedido||'')).toLowerCase().indexOf(q)>=0;
       var e = estado(o);
-      return e===state.filter || (state.filter==='presupuesto' && e==='rechazado');
+      return e===state.filter;
     }).sort(function(a,b){
       var ra = estado(a)==='rechazado'?1:0, rb = estado(b)==='rechazado'?1:0;
       if(ra!==rb) return ra-rb;
@@ -2076,7 +2081,7 @@ html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
       return String(b.creado||'').localeCompare(String(a.creado||''));
     });
     state.turno = {}; if(!q && state.filter==='proceso') list.forEach(function(o,i){ state.turno[o.id] = i+1; });
-    try{ $('listTitle').textContent = q ? 'Resultados' : ({proceso:'En proceso', presupuesto:'Presupuestos', saldo:'Terminados · falta cobrar', pagado:'Terminados y cobrados'}[state.filter]||''); }catch(_){}
+    try{ $('listTitle').textContent = q ? 'Resultados' : ({proceso:'En proceso', presupuesto:'Presupuestos', rechazado:'Presupuestos no aceptados', saldo:'Terminados · falta cobrar', pagado:'Terminados y cobrados'}[state.filter]||''); }catch(_){}
 
     var html;
     if(!list.length){
@@ -2085,6 +2090,7 @@ html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
         ? (q ? '<div class="empty"><strong>No encontré pedidos</strong>Probá con otro nombre o palabra.</div>'
              : state.filter==='presupuesto' ? '<div class="empty"><strong>No hay presupuestos esperando respuesta</strong>Al cargar un pedido, elegí “Presupuesto enviado” en Estado.</div>'
              : state.filter==='proceso' ? '<div class="empty"><strong>No hay trabajos en proceso</strong>Tocá “+ Nuevo pedido” cuando entre uno.</div>'
+             : state.filter==='rechazado' ? '<div class="empty"><strong>No hay presupuestos no aceptados</strong>Cuando un cliente no acepte, tocá “✗ No aceptado” en el presupuesto y queda guardado acá.</div>'
              : state.filter==='saldo' ? '<div class="empty"><strong>Nadie te debe</strong>Todos los trabajos terminados están cobrados.</div>'
              : '<div class="empty"><strong>Todavía no hay pedidos pagados</strong></div>')
         : '<div class="empty"><strong>Todavía no cargaste pedidos</strong>Tocá “Nuevo pedido” para anotar el primero.</div>';
