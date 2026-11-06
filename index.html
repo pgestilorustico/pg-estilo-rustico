@@ -1215,7 +1215,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
 
 /* Historial de horas */
 .hist-btn{display:flex;align-items:center;gap:8px;width:100%;margin:2px 0 10px;padding:10px 12px;border:1px dashed var(--accent-line);border-radius:12px;background:transparent;color:var(--accent);font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;text-align:left}
-#histOv{align-items:center!important;padding:16px!important}
+#histOv{align-items:center!important;padding:16px!important;z-index:46!important}
 #histOv .hist-box{height:auto!important;max-height:88vh;border-radius:24px!important;width:100%;max-width:520px;display:flex;flex-direction:column;overflow:hidden}
 #histOv .res-body{overflow:auto;padding:4px 16px 20px}
 .hist-q{width:100%;box-sizing:border-box;margin:6px 0 12px}
@@ -1235,6 +1235,15 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
 .hist-n .ph b{color:var(--accent)}
 .hist-use{margin-top:10px;width:100%;padding:9px 10px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}
 .hist-empty{color:var(--muted);font-size:.88rem;text-align:center;margin:24px 8px}
+
+.hist-note{margin:-4px 2px 14px;font-size:.76rem;color:var(--muted)}
+.hist-n{grid-template-columns:repeat(3,1fr)!important}
+.hist-cmp{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--soft)}
+.hist-cmp > div{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.84rem;color:var(--ink)}
+.hist-cmp > div b{font-size:.95rem}
+.hist-cmp small{display:block;font-size:.72rem;color:var(--muted);margin-top:1px}
+.hist-v{margin:8px 0 0;font-size:.84rem;font-weight:700}
+.hist-v.ok{color:var(--ok)} .hist-v.bad{color:#A85C1A} .hist-v.na{color:var(--muted);font-weight:500}
 </style>
 </head>
 <body>
@@ -1580,7 +1589,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 74</p>
+    <p class="ver">versión app 75</p>
   </div>
 </div>
 
@@ -2779,18 +2788,24 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
   }
   function histHtml(q){
     var L = histList(), nq = nrm(q||'');
+    var vh = num(prefs.valorHora)||10000, mg = num(prefs.margen), vhm = Math.round(vh*(1+mg/100));
+    var tMo = 0, tHs = 0, tAll = 0;
+    histList().forEach(function(o){ var hs = segTrab(o)/3600; tAll += hs; if(num(o.costoMano)>0){ tMo += num(o.costoMano); tHs += hs; } });
     if(nq) L = L.filter(function(o){ return nrm(o.pedido+' '+o.cliente+' '+(o.medidas||'')).indexOf(nq)>=0; });
-    var real = valorHoraReal(), h = '';
-    h += '<input type="search" class="search hist-q" id="histQ" placeholder="Buscar: mesa, perchero, estante…" value="'+esc(q||'')+'">';
-    if(real) h += '<div class="hist-sum"><div><small>Ganás en promedio</small><b>'+money.format(real.v)+'</b><span>por hora</span></div><div><small>Horas registradas</small><b>'+fmtHoras(real.hs*3600)+'</b><span>'+histList().length+' trabajos</span></div></div>';
+    var h = '<input type="search" class="search hist-q" id="histQ" placeholder="Buscar: mesa, perchero, estante…" value="'+esc(q||'')+'">';
+    h += '<div class="hist-sum"><div><small>Tu hora con margen</small><b>'+money.format(vhm)+'</b><span>'+money.format(vh)+(mg?' + '+mg+' %':'')+'</span></div><div><small>Lo que cobrás por hora</small><b>'+(tHs>0?money.format(Math.round(tMo/tHs)):'—')+'</b><span>promedio real de mano de obra</span></div></div>';
+    h += '<p class="hist-note">'+fmtHoras(tAll*3600)+' registradas en '+histList().length+(histList().length===1?' trabajo':' trabajos')+'. Para cambiar tu valor hora o el margen, usá "💡 Calcular el precio" en un pedido.</p>';
     if(!L.length) return h + '<p class="hist-empty">'+(nq ? 'No hay trabajos cronometrados que coincidan.' : 'Todavía no hay trabajos con horas registradas. Usá ▶ Empezar y ⏸ Pausar en tus pedidos y acá vas a ir armando tu historial.')+'</p>';
     h += L.map(function(o){
-      var sg = segTrab(o), hs = sg/3600, g = gananciaDe(o), ph = (num(o.precio)>0 && g>0 && hs>0) ? Math.round(g/hs) : 0;
-      return '<div class="hist-it"><div class="hist-h"><b>'+esc(o.pedido||'Pedido')+'</b><span>'+esc(o.cliente||'')+(o.fecha?' · '+fmtDate(o.fecha).slice(0,5)+'/'+String(o.fecha).slice(2,4):'')+'</span></div>'+
+      var sg = segTrab(o), hs = sg/3600, mo = num(o.costoMano), corr = Math.round(hs*vhm/100)*100, ph = mo>0 ? Math.round(mo/hs) : 0, dif = mo - corr;
+      var r = '<div class="hist-it"><div class="hist-h"><b>'+esc(o.pedido||'Pedido')+'</b><span>'+esc(o.cliente||'')+(o.fecha?' · '+fmtDate(o.fecha):'')+'</span></div>'+
         (o.medidas ? '<p class="hist-m">'+esc(o.medidas)+'</p>' : '')+
-        '<div class="hist-n"><div><small>Horas</small><b>'+fmtHoras(sg)+'</b></div><div><small>Cobraste</small><b>'+(num(o.precio)?money.format(totalDe(o)):'—')+'</b></div><div><small>Te quedó</small><b>'+(g>0?money.format(g):'—')+'</b></div><div class="ph"><small>Por hora</small><b>'+(ph?money.format(ph):'—')+'</b></div></div>'+
-        (state.editing ? '<button type="button" class="hist-use" data-hs="'+(Math.round(hs*4)/4)+'">Usar '+String(Math.round(hs*4)/4).replace('.',',')+' h en este pedido</button>' : '')+
-        '</div>';
+        '<div class="hist-n"><div><small>Horas</small><b>'+fmtHoras(sg)+'</b></div><div><small>Mano de obra cobrada</small><b>'+(mo?money.format(mo):'—')+'</b></div><div class="ph"><small>Te salió la hora</small><b>'+(ph?money.format(ph):'—')+'</b></div></div>'+
+        '<div class="hist-cmp"><div><span>Por tus horas correspondía</span><b>'+money.format(corr)+'</b></div><small>'+String(Math.round(hs*100)/100).replace('.',',')+' h × '+money.format(vhm)+'</small>';
+      if(mo>0) r += '<p class="hist-v '+(dif>=-499?'ok':'bad')+'">'+(Math.abs(dif)<500 ? '✓ Cobraste justo lo que correspondía' : dif>0 ? '✓ Cobraste '+money.format(dif)+' de más' : 'Te faltó cobrar '+money.format(-dif))+'</p>';
+      else r += '<p class="hist-v na">No cargaste mano de obra en este pedido.</p>';
+      r += '</div>'+(state.editing ? '<button type="button" class="hist-use" data-hs="'+(Math.round(hs*4)/4)+'">Usar '+String(Math.round(hs*4)/4).replace('.',',')+' h en este pedido</button>' : '')+'</div>';
+      return r;
     }).join('');
     return h;
   }
