@@ -1244,6 +1244,13 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
 .hist-cmp small{display:block;font-size:.72rem;color:var(--muted);margin-top:1px}
 .hist-v{margin:8px 0 0;font-size:.84rem;font-weight:700}
 .hist-v.ok{color:var(--ok)} .hist-v.bad{color:#A85C1A} .hist-v.na{color:var(--muted);font-weight:500}
+
+/* Botón flotante de calculadora (solo al cargar un pedido) */
+#calcFab{position:fixed;z-index:38;width:56px;height:56px;border-radius:50%;border:0;display:none;place-items:center;background:var(--accent);color:var(--accent-ink);box-shadow:0 10px 24px -8px rgba(30,24,20,.5),0 2px 6px rgba(30,24,20,.2);touch-action:none;cursor:grab;-webkit-tap-highlight-color:transparent;transition:transform .12s, box-shadow .12s}
+#calcFab svg{width:26px;height:26px}
+#calcFab.drag{transform:scale(1.12);box-shadow:0 16px 34px -8px rgba(30,24,20,.55);cursor:grabbing}
+body.editing #calcFab{display:grid}
+html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
 </style>
 </head>
 <body>
@@ -1589,7 +1596,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 75</p>
+    <p class="ver">versión app 76</p>
   </div>
 </div>
 
@@ -1602,6 +1609,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
   <div class="dv-bar"><button type="button" class="btn" id="dvClose">✕ Cerrar</button><span>Tocá para acercar</span><button type="button" class="btn primary" id="dvShare">📤 Enviar</button></div>
   <img alt="Foto que se va a enviar">
 </div>
+<button type="button" id="calcFab" aria-label="Abrir calculadora (podés arrastrarla)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg></button>
 <div id="histOv" class="catov" hidden role="dialog" aria-label="Historial de horas">
   <div class="cat-box res-box hist-box">
     <div class="cat-top av-top"><strong>Historial de horas</strong><span class="cat-acts"><button type="button" class="calc-x" id="histClose" aria-label="Cerrar">✕</button></span></div>
@@ -2936,6 +2944,22 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     function cerrar(){ ov.hidden = true; document.documentElement.classList.remove('ov-open'); }
     $('ajClose').addEventListener('click', cerrar);
     ov.addEventListener('click', function(e){ if(e.target===ov) cerrar(); });
+  })();
+
+  /* Calculadora flotante mientras se carga un pedido: se puede arrastrar */
+  (function(){
+    var fab = $('calcFab'), KEY = 'pg-calcfab';
+    function place(x, y){ var W = window.innerWidth, H = window.innerHeight, sz = 56; x = Math.max(8, Math.min(W-sz-8, x)); y = Math.max(8, Math.min(H-sz-8, y)); fab.style.left = x+'px'; fab.style.top = y+'px'; return {x:x, y:y}; }
+    function defPos(){ return {x: window.innerWidth-56-14, y: window.innerHeight-56-150}; }
+    function load(){ var p = null; try{ p = JSON.parse(localStorage.getItem(KEY)||'null'); }catch(_){} if(p && typeof p.fx==='number'){ place(p.fx*window.innerWidth, p.fy*window.innerHeight); } else { var d = defPos(); place(d.x, d.y); } }
+    load(); window.addEventListener('resize', load);
+    var st = null;
+    fab.addEventListener('pointerdown', function(e){ st = {id:e.pointerId, sx:e.clientX, sy:e.clientY, ox:fab.offsetLeft, oy:fab.offsetTop, moved:false}; try{ fab.setPointerCapture(e.pointerId); }catch(_){} });
+    fab.addEventListener('pointermove', function(e){ if(!st || e.pointerId!==st.id) return; var dx = e.clientX-st.sx, dy = e.clientY-st.sy; if(!st.moved && Math.abs(dx)+Math.abs(dy) > 8){ st.moved = true; fab.classList.add('drag'); } if(st.moved){ e.preventDefault(); place(st.ox+dx, st.oy+dy); } });
+    function fin(e){ if(!st) return; var mv = st.moved; fab.classList.remove('drag'); if(mv){ try{ localStorage.setItem(KEY, JSON.stringify({fx: fab.offsetLeft/window.innerWidth, fy: fab.offsetTop/window.innerHeight})); }catch(_){} } else { $('calcBtn').click(); } st = null; }
+    fab.addEventListener('pointerup', fin); fab.addEventListener('pointercancel', function(){ fab.classList.remove('drag'); st = null; });
+    fab.addEventListener('click', function(e){ e.preventDefault(); });
+    try{ new MutationObserver(function(){ fab.classList.toggle('calc-on', !$('calc').hidden); }).observe($('calc'), {attributes:true, attributeFilter:['hidden']}); }catch(_){}
   })();
   function abrirCompras(){ $('compBody')._last = null; $('compras').hidden = false; document.documentElement.classList.add('ov-open'); updCompras(); }
   function cerrarCompras(){ $('compras').hidden = true; document.documentElement.classList.remove('ov-open'); }
