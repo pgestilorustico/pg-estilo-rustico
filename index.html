@@ -1212,6 +1212,29 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
 #ajOv .res-body{overflow:auto}
 #ajOvBody{padding:0 16px 24px}
 #ajOvBody .aj-body{border-top:0;padding:0 0 10px}
+
+/* Historial de horas */
+.hist-btn{display:flex;align-items:center;gap:8px;width:100%;margin:2px 0 10px;padding:10px 12px;border:1px dashed var(--accent-line);border-radius:12px;background:transparent;color:var(--accent);font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;text-align:left}
+#histOv{align-items:center!important;padding:16px!important}
+#histOv .hist-box{height:auto!important;max-height:88vh;border-radius:24px!important;width:100%;max-width:520px;display:flex;flex-direction:column;overflow:hidden}
+#histOv .res-body{overflow:auto;padding:4px 16px 20px}
+.hist-q{width:100%;box-sizing:border-box;margin:6px 0 12px}
+.hist-sum{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.hist-sum > div{background:var(--soft);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.hist-sum small{font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.hist-sum b{font-family:var(--head);font-size:1.25rem;color:var(--ink)}
+.hist-sum span{font-size:.76rem;color:var(--muted)}
+.hist-it{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;background:var(--surface)}
+.hist-h{display:flex;flex-direction:column;gap:2px}
+.hist-h b{font-size:.95rem;color:var(--ink)} .hist-h span{font-size:.78rem;color:var(--muted)}
+.hist-m{margin:4px 0 0;font-size:.78rem;color:var(--muted)}
+.hist-n{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.hist-n > div{display:flex;flex-direction:column;gap:1px}
+.hist-n small{font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.hist-n b{font-size:.86rem;color:var(--ink)}
+.hist-n .ph b{color:var(--accent)}
+.hist-use{margin-top:10px;width:100%;padding:9px 10px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}
+.hist-empty{color:var(--muted);font-size:.88rem;text-align:center;margin:24px 8px}
 </style>
 </head>
 <body>
@@ -1379,6 +1402,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
           <label>Margen (%)<input type="number" id="fMargen" inputmode="numeric" min="0" step="1" placeholder="0"></label>
         </div>
         <p class="psug-hint" id="psugHint"></p>
+        <button type="button" class="hist-btn" id="histBtn"><span>📋</span>Ver trabajos anteriores y sus horas</button>
         <div class="psug-res" id="psugRes" hidden>
           <div><span>Mano de obra (horas × valor hora)</span><b id="psugMano">$ 0</b></div>
           <div><span>Materiales y desgastes</span><b id="psugMat">$ 0</b></div>
@@ -1539,6 +1563,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     </div>
     <p class="aj-sec">Resumen</p>
     <div class="aj-grp"><button type="button" class="aj-row" id="resBtn2"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="aj-tx"><b>Resumen del mes</b><small id="resAjTxt">Cobrado, ganancia y gastos del mes</small></span><span class="aj-chev">›</span></button></div>
+    <div class="aj-grp" style="margin-top:8px"><button type="button" class="aj-row" id="histBtn2"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5"/><path d="M10 2h4"/></svg></span><span class="aj-tx"><b>Historial de horas</b><small>Trabajos cronometrados y cuánto ganaste por hora</small></span><span class="aj-chev">›</span></button></div>
     <p class="aj-sec">Presupuestos</p>
     <div class="aj-grp"><div class="aj-row aj-static"><span class="aj-tx"><b>Validez del presupuesto</b><small>Se agrega en la foto y en el texto de WhatsApp</small></span></div></div>
     <div class="themesw aj-val" role="group" aria-label="Validez del presupuesto"><button type="button" data-val="7">7 días</button><button type="button" data-val="10">10 días</button><button type="button" data-val="15">15 días</button></div>
@@ -1555,7 +1580,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 73</p>
+    <p class="ver">versión app 74</p>
   </div>
 </div>
 
@@ -1567,6 +1592,12 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
 <div id="docView" hidden role="dialog" aria-label="Vista de la foto">
   <div class="dv-bar"><button type="button" class="btn" id="dvClose">✕ Cerrar</button><span>Tocá para acercar</span><button type="button" class="btn primary" id="dvShare">📤 Enviar</button></div>
   <img alt="Foto que se va a enviar">
+</div>
+<div id="histOv" class="catov" hidden role="dialog" aria-label="Historial de horas">
+  <div class="cat-box res-box hist-box">
+    <div class="cat-top av-top"><strong>Historial de horas</strong><span class="cat-acts"><button type="button" class="calc-x" id="histClose" aria-label="Cerrar">✕</button></span></div>
+    <div class="res-body" id="histBody"></div>
+  </div>
 </div>
 <div id="ajOv" class="catov" hidden role="dialog" aria-label="Ajustes">
   <div class="cat-box res-box aj-box">
@@ -2560,7 +2591,7 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
     function vis(id){ var e = document.getElementById(id); return !!(e && !e.hidden); }
     function atras(){
       if(vis('docView')){ closeDocView(); return true; }
-      var ov = [['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
+      var ov = [['histOv','histClose'],['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
       for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
       if(state.editing){ if(document.querySelector('.pgd-bg')) return true; pgDialog({title:'¿Salir sin guardar?', msg:'Los cambios que hiciste se van a perder.', cancel:'Seguir editando', ok:'Salir', danger:true}).then(function(si){ if(si){ showEditor(false); window.scrollTo(0,0); } }); return true; }
       if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
@@ -2741,6 +2772,38 @@ body:not(.v-pedidos) .stats,body:not(.v-pedidos) .debe-line,body:not(.v-pedidos)
   ['fHorasEst','fValorHora','fMargen','fMadPrecio','fMelPrecio','fTapaPrecio','fOtrosPrecio'].forEach(function(i){ $(i).addEventListener('input', function(){ if(i==='fValorHora'){ prefs.valorHora = num($('fValorHora').value); savePrefs(); } if(i==='fMargen'){ prefs.margen = num($('fMargen').value); savePrefs(); } updSug(); }); });
   $('psugManoBtn').addEventListener('click', function(){ $('fManoPrecio').value = $('psugMano').getAttribute('data-v')||''; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); updSug(); });
   $('psugPrecioBtn').addEventListener('click', function(){ var mv = $('psugMano').getAttribute('data-v'); if(num(mv) && !num($('fManoPrecio').value)){ $('fManoPrecio').value = mv; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); } $('fPrecio').value = $('psugTot').getAttribute('data-v')||''; $('fPrecio').dispatchEvent(new Event('input',{bubbles:true})); try{ $('fPrecio').scrollIntoView({block:'center', behavior:'smooth'}); $('fPrecio').classList.add('calc-flash'); setTimeout(function(){ $('fPrecio').classList.remove('calc-flash'); }, 1200); }catch(_){} });
+
+  /* ---------- Historial de horas ---------- */
+  function histList(){
+    return state.orders.filter(function(o){ return segTrab(o)>=600 && estado(o)!=='rechazado'; }).sort(function(a,b){ return String(b.fecha||b.creado||'').localeCompare(String(a.fecha||a.creado||'')); });
+  }
+  function histHtml(q){
+    var L = histList(), nq = nrm(q||'');
+    if(nq) L = L.filter(function(o){ return nrm(o.pedido+' '+o.cliente+' '+(o.medidas||'')).indexOf(nq)>=0; });
+    var real = valorHoraReal(), h = '';
+    h += '<input type="search" class="search hist-q" id="histQ" placeholder="Buscar: mesa, perchero, estante…" value="'+esc(q||'')+'">';
+    if(real) h += '<div class="hist-sum"><div><small>Ganás en promedio</small><b>'+money.format(real.v)+'</b><span>por hora</span></div><div><small>Horas registradas</small><b>'+fmtHoras(real.hs*3600)+'</b><span>'+histList().length+' trabajos</span></div></div>';
+    if(!L.length) return h + '<p class="hist-empty">'+(nq ? 'No hay trabajos cronometrados que coincidan.' : 'Todavía no hay trabajos con horas registradas. Usá ▶ Empezar y ⏸ Pausar en tus pedidos y acá vas a ir armando tu historial.')+'</p>';
+    h += L.map(function(o){
+      var sg = segTrab(o), hs = sg/3600, g = gananciaDe(o), ph = (num(o.precio)>0 && g>0 && hs>0) ? Math.round(g/hs) : 0;
+      return '<div class="hist-it"><div class="hist-h"><b>'+esc(o.pedido||'Pedido')+'</b><span>'+esc(o.cliente||'')+(o.fecha?' · '+fmtDate(o.fecha).slice(0,5)+'/'+String(o.fecha).slice(2,4):'')+'</span></div>'+
+        (o.medidas ? '<p class="hist-m">'+esc(o.medidas)+'</p>' : '')+
+        '<div class="hist-n"><div><small>Horas</small><b>'+fmtHoras(sg)+'</b></div><div><small>Cobraste</small><b>'+(num(o.precio)?money.format(totalDe(o)):'—')+'</b></div><div><small>Te quedó</small><b>'+(g>0?money.format(g):'—')+'</b></div><div class="ph"><small>Por hora</small><b>'+(ph?money.format(ph):'—')+'</b></div></div>'+
+        (state.editing ? '<button type="button" class="hist-use" data-hs="'+(Math.round(hs*4)/4)+'">Usar '+String(Math.round(hs*4)/4).replace('.',',')+' h en este pedido</button>' : '')+
+        '</div>';
+    }).join('');
+    return h;
+  }
+  function abrirHist(){ $('histBody').innerHTML = histHtml(''); $('histOv').hidden = false; document.documentElement.classList.add('ov-open'); }
+  function cerrarHist(){ $('histOv').hidden = true; if($('ajOv').hidden) document.documentElement.classList.remove('ov-open'); }
+  $('histBtn').addEventListener('click', abrirHist);
+  $('histBtn2').addEventListener('click', abrirHist);
+  $('histClose').addEventListener('click', cerrarHist);
+  $('histOv').addEventListener('click', function(e){
+    if(e.target===$('histOv')){ cerrarHist(); return; }
+    var u = e.target.closest('.hist-use'); if(u){ $('fHorasEst').value = u.getAttribute('data-hs'); $('fHorasEst').dispatchEvent(new Event('input',{bubbles:true})); cerrarHist(); try{ $('sec3').open = true; $('fHorasEst').scrollIntoView({block:'center'}); }catch(_){} }
+  });
+  $('histOv').addEventListener('input', function(e){ if(e.target.id==='histQ'){ var v = e.target.value, pos = e.target.selectionStart; $('histBody').innerHTML = histHtml(v); var q = $('histQ'); q.focus(); try{ q.setSelectionRange(pos,pos); }catch(_){} } });
 
   /* ---------- Resumen del mes ---------- */
   var resMes = null;
