@@ -1255,6 +1255,19 @@ html.ov-open #calcFab,#calcFab.calc-on{display:none!important}
 header.brand .st.pagbar.rechbar{margin-top:0;padding-top:2px}
 header.brand .st.pagbar.rechbar,header.brand .st.pagbar.rechbar .pb-t{color:var(--muted)}
 header.brand .st.pagbar.rechbar.on{color:var(--ink)}
+
+/* Terminados y cobrados / No aceptados resaltados */
+.subtabs{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:10px!important}
+.subtabs > form{margin:0!important;min-width:0!important}
+header.brand .subtabs .st.pagbar,header.brand .subtabs .st.pagbar.rechbar{width:100%!important;margin:0!important;padding:9px 12px!important;border-radius:16px!important;background:#F4F1EE!important;border:0!important;box-shadow:none!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;color:#3A332E!important;text-align:left!important}
+header.brand .subtabs .st.pagbar .pb-t,header.brand .subtabs .st.pagbar.rechbar .pb-t{flex:1!important;color:inherit!important;font-size:.74rem!important;line-height:1.2!important;font-weight:700!important}
+header.brand .subtabs .st.pagbar b{font-size:1.05rem!important;color:inherit!important}
+header.brand .subtabs .st.pagbar .rb-arrow{display:none!important}
+header.brand .subtabs .st.pagbar .nav-ic{width:18px!important;height:18px!important;opacity:.75!important}
+header.brand .subtabs .st.pagbar.on{background:#75685C!important;color:#FFFFFF!important}
+:root[data-theme="dark"] header.brand .subtabs .st.pagbar{background:#24211E!important;color:#E4DCD4!important} :root[data-theme="dark"] header.brand .subtabs .st.pagbar.on{background:#C9BDB1!important;color:#1B1917!important}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) header.brand .subtabs .st.pagbar{background:#24211E!important;color:#E4DCD4!important} :root:not([data-theme="light"]) header.brand .subtabs .st.pagbar.on{background:#C9BDB1!important;color:#1B1917!important} }
+body:not(.v-pedidos) .subtabs{display:none}
 </style>
 </head>
 <body>
@@ -1281,8 +1294,10 @@ header.brand .st.pagbar.rechbar.on{color:var(--ink)}
       <form class="actf tabf st-wide" data-filter="saldo"><button type="submit" class="st st-term" data-st="saldo"><span class="stt"><small>Terminados</small><em id="stCobrarM">Falta cobrar y entregar</em></span><b id="stCobrar">–</b></button></form>
     </div>
     <span class="debe-line" id="debeLine" hidden></span>
-    <form class="actf tabf" data-filter="pagado"><button type="submit" class="st pagbar" data-st="pagado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.6 2.6L16.2 9.5"/></svg><span class="pb-t">Terminados y cobrados</span><b id="stPag">–</b><span class="rb-arrow">›</span></button></form>
-    <form class="actf tabf" data-filter="rechazado"><button type="submit" class="st pagbar rechbar" data-st="rechazado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg><span class="pb-t">Presupuestos no aceptados</span><b id="stRech">–</b><span class="rb-arrow">›</span></button></form>
+    <div class="subtabs">
+    <form class="actf tabf" data-filter="pagado"><button type="submit" class="st pagbar" data-st="pagado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.6 2.6L16.2 9.5"/></svg><span class="pb-t">Terminados<br>y cobrados</span><b id="stPag">–</b><span class="rb-arrow">›</span></button></form>
+    <form class="actf tabf" data-filter="rechazado"><button type="submit" class="st pagbar rechbar" data-st="rechazado"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg><span class="pb-t">Presupuestos<br>no aceptados</span><b id="stRech">–</b><span class="rb-arrow">›</span></button></form>
+    </div>
     <button type="button" class="resbar" id="resBtn" hidden><svg class="nav-ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span id="resBarTxt">Resumen del mes</span><span class="rb-arrow">›</span></button>
   </header>
 
@@ -1601,7 +1616,7 @@ header.brand .st.pagbar.rechbar.on{color:var(--ink)}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 77</p>
+    <p class="ver">versión app 78</p>
   </div>
 </div>
 
