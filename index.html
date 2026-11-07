@@ -1350,6 +1350,15 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
 .gs-p{font-weight:700;font-size:.92rem;white-space:nowrap}
 
 #fNotas,#form textarea{resize:none!important;height:84px;min-height:84px!important;max-height:84px;overflow-y:auto}
+
+/* v86: tarjetas con borde más marcado para separarlas */
+#list details.order,details.cli,.gbox,.nitem,.hist-it,.av-card,.gs-it,.fsec,.herr,.cdet,.aj-grp,#gNafta .naf-card{border:1.5px solid #8F867D!important}
+#list details.order.next{border-color:#3A332E!important;box-shadow:0 0 0 1px #3A332E,0 8px 20px -14px rgba(0,0,0,.3)!important}
+#list details.order.st-rechazado{border-style:dashed!important}
+.gitem{border-top-color:#D9D2CB!important}
+:root[data-theme="dark"] #list details.order,:root[data-theme="dark"] details.cli,:root[data-theme="dark"] .gbox,:root[data-theme="dark"] .nitem,:root[data-theme="dark"] .hist-it,:root[data-theme="dark"] .av-card,:root[data-theme="dark"] .gs-it,:root[data-theme="dark"] .fsec,:root[data-theme="dark"] .herr,:root[data-theme="dark"] .cdet,:root[data-theme="dark"] .aj-grp,:root[data-theme="dark"] #gNafta .naf-card{border-color:#5E564F!important}
+:root[data-theme="dark"] #list details.order.next{border-color:#C9BDB1!important;box-shadow:0 0 0 1px #C9BDB1!important}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) #list details.order,:root:not([data-theme="light"]) details.cli,:root:not([data-theme="light"]) .gbox,:root:not([data-theme="light"]) .nitem,:root:not([data-theme="light"]) .hist-it,:root:not([data-theme="light"]) .av-card,:root:not([data-theme="light"]) .gs-it,:root:not([data-theme="light"]) .fsec,:root:not([data-theme="light"]) .herr,:root:not([data-theme="light"]) .cdet,:root:not([data-theme="light"]) .aj-grp,:root:not([data-theme="light"]) #gNafta .naf-card{border-color:#5E564F!important} :root:not([data-theme="light"]) #list details.order.next{border-color:#C9BDB1!important;box-shadow:0 0 0 1px #C9BDB1!important} }
 </style>
 </head>
 <body>
@@ -1714,7 +1723,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 85</p>
+    <p class="ver">versión app 86</p>
   </div>
 </div>
 
