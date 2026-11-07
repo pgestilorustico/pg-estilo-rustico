@@ -514,8 +514,8 @@ header.brand .hbtns{position:absolute;right:16px;top:calc(21px + env(safe-area-i
 body:not(.v-pedidos) .stats{display:none}
 /* barra de abajo */
 .views{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;border:0;border-top:1px solid var(--line);background:var(--surface);display:flex;justify-content:space-around;align-items:flex-end;gap:0;padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px));overflow:visible;box-shadow:0 -6px 20px -14px rgba(0,0,0,.25)}
-.views form.actf,.views #navRes{flex:1;display:flex;justify-content:center}
-.views #navRes{flex-direction:column;align-items:center}
+.views form.actf,.views #navCat{flex:1;display:flex;justify-content:center}
+.views #navCat{flex-direction:column;align-items:center}
 .vtab{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:6px 2px 2px;margin:0;font-family:var(--body);font-size:.7rem;font-weight:600;color:var(--muted);background:none;width:100%}
 .vtab[aria-pressed="true"]{color:var(--accent);border:0;font-weight:800}
 .nav-ic{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -1325,6 +1325,29 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
 :root[data-theme="dark"] input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]),:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] .cnum{border-color:#6E655D!important}
 :root[data-theme="dark"] .search{border-color:#3A352F!important}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]),:root:not([data-theme="light"]) textarea,:root:not([data-theme="light"]) select,:root:not([data-theme="light"]) .cnum{border-color:#6E655D!important} :root:not([data-theme="light"]) .search{border-color:#3A352F!important} }
+
+/* v84: Ajustes con tuerca solo en Pedidos, catálogo abajo, pedido abierto ordenado */
+#ajustes{display:none!important}
+body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!important}
+.acts-main{margin-top:14px}
+.acts-main .btn{flex:1 1 auto}
+.acts-more{margin-top:8px}
+.acts-more > summary{list-style:none;display:inline-flex;align-items:center;gap:6px;padding:8px 2px;color:var(--muted);font-weight:600;font-size:.86rem;cursor:pointer}
+.acts-more > summary::-webkit-details-marker{display:none}
+.acts-more .actions{margin-top:4px}
+.cdet{margin:10px 0 4px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cdet > summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:11px 14px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.cdet > summary::-webkit-details-marker{display:none}
+.cdet > summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px)}
+.cdet[open] > summary::after{transform:rotate(-135deg)}
+.cdet .rows{padding:0 14px 10px;margin:0}
+/* buscador general */
+.gs-sec{margin:18px 4px 8px;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gs-it{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.gs-ic{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--soft);font-size:1rem}
+.gs-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.gs-t b{font-size:.92rem} .gs-t small{font-size:.78rem;color:var(--muted)}
+.gs-p{font-weight:700;font-size:.92rem;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1344,7 +1367,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
   <header class="brand">
     <img class="logo" alt="Logo PG Estilo Rústico" src="logo.png">
     <div class="brand-txt"><span class="brand-mini">PG Estilo Rústico</span><h1 id="hola">Hola, Pablo</h1><p id="hoyTxt"></p></div>
-    <div class="hbtns"><button type="button" class="hbtn hbell" id="compBtn" aria-haspopup="dialog" aria-label="Lista de compras"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.2l2.2 11h10.4l2-8H6.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19" r="1.4" fill="currentColor"/><circle cx="16.5" cy="19" r="1.4" fill="currentColor"/></svg><span class="bell-n" id="compN" hidden></span><span class="calc-txt"> Compras</span></button><button type="button" class="hbtn hbell" id="bellBtn" aria-label="Avisos"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="bell-n" id="bellN" hidden></span><span class="calc-txt"> Avisos</span></button><button type="button" class="hbtn" id="catBtn" aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
+    <div class="hbtns"><button type="button" class="hbtn hbell" id="compBtn" aria-haspopup="dialog" aria-label="Lista de compras"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.2l2.2 11h10.4l2-8H6.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19" r="1.4" fill="currentColor"/><circle cx="16.5" cy="19" r="1.4" fill="currentColor"/></svg><span class="bell-n" id="compN" hidden></span><span class="calc-txt"> Compras</span></button><button type="button" class="hbtn hbell" id="bellBtn" aria-label="Avisos"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="bell-n" id="bellN" hidden></span><span class="calc-txt"> Avisos</span></button><button type="button" class="hbtn" id="catBtn" hidden aria-haspopup="dialog" aria-label="Catálogo"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 9.2c1.4-.5 2.7-.5 4 0M14.5 12.2c1.4-.5 2.7-.5 4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="calc-txt"> Catálogo</span></button><button type="button" class="hbtn" id="ajGear" aria-label="Ajustes"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button type="button" class="hbtn" id="calcBtn" aria-haspopup="dialog" aria-label="Calculadora"><svg class="calc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg><span class="calc-txt"> Calculadora</span></button></div>
     <div class="stats" id="stats">
       <form class="actf tabf" data-filter="proceso"><button type="submit" class="st" data-st="proceso"><small>En proceso</small><b id="stProc">–</b></button></form>
       <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="st" data-st="presupuesto"><small>Presupuestos</small><b id="stPres">–</b></button></form>
@@ -1362,10 +1385,10 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
 
   <nav class="views" aria-label="Secciones">
     <form class="actf" data-act="view" data-view="pedidos"><button type="submit" class="vtab" data-view="pedidos" aria-pressed="true"><svg class="nav-ic" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Pedidos</button></form>
-    <button type="button" class="vtab" id="navRes" aria-label="Resumen del mes"><svg class="nav-ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Resumen<span class="cnt" id="cStock" hidden></span></button>
-    <button type="button" class="navfab" id="navFab" aria-label="Agregar nuevo">+</button>
     <form class="actf" data-act="view" data-view="clientes"><button type="submit" class="vtab" data-view="clientes" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Clientes<span class="cnt" id="cClientes" hidden></span></button></form>
+    <button type="button" class="navfab" id="navFab" aria-label="Agregar nuevo">+</button>
     <form class="actf" data-act="view" data-view="gastos"><button type="submit" class="vtab" data-view="gastos" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Gastos</button></form>
+    <button type="button" class="vtab" id="navCat" aria-label="Catálogo"><svg class="nav-ic" viewBox="0 0 24 24"><path d="M3.5 5.5c2.6-1.2 5.4-1.2 8.5.6v13.4c-3.1-1.8-5.9-1.8-8.5-.6z"/><path d="M20.5 5.5c-2.6-1.2-5.4-1.2-8.5.6v13.4c3.1-1.8 5.9-1.8 8.5-.6z"/></svg>Catálogo<span class="cnt" id="cStock" hidden></span></button>
   </nav>
 
   <div id="vPedidos">
@@ -1374,7 +1397,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
   <div class="tools">
     <form class="actf" data-act="new"><button type="submit" class="fab" id="newBtn">+ Nuevo pedido</button></form>
     <h2 class="list-title" id="listTitle">En proceso</h2>
-    <input class="search" id="q" type="search" placeholder="Buscar por cliente o pedido" aria-label="Buscar pedidos">
+    <input class="search" id="q" type="search" placeholder="Buscar pedidos, clientes o precios" aria-label="Buscar pedidos">
     <div class="tabs" role="group" aria-label="Filtrar pedidos">
       <form class="actf tabf" data-filter="presupuesto"><button type="submit" class="tab" data-filter="presupuesto" aria-pressed="false">Presupuestos <span class="cnt" id="cPresu"></span></button></form>
       <form class="actf tabf" data-filter="proceso"><button type="submit" class="tab" data-filter="proceso" aria-pressed="true">En proceso <span class="cnt" id="cProceso"></span></button></form>
@@ -1689,7 +1712,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 83</p>
+    <p class="ver">versión app 84</p>
   </div>
 </div>
 
@@ -2189,6 +2212,14 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
              : '<div class="empty"><strong>Todavía no hay pedidos pagados</strong></div>')
         : '<div class="empty"><strong>Todavía no cargaste pedidos</strong>Tocá “Nuevo pedido” para anotar el primero.</div>';
     }else html = list.map(cardHtml).join('');
+    if(q){
+      var nq = nrm(q), ex = '';
+      var CL = (state.clientes||[]).filter(function(c){ return nrm([c.nombre, c.emprendimiento, c.telefono].join(' ')).indexOf(nq)>=0; }).slice(0,6);
+      if(CL.length) ex += '<p class="gs-sec">Clientes</p>'+CL.map(function(c){ var n = state.orders.filter(function(o){ return nrm(o.cliente)===nrm(c.nombre); }).length; return '<button type="button" class="gs-it" data-gcli="'+esc(c.nombre||'')+'"><span class="gs-ic">👤</span><span class="gs-t"><b>'+esc(c.nombre||'')+'</b><small>'+esc([c.telefono, n ? n+(n===1?' pedido':' pedidos') : ''].filter(Boolean).join(' · '))+'</small></span></button>'; }).join('');
+      var NT = (state.notas||[]).filter(function(n){ return nrm([n.mat,n.med,n.donde,n.txt].join(' ')).indexOf(nq)>=0; }).sort(function(a,b){ return String(b.fecha||'').localeCompare(String(a.fecha||'')); }).slice(0,8);
+      if(NT.length) ex += '<p class="gs-sec">Notas de precios</p>'+NT.map(function(n){ return '<button type="button" class="gs-it" data-gnota="'+esc(n.mat||'')+'"><span class="gs-ic">📝</span><span class="gs-t"><b>'+esc(n.mat||'')+'</b><small>'+esc([n.med, n.donde, n.fecha ? fmtDate(n.fecha) : ''].filter(Boolean).join(' · '))+'</small></span><span class="gs-p">'+(num(n.pre)?money.format(num(n.pre)):'')+'</span></button>'; }).join('');
+      if(ex){ if(!list.length) html = '<p class="gs-sec">Pedidos</p><p class="hint" style="margin:0 4px">No hay pedidos con “'+esc(state.q.trim())+'”.</p>'; else html = '<p class="gs-sec">Pedidos</p>' + html; html += ex; }
+    }
     setList(html);
     updCompras();
   }
@@ -3013,7 +3044,15 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
   function drawResumen(){ $('resBody').innerHTML = resumenHtml(resMes); }
   function updResBar(){ try{ var m = ymd(new Date()), d = mesData(m); $('resBarTxt').innerHTML = 'Resumen de '+esc(MESES[new Date().getMonth()])+' · <b>'+money.format(d.cob)+'</b> cobrado'; $('resAjTxt').innerHTML = esc(MESES[new Date().getMonth()].charAt(0).toUpperCase()+MESES[new Date().getMonth()].slice(1))+' · '+money.format(d.cob)+' cobrado'; }catch(_){} }
   $('resBtn2').addEventListener('click', function(){ $('resBtn').click(); });
-  $('navRes').addEventListener('click', function(){ $('resBtn').click(); });
+
+  document.addEventListener('click', function(e){
+    var c = e.target.closest('[data-gcli]');
+    if(c){ var n = c.getAttribute('data-gcli'); setView('clientes'); $('cq').value = n; state.cq = n; renderClientes(); window.scrollTo(0,0); return; }
+    var t = e.target.closest('[data-gnota]');
+    if(t){ var m = t.getAttribute('data-gnota'); setView('gastos'); var b = document.querySelector('.gsb[data-gs="notas"]'); if(b) b.click(); $('nQ').value = m; renderNotas(); window.scrollTo(0,0); }
+  });
+  $('navCat').addEventListener('click', function(){ $('catBtn').click(); });
+  $('ajGear').addEventListener('click', function(){ $('ajustes').querySelector('summary').click(); });
   $('resBtn').addEventListener('click', function(){ resMes = ymd(new Date()); drawResumen(); $('resumen').hidden = false; document.documentElement.classList.add('ov-open'); });
   $('resClose').addEventListener('click', function(){ $('resumen').hidden = true; document.documentElement.classList.remove('ov-open'); });
   $('resumen').addEventListener('click', function(e){ if(e.target===$('resumen')){ $('resumen').hidden = true; document.documentElement.classList.remove('ov-open'); } var b = e.target.closest && e.target.closest('[data-rm]'); if(b && !b.disabled){ resMes = mesMas(resMes, parseInt(b.getAttribute('data-rm'),10)); drawResumen(); } });
@@ -3184,7 +3223,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
     }
     /* 2) Costos */
     if(num(o.costoMadera)||num(o.costoMelamina)||num(o.costoTornillos)||num(o.costoTapacanto)||num(o.costoOtros)||num(o.costoMano)||num(o.costoHerrajes)){
-      h += sec('Costos');
+      h += '</dl><details class="cdet"><summary>Costos y ganancia</summary><dl class="rows">';
       if(num(o.costoMadera)) h += '<dt>Madera</dt><dd>'+money.format(num(o.costoMadera))+(o.madera?' · '+esc(o.madera):'')+'</dd>';
       if(num(o.costoMelamina)) h += '<dt>Melamina</dt><dd>'+money.format(num(o.costoMelamina))+'</dd>';
       if(num(o.costoHerrajes)) h += '<dt>Herrajes</dt><dd>'+money.format(num(o.costoHerrajes))+(Array.isArray(o.herrajes)&&o.herrajes.length?'<br><small>'+o.herrajes.map(function(x){ return esc(x.cant+' '+x.nombre); }).join(' · ')+'</small>':'')+'</dd>';
@@ -3197,6 +3236,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
         var g = num(o.precio)-mat;
         h += '<dt class="sep">Ganancia</dt><dd class="sep gan'+(g<0?' neg':'')+'">'+money.format(g)+'<br><small style="font-weight:400;color:var(--muted)">precio − materiales ('+money.format(mat)+')</small></dd>';
       }
+      h += '</dl></details><dl class="rows">';
     }
     /* 3) La plata, al final de todo */
     h += sec('Cobro');
@@ -3250,18 +3290,29 @@ input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:foc
         if(state.waMsg) h += '<p class="wa-msg">'+esc(state.waMsg)+'</p>';
         h += '</div>';
       }
-      h += '<div class="actions">';
-      if(st==='presupuesto') h += actBtn('aceptar',o.id,'btn acc','✓ Aceptado') + actBtn('rechazar',o.id,'btn rech','✗ No aceptado');
-      if(st==='rechazado') h += actBtn('aceptar',o.id,'btn acc','✓ Al final lo aceptó') + actBtn('reenviar',o.id,'btn','Volver a enviado');
-      if(st!=='pagado' && st!=='presupuesto' && st!=='rechazado') h += actBtn('payopen',o.id,'btn good','💰 Registrar pago') + actBtn('vencopen',o.id,'btn','📅 Fecha de pago') + actBtn('markpaid',o.id,'btn','✓ Pagó todo');
-      if(st==='proceso') h += actBtn('tosaldo',o.id,'btn','Terminado, falta cobrar');
-      if(st==='saldo') h += actBtn('toproceso',o.id,'btn','Volver a en proceso');
-      if(st==='pagado') h += actBtn('unpaid',o.id,'btn','Reabrir saldo');
-      h += actBtn('edit',o.id,'btn','Editar');
-      h += actBtn('wa',o.id,'btn','💬 Enviar por WhatsApp');
-      h += actBtn('dup',o.id,'btn','Copiar a pedido nuevo');
-      if(state.confirmDel===o.id) h += actBtn('delyes',o.id,'btn bad','Sí, borrar pedido') + actBtn('delno',o.id,'btn','No');
-      else h += actBtn('del',o.id,'btn bad','Borrar');
+      var P = [], M = [];
+      var A = {
+        aceptar: actBtn('aceptar',o.id,'btn acc', st==='rechazado' ? '✓ Al final lo aceptó' : '✓ Aceptado'),
+        rechazar: actBtn('rechazar',o.id,'btn rech','✗ No aceptado'),
+        reenviar: actBtn('reenviar',o.id,'btn','Volver a enviado'),
+        wa: actBtn('wa',o.id,'btn','💬 WhatsApp'),
+        pay: actBtn('payopen',o.id,'btn good','💰 Registrar pago'),
+        venc: actBtn('vencopen',o.id,'btn','📅 Fecha de pago'),
+        paid: actBtn('markpaid',o.id,'btn','✓ Pagó todo'),
+        term: actBtn('tosaldo',o.id,'btn','Terminado, falta cobrar'),
+        proc: actBtn('toproceso',o.id,'btn','Volver a en proceso'),
+        unpaid: actBtn('unpaid',o.id,'btn','Reabrir saldo'),
+        edit: actBtn('edit',o.id,'btn','✎ Editar'),
+        dup: actBtn('dup',o.id,'btn','Copiar a pedido nuevo'),
+        del: state.confirmDel===o.id ? actBtn('delyes',o.id,'btn bad','Sí, borrar pedido') + actBtn('delno',o.id,'btn','No') : actBtn('del',o.id,'btn bad','Borrar')
+      };
+      if(st==='presupuesto'){ P = ['aceptar','rechazar','wa','edit']; M = ['dup','del']; }
+      else if(st==='rechazado'){ P = ['aceptar','reenviar','edit']; M = ['wa','dup','del']; }
+      else if(st==='proceso'){ P = ['wa','pay','term','edit']; M = ['venc','paid','dup','del']; }
+      else if(st==='saldo'){ P = ['pay','paid','wa','edit']; M = ['venc','proc','dup','del']; }
+      else { P = ['wa','edit']; M = ['unpaid','dup','del']; }
+      h += '<div class="actions acts-main">'+P.map(function(k){ return A[k]; }).join('')+'</div>';
+      h += '<details class="acts-more"'+(state.confirmDel===o.id?' open':'')+'><summary>⋯ Más opciones</summary><div class="actions">'+M.map(function(k){ return A[k]; }).join('')+'</div></details>';
       h += '</div></div>';
     return h + '</details>';
   }
