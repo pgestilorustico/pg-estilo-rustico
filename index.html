@@ -1268,6 +1268,30 @@ header.brand .subtabs .st.pagbar.on{background:#75685C!important;color:#FFFFFF!i
 :root[data-theme="dark"] header.brand .subtabs .st.pagbar{background:#24211E!important;color:#E4DCD4!important} :root[data-theme="dark"] header.brand .subtabs .st.pagbar.on{background:#C9BDB1!important;color:#1B1917!important}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) header.brand .subtabs .st.pagbar{background:#24211E!important;color:#E4DCD4!important} :root:not([data-theme="light"]) header.brand .subtabs .st.pagbar.on{background:#C9BDB1!important;color:#1B1917!important} }
 body:not(.v-pedidos) .subtabs{display:none}
+
+/* Herrajes */
+.herr{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
+.herr > summary{list-style:none;display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer}
+.herr > summary::-webkit-details-marker{display:none}
+.herr-ic{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--soft);font-size:1rem}
+.herr-t{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
+.herr-t b{font-size:.92rem;color:var(--ink)} .herr-t small{font-size:.76rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.herr-ar{width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
+.herr[open] .herr-ar{transform:rotate(-135deg)}
+.herr-b{padding:4px 12px 12px;border-top:1px solid var(--line)}
+.hrow{display:grid;grid-template-columns:62px 1fr 34px;gap:6px 8px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.hrow input{min-width:0;width:100%;box-sizing:border-box;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:.92rem}
+.hrow input:focus{outline:2px solid var(--accent-line);border-color:var(--accent)}
+.hrow .hcant{text-align:center}
+.hrow .hrm{width:34px;height:38px}
+.hpre-w{grid-column:1 / -1;display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+.hpre-w .cpeso{color:var(--accent);font-weight:600}
+.hpre-w input{width:110px!important;flex:none}
+.hsub{margin-left:auto;font-weight:700;color:var(--ink)}
+#addHerr{margin-top:10px}
+.herr-tot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:.88rem;font-weight:600}
+.herr-tot[hidden]{display:none}
+.herr-hint{margin:8px 0 0;font-size:.74rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -1404,6 +1428,16 @@ body:not(.v-pedidos) .subtabs{display:none}
       <label class="mdet"><span>Detalle de la madera</span>
         <input type="text" autocapitalize="sentences" id="fMadera" autocomplete="off" placeholder="Ej: pino, 2 tablas de 1x6" aria-label="Detalle de la madera">
       </label>
+      <details class="herr" id="herrBox">
+        <summary><span class="herr-ic">🔩</span><span class="herr-t"><b>Herrajes</b><small id="herrSum">Manijas, bisagras, perchas, correderas…</small></span><span class="herr-ar" aria-hidden="true"></span></summary>
+        <div class="herr-b">
+          <div id="fHerrajes"></div>
+          <datalist id="herrList"></datalist>
+          <button type="button" class="btn" id="addHerr">+ Agregar herraje</button>
+          <div class="herr-tot" id="herrTotRow" hidden><span>Total de herrajes</span><b id="herrTot">$ 0</b></div>
+          <p class="herr-hint">Escribí el nombre y si está en tus Notas de precios, el precio se completa solo.</p>
+        </div>
+      </details>
       <div class="clist">
       <div class="crow">
         <label class="clab" for="fMadPrecio">Madera</label>
@@ -1416,6 +1450,10 @@ body:not(.v-pedidos) .subtabs{display:none}
       <div class="crow">
         <label class="clab" for="fMelPrecio">Melamina</label>
         <span class="cpeso">$</span><input type="number" id="fMelPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
+      </div>
+      <div class="crow">
+        <label class="clab" for="fHerrPrecio">Herrajes<small>se suma solo desde 🔩 Herrajes</small></label>
+        <span class="cpeso">$</span><input type="number" id="fHerrPrecio" class="cnum" inputmode="numeric" min="0" step="any" placeholder="0">
       </div>
       <div class="crow">
         <label class="clab" for="fTapaPrecio">Tapacanto</label>
@@ -1616,7 +1654,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 80</p>
+    <p class="ver">versión app 81</p>
   </div>
 </div>
 
@@ -2799,7 +2837,7 @@ body:not(.v-pedidos) .subtabs{display:none}
   setTimeout(function(){ try{ if(state.db) state.db.collection('ajustes').doc('prefs').get().then(function(d){ if(d && d.exists){ var x = JSON.parse(JSON.stringify(d.data()||{})); Object.keys(x).forEach(function(k){ prefs[k] = x[k]; }); try{ localStorage.setItem('pg-prefs', JSON.stringify(prefs)); }catch(_){} } }).catch(function(){}); }catch(_){} }, 3500);
   function updSug(){
     var hs = num($('fHorasEst').value), vh = num($('fValorHora').value), mg = num($('fMargen').value);
-    var mat = num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fOtrosPrecio').value);
+    var mat = num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fOtrosPrecio').value)+num($('fHerrPrecio').value);
     var mano = Math.round(hs*vh), tot = Math.round((mat + mano)*(1+mg/100)/100)*100;
     var real = valorHoraReal();
     $('psugHint').innerHTML = real ? 'Según los pedidos que cronometraste, ganás en promedio <b>'+money.format(real.v)+' por hora</b>.' : 'Usá el ⏱ en tus pedidos y acá te voy a mostrar cuánto ganás por hora en realidad.';
@@ -2807,7 +2845,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     $('psugMano').textContent = money.format(mano); $('psugMat').textContent = money.format(mat); $('psugTot').textContent = money.format(tot);
     $('psugTot').setAttribute('data-v', tot); $('psugMano').setAttribute('data-v', mano);
   }
-  ['fHorasEst','fValorHora','fMargen','fMadPrecio','fMelPrecio','fTapaPrecio','fOtrosPrecio'].forEach(function(i){ $(i).addEventListener('input', function(){ if(i==='fValorHora'){ prefs.valorHora = num($('fValorHora').value); savePrefs(); } if(i==='fMargen'){ prefs.margen = num($('fMargen').value); savePrefs(); } updSug(); }); });
+  ['fHorasEst','fValorHora','fMargen','fMadPrecio','fMelPrecio','fTapaPrecio','fOtrosPrecio','fHerrPrecio'].forEach(function(i){ $(i).addEventListener('input', function(){ if(i==='fValorHora'){ prefs.valorHora = num($('fValorHora').value); savePrefs(); } if(i==='fMargen'){ prefs.margen = num($('fMargen').value); savePrefs(); } updSug(); }); });
   $('psugManoBtn').addEventListener('click', function(){ $('fManoPrecio').value = $('psugMano').getAttribute('data-v')||''; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); updSug(); });
   $('psugPrecioBtn').addEventListener('click', function(){ var mv = $('psugMano').getAttribute('data-v'); if(num(mv) && !num($('fManoPrecio').value)){ $('fManoPrecio').value = mv; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); } $('fPrecio').value = $('psugTot').getAttribute('data-v')||''; $('fPrecio').dispatchEvent(new Event('input',{bubbles:true})); try{ $('fPrecio').scrollIntoView({block:'center', behavior:'smooth'}); $('fPrecio').classList.add('calc-flash'); setTimeout(function(){ $('fPrecio').classList.remove('calc-flash'); }, 1200); }catch(_){} });
 
@@ -3068,10 +3106,11 @@ body:not(.v-pedidos) .subtabs{display:none}
       if(o.notas) h += '<dt>Notas</dt><dd>'+esc(o.notas)+'</dd>';
     }
     /* 2) Costos */
-    if(num(o.costoMadera)||num(o.costoMelamina)||num(o.costoTornillos)||num(o.costoTapacanto)||num(o.costoOtros)||num(o.costoMano)){
+    if(num(o.costoMadera)||num(o.costoMelamina)||num(o.costoTornillos)||num(o.costoTapacanto)||num(o.costoOtros)||num(o.costoMano)||num(o.costoHerrajes)){
       h += sec('Costos');
       if(num(o.costoMadera)) h += '<dt>Madera</dt><dd>'+money.format(num(o.costoMadera))+(o.madera?' · '+esc(o.madera):'')+'</dd>';
       if(num(o.costoMelamina)) h += '<dt>Melamina</dt><dd>'+money.format(num(o.costoMelamina))+'</dd>';
+      if(num(o.costoHerrajes)) h += '<dt>Herrajes</dt><dd>'+money.format(num(o.costoHerrajes))+(Array.isArray(o.herrajes)&&o.herrajes.length?'<br><small>'+o.herrajes.map(function(x){ return esc(x.cant+' '+x.nombre); }).join(' · ')+'</small>':'')+'</dd>';
       if(num(o.costoTornillos)) h += '<dt>Tornillos</dt><dd>'+money.format(num(o.costoTornillos))+'</dd>';
       if(num(o.costoTapacanto)) h += '<dt>Tapacanto</dt><dd>'+money.format(num(o.costoTapacanto))+'</dd>';
       if(num(o.costoOtros)) h += '<dt>Otros desgastes</dt><dd>'+money.format(num(o.costoOtros))+'</dd>';
@@ -3218,7 +3257,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     $('formTitle').textContent = o ? 'Editar pedido' : 'Nuevo pedido';
     $('fCliente').value = d.cliente||''; $('fPedido').value = d.pedido||''; $('fMedidas').value = d.medidas||'';
     $('fPrecio').value = d.precio||''; $('fOtrasMad').value = d.precioOtrasMad||''; $('fEnvioOn').checked = num(d.envio)>0; $('fEnvio').value = num(d.envio)>0 ? num(d.envio) : 5000; updEnvio(); $('fSena').value = d.sena||''; $('fVence').value = d.vence||''; $('fEntrega').value = d.entrega||''; $('fFecha').value = d.fecha||'';
-    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||10000; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
+    $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fHerrPrecio').value = d.costoHerrajes||''; drawHerr(Array.isArray(d.herrajes)?JSON.parse(JSON.stringify(d.herrajes)):[]); $('herrBox').open = !!(Array.isArray(d.herrajes) && d.herrajes.length); $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||10000; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
     $('sec1').open = true; $('sec3').open = true; $('sec2').open = !!(o && ((d.cortes||[]).length || (d.tablas||[]).length || (d.melamina||[]).length)); $('sec4').open = !!o;
@@ -3256,6 +3295,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     drawTablas((Array.isArray(o.tablas)?o.tablas:[]).map(function(t){return {cant:t.cant, medida:t.medida, precio:t.precio, largo:t.largo}}));
     drawMel((Array.isArray(o.melamina)?o.melamina:[]).map(function(m){return {cant:m.cant, medida:m.medida}}));
     $('fMelColor').value = o.melColor||''; $('fMelPrecio').value = o.costoMelamina||''; $('fTapa').value = o.tapacanto||'';
+    $('fHerrPrecio').value = o.costoHerrajes||''; drawHerr(Array.isArray(o.herrajes)?JSON.parse(JSON.stringify(o.herrajes)):[]);
     $('fMadera').value = o.madera||''; $('fMadPrecio').value = o.costoMadera||''; $('fTorPrecio').value = o.costoTornillos||''; $('fTapaPrecio').value = o.costoTapacanto||''; $('fOtrosPrecio').value = (num(o.costoOtros)+num(o.costoTornillos))||''; $('fTorPrecio').value = ''; $('fManoPrecio').value = o.costoMano||''; updSuma();
     $('fPrecio').value = o.precio||'';
     $('tplBox').hidden = true;
@@ -3295,6 +3335,38 @@ body:not(.v-pedidos) .subtabs{display:none}
     var t = tablasTotal(L.filter(function(x){ return esTabla(x.medida); })) + (hay ? num($('fOtrasMad').value) : 0);
     $('fTablasSum').hidden = !t; $('fTablasTotal').textContent = money.format(t);
   }
+  function readHerr(){
+    var out = [];
+    $('fHerrajes').querySelectorAll('.hrow').forEach(function(r){ out.push({cant:r.querySelector('.hcant').value, nombre:r.querySelector('.hnom').value.trim(), precio:r.querySelector('.hpre').value}); });
+    return out;
+  }
+  function herrTotal(L){ return L.reduce(function(a,x){ return a + (parseInt(x.cant,10)||0)*num(x.precio); },0); }
+  function drawHerr(list){
+    $('fHerrajes').innerHTML = list.map(function(c,i){
+      var sub = (parseInt(c.cant,10)||0)*num(c.precio);
+      return '<div class="hrow"><input type="number" class="hcant" inputmode="numeric" min="1" step="1" placeholder="Cant." aria-label="Cantidad" value="'+esc(c.cant==null?'':c.cant)+'">'+
+        '<input type="text" autocapitalize="sentences" class="hnom" list="herrList" autocomplete="off" placeholder="Ej: manija negra 96 mm" aria-label="Herraje" value="'+esc(c.nombre||'')+'">'+
+        '<button type="button" class="crm hrm" data-hrm="'+i+'" aria-label="Quitar herraje">×</button>'+
+        '<label class="hpre-w"><span>c/u</span><span class="cpeso">$</span><input type="number" class="hpre" inputmode="decimal" min="0" step="any" placeholder="0" value="'+esc(c.precio==null||c.precio===''?'':c.precio)+'"><span class="hsub">'+(sub?'= '+money.format(sub):'')+'</span></label></div>';
+    }).join('');
+    updHerr(true);
+  }
+  function updHerr(noSync){
+    var L = readHerr(), t = Math.round(herrTotal(L)), n = L.filter(function(x){ return x.nombre || num(x.precio); }).reduce(function(a,x){ return a+(parseInt(x.cant,10)||0); },0);
+    $('fHerrajes').querySelectorAll('.hrow').forEach(function(r){ var sb = (parseInt(r.querySelector('.hcant').value,10)||0)*num(r.querySelector('.hpre').value); r.querySelector('.hsub').textContent = sb ? '= '+money.format(sb) : ''; });
+    $('herrTotRow').hidden = !t; $('herrTot').textContent = money.format(t);
+    $('herrSum').textContent = n ? n+(n===1?' herraje':' herrajes')+(t?' · '+money.format(t):'') : 'Manijas, bisagras, perchas, correderas…';
+    if(!noSync && L.length){ $('fHerrPrecio').value = t || ''; $('fHerrPrecio').dispatchEvent(new Event('input',{bubbles:true})); }
+  }
+  function fillHerrList(){ try{ var seen = {}; $('herrList').innerHTML = (state.notas||[]).filter(function(n){ var k = nrm(n.mat); if(!n.mat || seen[k]) return false; seen[k] = 1; return true; }).map(function(n){ return '<option value="'+esc(n.mat)+'">'+esc((n.med?n.med+' · ':'')+money.format(num(n.pre)))+'</option>'; }).join(''); }catch(_){} }
+  function precioNota(nombre){ var k = nrm(nombre); if(!k) return 0; var L = (state.notas||[]).filter(function(n){ return nrm(n.mat)===k; }).sort(function(a,b){ return String(b.fecha||'').localeCompare(String(a.fecha||'')); }); return L.length ? num(L[0].pre) : 0; }
+  $('addHerr').addEventListener('click', function(){ var L = readHerr(); L.push({cant:1, nombre:'', precio:''}); drawHerr(L); fillHerrList(); var r = $('fHerrajes').querySelectorAll('.hnom'); if(r.length) r[r.length-1].focus(); });
+  $('fHerrajes').addEventListener('click', function(e){ var b = e.target.closest('.hrm'); if(!b) return; var L = readHerr(); L.splice(parseInt(b.getAttribute('data-hrm'),10),1); drawHerr(L); updHerr(); });
+  $('fHerrajes').addEventListener('input', function(e){
+    if(e.target.classList.contains('hnom')){ var pr = e.target.closest('.hrow').querySelector('.hpre'); var v = precioNota(e.target.value); if(v && !num(pr.value)) pr.value = Math.round(v*100)/100; }
+    updHerr();
+  });
+  $('herrBox').addEventListener('toggle', fillHerrList);
   function readMel(){
     var out = [];
     $('fMelamina').querySelectorAll('.trow').forEach(function(r){ out.push({cant:r.querySelector('.mcant').value, medida:r.querySelector('.mmed').value.trim(), comprado:r.getAttribute('data-comprado')==='1'}); });
@@ -3321,11 +3393,11 @@ body:not(.v-pedidos) .subtabs{display:none}
         '<button type="submit" formnovalidate class="crm" data-crm="'+i+'" aria-label="Quitar corte '+(i+1)+'">×</button></div>';
     }).join('');
   }
-  function sumaCostos(){ return num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fOtrosPrecio').value)+num($('fManoPrecio').value); }
-  function materiales(o){ return num(o.costoMadera)+num(o.costoMelamina)+num(o.costoTornillos)+num(o.costoTapacanto); }
+  function sumaCostos(){ return num($('fHerrPrecio').value)+num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fOtrosPrecio').value)+num($('fManoPrecio').value); }
+  function materiales(o){ return num(o.costoMadera)+num(o.costoMelamina)+num(o.costoTornillos)+num(o.costoTapacanto)+num(o.costoHerrajes); }
   function updSuma(){
     $('fCostoTotal').textContent = money.format(sumaCostos());
-    var mat = num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value), p = num($('fPrecio').value);
+    var mat = num($('fMadPrecio').value)+num($('fMelPrecio').value)+num($('fTorPrecio').value)+num($('fTapaPrecio').value)+num($('fHerrPrecio').value), p = num($('fPrecio').value);
     var show = p>0 && (mat>0 || num($('fManoPrecio').value)>0);
     $('fGanRow').hidden = !show;
     if(show){ var g = p-mat; $('fGanancia').textContent = money.format(g); $('fGanancia').classList.toggle('neg', g<0); }
@@ -3408,7 +3480,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     var envioF = $('fEnvioOn').checked ? num($('fEnvio').value) : 0;
     if(sena>precio+envioF && precio>0){err.textContent='La seña no puede ser mayor al precio.';$('sec4').open=true;$('fSena').focus();return}
     delete d._editando; d.cliente=cliente; d.pedido=pedido; d.medidas=$('fMedidas').value.trim(); d.cortes=readCortes().filter(function(c){return c.medida || num(c.cant)}).map(function(c){return {cant: Math.max(1, parseInt(c.cant,10)||1), medida: c.medida}});
-    d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.precioOtrasMad = num($('fOtrasMad').value); d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){ var r = {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}; if(!esTabla(x.medida)){ r.precio = num(x.precio); if(x.largo) r.largo = x.largo; } return r; }); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
+    d.precio=precio; d.envio = $('fEnvioOn').checked ? num($('fEnvio').value) : 0; d.sena=sena; d.pagado=pagado; d.estado=est; d.vence=$('fVence').value; d.entrega=$('fEntrega').value; d.fecha=$('fFecha').value; d.notas=$('fNotas').value.trim(); d.madera=$('fMadera').value.trim(); d.costoMadera=num($('fMadPrecio').value); d.costoHerrajes=num($('fHerrPrecio').value); d.herrajes=readHerr().filter(function(x){ return x.nombre || num(x.precio); }).map(function(x){ return {cant:parseInt(x.cant,10)||1, nombre:x.nombre, precio:num(x.precio)}; }); d.costoTornillos=num($('fTorPrecio').value); d.costoMelamina=num($('fMelPrecio').value); d.melColor=$('fMelColor').value.trim(); var tapaNueva = num($('fTapa').value); if(tapaNueva !== num(d.tapacanto)) d.tapaComprado = false; d.tapacanto = tapaNueva; d.precioOtrasMad = num($('fOtrasMad').value); d.tablas=readTablas().filter(function(x){return (parseInt(x.cant,10)||0)>0}).map(function(x){ var r = {cant:parseInt(x.cant,10), medida:x.medida, comprado:!!x.comprado}; if(!esTabla(x.medida)){ r.precio = num(x.precio); if(x.largo) r.largo = x.largo; } return r; }); d.melamina=readMel().filter(function(x){return x.medida}).map(function(x){return {cant:Math.max(1,parseInt(x.cant,10)||1), medida:x.medida, comprado:!!x.comprado}}); d.costoOtros=num($('fOtrosPrecio').value); d.costoTapacanto=num($('fTapaPrecio').value); d.costoMano=num($('fManoPrecio').value); d.horasEst=num($('fHorasEst').value);
     $('saveBtn').disabled = true;
     try{
       state.open = d.id; state.openSet[d.id]=true;
@@ -4048,7 +4120,7 @@ body:not(.v-pedidos) .subtabs{display:none}
   window.addEventListener('unhandledrejection', function(e){ showErr(e.reason); });
   $('form').addEventListener('submit', submitForm);
   $('fPedido').addEventListener('input', sugerirPlantillas);
-  ['fMadPrecio','fMelPrecio','fTorPrecio','fTapaPrecio','fOtrosPrecio','fManoPrecio','fPrecio'].forEach(function(i){ $(i).addEventListener('input', updSuma); });
+  ['fMadPrecio','fMelPrecio','fTorPrecio','fTapaPrecio','fOtrosPrecio','fManoPrecio','fPrecio','fHerrPrecio'].forEach(function(i){ $(i).addEventListener('input', updSuma); });
   $('sform').addEventListener('submit', submitStock);
   $('cform').addEventListener('submit', submitCliente);
   $('gform').addEventListener('submit', submitGastos);
