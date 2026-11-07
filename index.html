@@ -1616,7 +1616,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 79</p>
+    <p class="ver">versión app 80</p>
   </div>
 </div>
 
@@ -3789,13 +3789,24 @@ body:not(.v-pedidos) .subtabs{display:none}
     ['Soporte para estante 5 mm','Por unidad',134.30],
     ['Tapacanto melamina blanco 22 mm','Por metro',758.03]
   ];
+  /* Carga única: Herrajes Trelew, presupuesto N° 47485 del 07/11/2026 */
+  var SEED_HT2 = [
+    ['Tirador Malargüe 25 mm','Todos los colores · por unidad',2523.84],
+    ['Tirador Tov-Ron N° 2 25 mm dorado','Por unidad',6887.84],
+    ['Percha simple gota bronce viejo','Por unidad',5211.73],
+    ['Percha simple chica mini negra','Por unidad',1539.82],
+    ['Retén magnético simple blanco','Por unidad',773.82],
+    ['Bisagra libro BDO sin perilla 38 mm','Por unidad',662.92]
+  ];
   function seedNotas(){
     if(!state.db) return;
     var aj = state.db.collection('ajustes').doc('seeds');
     aj.get().then(function(d){
       var x = (d && d.exists) ? (d.data()||{}) : {};
-      if(x.ht20260914) return;
+      if(x.ht20260914 && x.ht20261107) return;
       var b = state.db.batch();
+      if(!x.ht20261107){ SEED_HT2.forEach(function(r,i){ b.set(state.db.collection('notas').doc('ht-20261107-'+(i+1)), {mat:r[0], med:r[1], pre:r[2], donde:'Herrajes Trelew', txt:'Presupuesto N° 47485 · lista cuotas', fecha:'2026-11-07', creado:'2026-11-07T12:0'+i+':00.000Z', editado:''}); }); b.set(aj, {ht20261107:true}, {merge:true}); }
+      if(x.ht20260914){ return b.commit(); }
       SEED_HT.forEach(function(r,i){ b.set(state.db.collection('notas').doc('ht-20260914-'+(i+1)), {mat:r[0], med:r[1], pre:r[2], donde:'Herrajes Trelew', txt:'Presupuesto N° 41899 · lista cuotas', fecha:'2026-09-14', creado:'2026-09-14T12:0'+i+':00.000Z', editado:''}); });
       b.set(aj, {ht20260914:true}, {merge:true});
       return b.commit();
