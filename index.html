@@ -1267,7 +1267,7 @@ header.brand .subtabs .st.pagbar .nav-ic{width:18px!important;height:18px!import
 header.brand .subtabs .st.pagbar.on{background:#75685C!important;color:#FFFFFF!important}
 :root[data-theme="dark"] header.brand .subtabs .st.pagbar{background:#24211E!important;color:#E4DCD4!important} :root[data-theme="dark"] header.brand .subtabs .st.pagbar.on{background:#C9BDB1!important;color:#1B1917!important}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) header.brand .subtabs .st.pagbar{background:#24211E!important;color:#E4DCD4!important} :root:not([data-theme="light"]) header.brand .subtabs .st.pagbar.on{background:#C9BDB1!important;color:#1B1917!important} }
-body:not(.v-pedidos) .subtabs{display:none}
+body:not(.v-pedidos) .subtabs{display:none!important}
 
 /* Herrajes */
 .herr{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
@@ -1292,6 +1292,28 @@ body:not(.v-pedidos) .subtabs{display:none}
 .herr-tot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:.88rem;font-weight:600}
 .herr-tot[hidden]{display:none}
 .herr-hint{margin:8px 0 0;font-size:.74rem;color:var(--muted)}
+
+/* Combustible */
+#nafOv{align-items:center!important;padding:16px!important;z-index:47!important}
+#nafOv .naf-box{height:auto!important;max-height:88vh;border-radius:24px!important;width:100%;max-width:440px;display:flex;flex-direction:column;overflow:hidden}
+#nafOv .res-body{overflow:auto;padding:4px 16px 20px}
+#gNafta .naf-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:16px}
+.naf-intro{margin:0 0 14px;font-size:.86rem;color:var(--muted)}
+.naf-f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:.8rem;font-weight:600;color:var(--muted);position:relative}
+.naf-f input{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:1.05rem;font-weight:600}
+.naf-f em{font-style:normal;font-size:.74rem;font-weight:500}
+.naf-f .cpeso{position:absolute;left:12px;bottom:13px;color:var(--accent)} .naf-f .cpeso + input{padding-left:26px}
+.naf-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.naf-chk{display:flex;align-items:center;gap:8px;margin:-4px 0 14px;font-size:.86rem;font-weight:600;color:var(--ink)}
+.naf-chk input{width:20px;height:20px;accent-color:var(--accent)}
+.naf-res{margin:4px 0 12px;padding:12px 14px;border-radius:14px;background:var(--soft)}
+.naf-res[hidden]{display:none}
+.naf-res > div{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:.88rem;color:var(--ink)}
+.naf-res .tot{border-top:1px solid var(--line);margin-top:4px;padding-top:8px}
+.naf-res .tot b{font-family:var(--head);font-size:1.35rem;color:var(--accent)}
+.naf-use{width:100%;margin-bottom:8px}
+.naf-tip{margin:0;font-size:.74rem;color:var(--muted)}
+.naf-link{flex-basis:100%;margin-top:2px;border:0;background:transparent;color:var(--accent);font:inherit;font-size:.82rem;font-weight:600;text-align:left;padding:2px 0;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1492,6 +1514,7 @@ body:not(.v-pedidos) .subtabs{display:none}
       <label class="envio-chk"><input type="checkbox" id="fEnvioOn"><span>🚚 Con envío a domicilio</span></label>
       <label class="envio-monto" id="fEnvioWrap" hidden>$ <input type="number" id="fEnvio" inputmode="numeric" min="0" step="any" value="5000" aria-label="Precio del envío"></label>
       <p class="envio-tot" id="fEnvioTot" hidden></p>
+      <button type="button" class="naf-link" id="nafOpen">⛽ Calcular el costo según la nafta</button>
     </div>
 
     </div></details>
@@ -1592,7 +1615,7 @@ body:not(.v-pedidos) .subtabs{display:none}
   </div>
 
   <div id="vGastos" hidden>
-    <div class="gsub" role="group" aria-label="Gastos o notas"><button type="button" class="gsb on" data-gs="compras">Compras</button><button type="button" class="gsb" data-gs="notas">📝 Notas de precios</button></div>
+    <div class="gsub" role="group" aria-label="Gastos o notas"><button type="button" class="gsb on" data-gs="compras">Compras</button><button type="button" class="gsb" data-gs="notas">📝 Notas de precios</button><button type="button" class="gsb" data-gs="nafta">⛽ Combustible</button></div>
     <div id="gCompras">
     <section class="editor" style="margin-bottom:18px">
       <form class="sheet" id="gform" novalidate>
@@ -1607,6 +1630,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     </section>
     <main id="glist" aria-live="polite"></main>
     </div>
+    <div id="gNafta" hidden><div class="naf-card" id="nafG"></div></div>
     <div id="gNotas" hidden>
       <section class="editor nform" style="margin-bottom:14px">
         <div class="sheet">
@@ -1654,7 +1678,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 81</p>
+    <p class="ver">versión app 82</p>
   </div>
 </div>
 
@@ -1668,6 +1692,12 @@ body:not(.v-pedidos) .subtabs{display:none}
   <img alt="Foto que se va a enviar">
 </div>
 <button type="button" id="calcFab" aria-label="Abrir calculadora (podés arrastrarla)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg></button>
+<div id="nafOv" class="catov" hidden role="dialog" aria-label="Calculadora de combustible">
+  <div class="cat-box res-box naf-box">
+    <div class="cat-top av-top"><strong>⛽ Combustible</strong><span class="cat-acts"><button type="button" class="calc-x" id="nafClose" aria-label="Cerrar">✕</button></span></div>
+    <div class="res-body"><div class="naf-card" id="nafO"></div></div>
+  </div>
+</div>
 <div id="histOv" class="catov" hidden role="dialog" aria-label="Historial de horas">
   <div class="cat-box res-box hist-box">
     <div class="cat-top av-top"><strong>Historial de horas</strong><span class="cat-acts"><button type="button" class="calc-x" id="histClose" aria-label="Cerrar">✕</button></span></div>
@@ -2667,7 +2697,7 @@ body:not(.v-pedidos) .subtabs{display:none}
     function vis(id){ var e = document.getElementById(id); return !!(e && !e.hidden); }
     function atras(){
       if(vis('docView')){ closeDocView(); return true; }
-      var ov = [['histOv','histClose'],['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
+      var ov = [['nafOv','nafClose'],['histOv','histClose'],['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
       for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
       if(state.editing){ if(document.querySelector('.pgd-bg')) return true; pgDialog({title:'¿Salir sin guardar?', msg:'Los cambios que hiciste se van a perder.', cancel:'Seguir editando', ok:'Salir', danger:true}).then(function(si){ if(si){ showEditor(false); window.scrollTo(0,0); } }); return true; }
       if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
@@ -2849,6 +2879,41 @@ body:not(.v-pedidos) .subtabs{display:none}
   $('psugManoBtn').addEventListener('click', function(){ $('fManoPrecio').value = $('psugMano').getAttribute('data-v')||''; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); updSug(); });
   $('psugPrecioBtn').addEventListener('click', function(){ var mv = $('psugMano').getAttribute('data-v'); if(num(mv) && !num($('fManoPrecio').value)){ $('fManoPrecio').value = mv; $('fManoPrecio').dispatchEvent(new Event('input',{bubbles:true})); } $('fPrecio').value = $('psugTot').getAttribute('data-v')||''; $('fPrecio').dispatchEvent(new Event('input',{bubbles:true})); try{ $('fPrecio').scrollIntoView({block:'center', behavior:'smooth'}); $('fPrecio').classList.add('calc-flash'); setTimeout(function(){ $('fPrecio').classList.remove('calc-flash'); }, 1200); }catch(_){} });
 
+
+  /* ---------- Calculadora de combustible ---------- */
+  function nafRender(box, enPedido){
+    var km = box._km || '', iv = box._iv == null ? true : box._iv;
+    box.innerHTML =
+      '<p class="naf-intro">Calculá cuánto te sale en nafta un viaje: una entrega, ir a comprar material o ir a medir.</p>'+
+      '<label class="naf-f"><span>Kilómetros del viaje</span><input type="number" class="naf-km" inputmode="decimal" min="0" step="any" placeholder="Ej: 12" value="'+esc(km)+'"><em>km</em></label>'+
+      '<label class="naf-chk"><input type="checkbox" class="naf-iv"'+(iv?' checked':'')+'><span>Ida y vuelta (se duplican los km)</span></label>'+
+      '<div class="naf-2"><label class="naf-f"><span>Tu vehículo hace</span><input type="number" class="naf-kml" inputmode="decimal" min="0" step="any" placeholder="10" value="'+esc(prefs.nafKmL||'')+'"><em>km por litro</em></label>'+
+      '<label class="naf-f"><span>Precio del litro ($)</span><input type="number" class="naf-pl" inputmode="decimal" min="0" step="any" placeholder="0" value="'+esc(prefs.nafPrecio||'')+'"></label></div>'+
+      '<div class="naf-res" hidden><div><span>Recorrido</span><b class="naf-r-km"></b></div><div><span>Nafta que usás</span><b class="naf-r-l"></b></div><div class="tot"><span>Te cuesta</span><b class="naf-r-c"></b></div></div>'+
+      (enPedido ? '<button type="button" class="btn primary naf-use" hidden>Usar como costo de envío</button>' : '')+
+      '<p class="naf-tip">Tu consumo y el precio del litro quedan guardados para la próxima.</p>';
+    function calc(){
+      var k = num(box.querySelector('.naf-km').value), ivc = box.querySelector('.naf-iv').checked, kml = num(box.querySelector('.naf-kml').value), pl = num(box.querySelector('.naf-pl').value);
+      box._km = box.querySelector('.naf-km').value; box._iv = ivc;
+      var tk = k*(ivc?2:1), lt = kml>0 ? tk/kml : 0, c = Math.round(lt*pl);
+      var ok = tk>0 && kml>0 && pl>0;
+      box.querySelector('.naf-res').hidden = !ok;
+      if(ok){ box.querySelector('.naf-r-km').textContent = String(Math.round(tk*10)/10).replace('.',',')+' km'; box.querySelector('.naf-r-l').textContent = String(Math.round(lt*100)/100).replace('.',',')+' litros'; box.querySelector('.naf-r-c').textContent = money.format(c); }
+      var u = box.querySelector('.naf-use'); if(u){ u.hidden = !ok; u.setAttribute('data-v', Math.ceil(c/100)*100); u.textContent = 'Usar '+money.format(Math.ceil(c/100)*100)+' como costo de envío'; }
+    }
+    box.oninput = function(e){
+      if(e.target.classList.contains('naf-kml')){ prefs.nafKmL = num(e.target.value); savePrefs(); }
+      if(e.target.classList.contains('naf-pl')){ prefs.nafPrecio = num(e.target.value); savePrefs(); }
+      calc();
+    };
+    box.onchange = calc;
+    box.onclick = function(e){ var u = e.target.closest('.naf-use'); if(!u) return; $('fEnvioOn').checked = true; $('fEnvio').value = u.getAttribute('data-v'); try{ updEnvio(); updSecs(); }catch(_){} nafClose(); };
+    calc();
+  }
+  function nafClose(){ $('nafOv').hidden = true; document.documentElement.classList.remove('ov-open'); }
+  $('nafOpen').addEventListener('click', function(){ nafRender($('nafO'), true); $('nafOv').hidden = false; document.documentElement.classList.add('ov-open'); });
+  $('nafClose').addEventListener('click', nafClose);
+  $('nafOv').addEventListener('click', function(e){ if(e.target===$('nafOv')) nafClose(); });
   /* ---------- Historial de horas ---------- */
   function histList(){
     return state.orders.filter(function(o){ return segTrab(o)>=600 && estado(o)!=='rechazado'; }).sort(function(a,b){ return String(b.fecha||b.creado||'').localeCompare(String(a.fecha||a.creado||'')); });
@@ -3913,7 +3978,7 @@ body:not(.v-pedidos) .subtabs{display:none}
   });
   document.querySelectorAll('.gsb').forEach(function(b){ b.addEventListener('click', function(){
     var v = b.getAttribute('data-gs'); document.querySelectorAll('.gsb').forEach(function(x){ x.classList.toggle('on', x===b); });
-    $('gCompras').hidden = v!=='compras'; $('gNotas').hidden = v!=='notas'; if(v==='notas') renderNotas();
+    $('gCompras').hidden = v!=='compras'; $('gNotas').hidden = v!=='notas'; $('gNafta').hidden = v!=='nafta'; if(v==='notas') renderNotas(); if(v==='nafta') nafRender($('nafG'), false);
   }); });
 
   async function onGastoAct(act, a){
