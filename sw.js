@@ -1,13 +1,13 @@
 /* Service worker: permite instalar la app y abrirla aunque falle la conexión.
    Los datos (pedidos, clientes, etc.) los guarda Firebase, no este archivo. */
-const CACHE = 'pg-app-v78';
+const CACHE = 'pg-app-v79';
 const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest', './icon-v4-192.png', './icon-v4-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== 'pg-avisos').map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== 'pg-avisos' && k !== 'pg-libs').map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 /* Avisos en el celular: Android despierta a la app más o menos 1 o 2 veces por día */
 function hoyISO(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -39,12 +39,19 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  if (url.origin !== location.origin) return;           // Firebase, Google, fuentes: directo a internet
-  e.respondWith(
-    fetch(req).then(res => {                              // primero internet (así siempre ves la última versión)
-      const copy = res.clone();
-      caches.open(CACHE).then(c => c.put(req, copy));
-      return res;
-    }).catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
-  );
+  /* Librerías de Firebase y fuentes: no cambian nunca, se guardan para que la app abra rápido */
+  if (url.hostname === 'www.gstatic.com' && url.pathname.indexOf('/firebasejs/') === 0 || url.hostname === 'fonts.gstatic.com' || url.hostname === 'fonts.googleapis.com') {
+    e.respondWith(caches.open('pg-libs').then(c => c.match(req).then(r => r || fetch(req).then(res => { if (res.ok || res.type === 'opaque') c.put(req, res.clone()); return res; }))));
+    return;
+  }
+  if (url.origin !== location.origin) return;           // Firebase (datos) y Google: directo a internet
+  /* Primero internet (así ves la última versión), pero si tarda más de 3 segundos abre lo guardado */
+  const red = fetch(req).then(res => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return res; });
+  const guardado = caches.match(req, {ignoreSearch: req.mode === 'navigate'}).then(r => r || (req.mode === 'navigate' ? caches.match('./index.html') : null));
+  e.respondWith(new Promise(resolve => {
+    let listo = false;
+    const usar = r => { if (!listo && r) { listo = true; resolve(r); } };
+    const t = setTimeout(() => guardado.then(usar), 3000);
+    red.then(r => { clearTimeout(t); usar(r); }).catch(() => { clearTimeout(t); guardado.then(r => { if (r) usar(r); else if (!listo) { listo = true; resolve(Response.error()); } }); });
+  }));
 });
