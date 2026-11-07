@@ -514,7 +514,8 @@ header.brand .hbtns{position:absolute;right:16px;top:calc(21px + env(safe-area-i
 body:not(.v-pedidos) .stats{display:none}
 /* barra de abajo */
 .views{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;border:0;border-top:1px solid var(--line);background:var(--surface);display:flex;justify-content:space-around;align-items:flex-end;gap:0;padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px));overflow:visible;box-shadow:0 -6px 20px -14px rgba(0,0,0,.25)}
-.views form.actf{flex:1;display:flex;justify-content:center}
+.views form.actf,.views #navRes{flex:1;display:flex;justify-content:center}
+.views #navRes{flex-direction:column;align-items:center}
 .vtab{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:6px 2px 2px;margin:0;font-family:var(--body);font-size:.7rem;font-weight:600;color:var(--muted);background:none;width:100%}
 .vtab[aria-pressed="true"]{color:var(--accent);border:0;font-weight:800}
 .nav-ic{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -1314,6 +1315,16 @@ body:not(.v-pedidos) .subtabs{display:none!important}
 .naf-use{width:100%;margin-bottom:8px}
 .naf-tip{margin:0;font-size:.74rem;color:var(--muted)}
 .naf-link{flex-basis:100%;margin-top:2px;border:0;background:transparent;color:var(--accent);font:inherit;font-size:.82rem;font-weight:600;text-align:left;padding:2px 0;cursor:pointer}
+
+/* Campos para escribir más marcados (v83) */
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]):not([type=range]),textarea,select{border:1px solid #9C9289!important;border-radius:12px}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,textarea:focus,select:focus{border-color:#3A332E!important;outline:2px solid rgba(58,51,46,.15)}
+.cnum{border:1px solid #9C9289!important;border-radius:10px!important}
+.clist .cnum{padding:8px 10px!important}
+.search{border:1px solid #CFC7BF!important}
+:root[data-theme="dark"] input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]),:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] .cnum{border-color:#6E655D!important}
+:root[data-theme="dark"] .search{border-color:#3A352F!important}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]),:root:not([data-theme="light"]) textarea,:root:not([data-theme="light"]) select,:root:not([data-theme="light"]) .cnum{border-color:#6E655D!important} :root:not([data-theme="light"]) .search{border-color:#3A352F!important} }
 </style>
 </head>
 <body>
@@ -1351,7 +1362,7 @@ body:not(.v-pedidos) .subtabs{display:none!important}
 
   <nav class="views" aria-label="Secciones">
     <form class="actf" data-act="view" data-view="pedidos"><button type="submit" class="vtab" data-view="pedidos" aria-pressed="true"><svg class="nav-ic" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Pedidos</button></form>
-    <form class="actf" data-act="view" data-view="stock"><button type="submit" class="vtab" data-view="stock" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock<span class="cnt" id="cStock" hidden></span></button></form>
+    <button type="button" class="vtab" id="navRes" aria-label="Resumen del mes"><svg class="nav-ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Resumen<span class="cnt" id="cStock" hidden></span></button>
     <button type="button" class="navfab" id="navFab" aria-label="Agregar nuevo">+</button>
     <form class="actf" data-act="view" data-view="clientes"><button type="submit" class="vtab" data-view="clientes" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Clientes<span class="cnt" id="cClientes" hidden></span></button></form>
     <form class="actf" data-act="view" data-view="gastos"><button type="submit" class="vtab" data-view="gastos" aria-pressed="false"><svg class="nav-ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Gastos</button></form>
@@ -1678,7 +1689,7 @@ body:not(.v-pedidos) .subtabs{display:none!important}
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 82</p>
+    <p class="ver">versión app 83</p>
   </div>
 </div>
 
@@ -3002,6 +3013,7 @@ body:not(.v-pedidos) .subtabs{display:none!important}
   function drawResumen(){ $('resBody').innerHTML = resumenHtml(resMes); }
   function updResBar(){ try{ var m = ymd(new Date()), d = mesData(m); $('resBarTxt').innerHTML = 'Resumen de '+esc(MESES[new Date().getMonth()])+' · <b>'+money.format(d.cob)+'</b> cobrado'; $('resAjTxt').innerHTML = esc(MESES[new Date().getMonth()].charAt(0).toUpperCase()+MESES[new Date().getMonth()].slice(1))+' · '+money.format(d.cob)+' cobrado'; }catch(_){} }
   $('resBtn2').addEventListener('click', function(){ $('resBtn').click(); });
+  $('navRes').addEventListener('click', function(){ $('resBtn').click(); });
   $('resBtn').addEventListener('click', function(){ resMes = ymd(new Date()); drawResumen(); $('resumen').hidden = false; document.documentElement.classList.add('ov-open'); });
   $('resClose').addEventListener('click', function(){ $('resumen').hidden = true; document.documentElement.classList.remove('ov-open'); });
   $('resumen').addEventListener('click', function(e){ if(e.target===$('resumen')){ $('resumen').hidden = true; document.documentElement.classList.remove('ov-open'); } var b = e.target.closest && e.target.closest('[data-rm]'); if(b && !b.disabled){ resMes = mesMas(resMes, parseInt(b.getAttribute('data-rm'),10)); drawResumen(); } });
