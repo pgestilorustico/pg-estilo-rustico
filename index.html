@@ -1348,6 +1348,8 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
 .gs-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .gs-t b{font-size:.92rem} .gs-t small{font-size:.78rem;color:var(--muted)}
 .gs-p{font-weight:700;font-size:.92rem;white-space:nowrap}
+
+#fNotas,#form textarea{resize:none!important;height:84px;min-height:84px!important;max-height:84px;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -1712,7 +1714,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 84</p>
+    <p class="ver">versión app 85</p>
   </div>
 </div>
 
@@ -3388,7 +3390,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     $('fNotas').value = d.notas||''; $('fMadera').value = d.madera||''; $('fMadPrecio').value = d.costoMadera||''; $('fHerrPrecio').value = d.costoHerrajes||''; drawHerr(Array.isArray(d.herrajes)?JSON.parse(JSON.stringify(d.herrajes)):[]); $('herrBox').open = !!(Array.isArray(d.herrajes) && d.herrajes.length); $('fTorPrecio').value = d.costoTornillos||''; $('fTapaPrecio').value = d.costoTapacanto||''; $('fOtrosPrecio').value = d.costoOtros||''; $('fManoPrecio').value = d.costoMano||''; $('fHorasEst').value = d.horasEst||''; $('fValorHora').value = prefs.valorHora||10000; $('fMargen').value = (prefs.margen!=null && prefs.margen!=='') ? prefs.margen : ''; setTimeout(updSug, 0); if(num(d.costoTornillos)>0){ $('fOtrosPrecio').value = num(d.costoOtros) + num(d.costoTornillos); } $('fTorPrecio').value = ''; updSuma(); drawCortes(Array.isArray(d.cortes)&&d.cortes.length ? d.cortes : []); drawTablas(Array.isArray(d.tablas)?d.tablas:[]); drawMel(Array.isArray(d.melamina)?d.melamina:[]); $('fMelColor').value = d.melColor||''; $('fMelPrecio').value = d.costoMelamina||''; $('fTapa').value = d.tapacanto||''; updSuma(); var est = o ? estado(d) : 'presupuesto'; $('fEstPresu').checked = est==='presupuesto'; $('fEstRech').checked = est==='rechazado'; $('fEstProceso').checked = est==='proceso'; $('fEstSaldo').checked = est==='saldo'; $('fEstPagado').checked = est==='pagado';
     $('formErr').textContent = ''; $('saveBtn').disabled = false;
     d._editando = !!o; $('tplBox').hidden = true; $('tplMsg').hidden = true;
-    $('sec1').open = true; $('sec3').open = true; $('sec2').open = !!(o && ((d.cortes||[]).length || (d.tablas||[]).length || (d.melamina||[]).length)); $('sec4').open = !!o;
+    $('sec1').open = true; $('sec3').open = !!o; $('sec2').open = !!(o && ((d.cortes||[]).length || (d.tablas||[]).length || (d.melamina||[]).length)); $('sec4').open = !!o;
     drawPhotos();
     showEditor(true); setTimeout(updSecs, 0);
   }
