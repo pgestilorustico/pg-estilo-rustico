@@ -1790,7 +1790,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 91</p>
+    <p class="ver">versión app 92</p>
   </div>
 </div>
 
@@ -2207,7 +2207,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       subscribe();
       initStock();
       initClientes();
-      initGastos(); initNotas(); initModelos(); setTimeout(seedNotas, 1500); setTimeout(seedModelos, 2500);
+      initGastos(); initNotas(); initModelos(); setTimeout(seedNotas, 1500); setTimeout(seedModelos, 2500); setTimeout(seedModelos2, 6000);
     }else{
       state.loading = false; render();
       state.mem = true;
@@ -4162,6 +4162,35 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     {id:'seed-macetas', nom:'Macetas de barro (para hacer maceteros)', alto:'', ancho:'', prof:'', fotos:['macetas'],
      med:'Boca x alto:\n25 cm (el alto no se ve en la foto)\n20 x 18,5 cm\n17,5 x 16 cm\n16 x 13,5 cm\n12,5 x 13 cm\n11,5 x 10,5 cm\n10 x 10 cm\n9 x 9 cm\n9 x 8 cm\n8 x 8 cm', txt:'Para calcular el macetero de madera según la maceta.'}
   ];
+  var SEED_MOD2 = [
+    {id:'seed-reposera-pallet', nom:'Reposera de pallet desarmable', alto:'', ancho:'44', prof:'', fotos:['rp1','rp2'], videos:[{src:'modelos/reposera-pallet.mp4', poster:'mod-rp1'}],
+     med:'Largo total del asiento: 72 cm\nLargo total del respaldo: 72 cm\nAncho total: 44 cm (adentro: 35,5 cm)\nAncho del asiento: 35 cm\nRipa de refuerzo: 26 cm\nRespaldo: 45 cm de ancho total, tablas de 49 cm\nRespaldo: 24 cm (medida marcada en el video)\nBase del soporte: 17 cm\nEncastre: 7,5 cm de alto\nAsiento: 30 cm, el otro lado 45 cm\nParte donde encastra: 43 cm de largo', txt:'Medidas del video (en portugués). Se arma encastrando el asiento en el respaldo.'},
+    {id:'seed-silla-vikinga', nom:'Silla vikinga de 2 piezas (encastre)', alto:'70', ancho:'29', prof:'', fotos:['sv2','sv1','sv3'], videos:[{src:'modelos/silla-vikinga.mp4', poster:'mod-sv2'}],
+     med:'Pieza del respaldo (la que tiene la ranura): 70 cm de alto x 29 cm de ancho\nMedidas marcadas en el respaldo: 9 cm, 14 cm, 2,5 cm y 19 cm\nPieza del asiento (pasa por la ranura): 40 cm de largo\nMedidas marcadas en el asiento: 7 cm, 30 cm y 29 cm de ancho\nRanura: 29 x 10 cm\nAltura del soporte: 22 cm', txt:'Medidas sacadas del video. Mirá el video para ver dónde va cada medida.'},
+    {id:'seed-mesa-redonda', nom:'Mesa redonda plegable (se hace media luna)', alto:'', ancho:'', prof:'', fotos:['mr1','mr2','mr3'], videos:[{src:'modelos/mesa-redonda.mp4', poster:'mod-mr1'}],
+     med:'Tapa redonda cortada al medio y unida con 2 bisagras\nPatas: 2 cruces en X unidas en el centro con bisagra\nLas patas se atornillan a la tapa y se traban con tacos\nPlegada queda como mesa de media luna contra la pared', txt:'El video no muestra medidas.'},
+    {id:'seed-separadores', nom:'Separadores parejos (cómo calcularlos)', alto:'', ancho:'', prof:'', fotos:['sp1','sp2'], videos:[{src:'modelos/separadores.mp4', poster:'mod-sp1'}],
+     med:'Ejemplo del video:\nMedida de adentro: 482 mm\n4 separadores de 18 mm = 72 mm\n482 − 72 = 410 mm\n410 ÷ 5 espacios = 82 mm entre separador y separador', txt:'Sirve para cajones, estantes y bibliotecas: restás el grosor de los separadores y dividís por la cantidad de espacios.'},
+    {id:'seed-mesa-tijera', nom:'Mesa plegable con patas de tijera', alto:'', ancho:'', prof:'', fotos:['mt1','mt2','mt3'], videos:[{src:'modelos/mesa-tijera.mp4', poster:'mod-mt1'},{src:'modelos/mesa-tijera-patas.mp4', poster:'mod-mt3'}],
+     med:'Tapa de tablas unida con travesaños abajo\nPatas de tijera que se pliegan debajo de la tapa\nUna soga o tira entre las patas para que no se abran de más', txt:'Dos videos: la mesa armada y cómo se hacen las patas. No muestran medidas.'}
+  ];
+  async function seedLista(lista){
+    var hechas = {};
+    for(var i=0;i<lista.length;i++){
+      var m = lista[i], fids = [];
+      for(var j=0;j<m.fotos.length;j++){
+        var k = m.fotos[j], fid = 'mod-'+k;
+        if(!hechas[k]){ var r = await fetch('modelos/'+k+'.jpg'); if(!r.ok) continue; var url = await shrink(await r.blob()); await state.db.collection('fotos').doc(fid).set({data:url}); state.fotos[fid] = url; hechas[k] = true; }
+        fids.push(fid);
+      }
+      await state.db.collection('modelos').doc(m.id).set({nom:m.nom, alto:m.alto, ancho:m.ancho, prof:m.prof, med:m.med, txt:m.txt, fotos:fids, videos:m.videos||[], fecha:'2026-11-08', creado:'2026-11-08T17:00:0'+i+'.000Z', editado:''});
+    }
+  }
+  function seedModelos2(){
+    if(!state.db) return;
+    var aj = state.db.collection('ajustes').doc('seeds');
+    aj.get().then(async function(d){ var x = (d && d.exists) ? (d.data()||{}) : {}; if(x.mod2_20261108) return; await seedLista(SEED_MOD2); await aj.set({mod2_20261108:true}, {merge:true}); }).catch(function(){});
+  }
   function seedModelos(){
     if(!state.db) return;
     var aj = state.db.collection('ajustes').doc('seeds');
