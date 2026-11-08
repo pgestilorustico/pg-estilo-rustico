@@ -1790,7 +1790,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 92</p>
+    <p class="ver">versión app 93</p>
   </div>
 </div>
 
@@ -4259,6 +4259,34 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     for(var i=0;i<it.n;i++){ var d = await state.db.collection('videos').doc(it.id+'-'+i).get(); var x = d.exists ? (d.data()||{}) : {}; if(!x.data) throw new Error('falta'); var bin = atob(x.data), u8 = new Uint8Array(bin.length); for(var j=0;j<bin.length;j++) u8[j] = bin.charCodeAt(j); parts.push(u8); }
     return (vidUrls[it.id] = URL.createObjectURL(new Blob(parts, {type: it.type||'video/mp4'})));
   }
+  /* Comprime el video en el celular: lo achica a 540 px y baja la calidad (tarda lo mismo que dura el video) */
+  function compVideo(file, onProg){ return new Promise(function(res, rej){
+    if(!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){ rej(new Error('no soportado')); return; }
+    var tipos = ['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'], mime = tipos.find(function(t){ try{ return MediaRecorder.isTypeSupported(t); }catch(_){ return false; } });
+    if(!mime){ rej(new Error('no soportado')); return; }
+    var u = URL.createObjectURL(file), v = document.createElement('video'), ac = null, rec = null, fin = false, chunks = [];
+    v.src = u; v.playsInline = true; v.preload = 'auto';
+    function limpiar(){ try{ v.pause(); }catch(_){} URL.revokeObjectURL(u); try{ if(ac) ac.close(); }catch(_){} document.removeEventListener('visibilitychange', vis); }
+    function falla(e){ if(fin) return; fin = true; try{ if(rec && rec.state!=='inactive') rec.stop(); }catch(_){} limpiar(); rej(e||new Error('error')); }
+    function vis(){ if(!rec) return; if(document.hidden){ try{ v.pause(); rec.pause(); }catch(_){} } else { try{ rec.resume(); v.play(); }catch(_){} } }
+    v.onerror = function(){ falla(new Error('no se pudo leer el video')); };
+    v.onloadedmetadata = function(){
+      var vw = v.videoWidth||540, vh = v.videoHeight||960, r = Math.min(1, 540/Math.min(vw,vh)), cw = Math.round(vw*r/2)*2, ch = Math.round(vh*r/2)*2;
+      var c = document.createElement('canvas'); c.width = cw; c.height = ch; var x = c.getContext('2d');
+      var st = c.captureStream(30);
+      try{ ac = new (window.AudioContext||window.webkitAudioContext)(); var src = ac.createMediaElementSource(v), dst = ac.createMediaStreamDestination(); src.connect(dst); dst.stream.getAudioTracks().forEach(function(t){ st.addTrack(t); }); }catch(_){ v.muted = true; }
+      try{ rec = new MediaRecorder(st, {mimeType:mime, videoBitsPerSecond:1300000, audioBitsPerSecond:64000}); }catch(e){ falla(e); return; }
+      rec.ondataavailable = function(e){ if(e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = function(){ if(fin) return; fin = true; limpiar(); res(new Blob(chunks, {type: mime.split(';')[0]})); };
+      function dibujar(){ if(fin) return; try{ x.drawImage(v,0,0,cw,ch); }catch(_){} if(v.requestVideoFrameCallback) v.requestVideoFrameCallback(dibujar); else requestAnimationFrame(dibujar); }
+      v.ontimeupdate = function(){ if(onProg && v.duration) onProg(Math.min(99, Math.round(v.currentTime/v.duration*100))); };
+      v.onended = function(){ try{ x.drawImage(v,0,0,cw,ch); }catch(_){} setTimeout(function(){ try{ rec.stop(); }catch(e){ falla(e); } }, 250); };
+      document.addEventListener('visibilitychange', vis);
+      x.drawImage(v,0,0,cw,ch); rec.start(1000); dibujar();
+      if(ac && ac.state==='suspended') ac.resume();
+      var pp = v.play(); if(pp && pp.catch) pp.catch(function(e){ falla(e); });
+    };
+  }); }
   function vidPoster(file){ return new Promise(function(res){
     var v = document.createElement('video'), u = URL.createObjectURL(file), done = false;
     function fin(x){ if(done) return; done = true; URL.revokeObjectURL(u); res(x); }
@@ -4283,12 +4311,18 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   $('mVidFile').addEventListener('change', async function(){
     var f = (this.files||[])[0]; this.value = ''; if(!f) return;
     var MAX = 25*1024*1024;
-    if(f.size > MAX){ $('mHint').textContent = 'El video pesa '+(f.size/1048576).toFixed(0)+' MB y el máximo es 25 MB. Probá con uno más corto.'; return; }
     if(!state.db){ $('mHint').textContent = 'Sin conexión: no se puede subir el video.'; return; }
-    $('mSave').disabled = true;
+    $('mSave').disabled = true; $('mNew').disabled = true;
     try{
       $('mHint').textContent = 'Preparando video…';
-      var pdata = await vidPoster(f), id = state.db.collection('videos').doc().id, pfid = '';
+      var pdata = await vidPoster(f), id = state.db.collection('videos').doc().id, pfid = '', orig = f;
+      if(f.size > 3*1024*1024){
+        try{
+          var cb = await compVideo(f, function(pc){ $('mHint').textContent = 'Comprimiendo video… '+pc+'% (dejá la pantalla prendida)'; });
+          if(cb && cb.size > 50000 && cb.size < f.size) f = cb;
+        }catch(_){ }
+      }
+      if(f.size > MAX){ $('mHint').textContent = 'El video pesa '+(f.size/1048576).toFixed(0)+' MB'+(f!==orig?' (ya comprimido)':'')+' y el máximo es 25 MB. Probá con uno más corto.'; $('mSave').disabled = false; $('mNew').disabled = false; return; }
       if(pdata){ pfid = 'vp-'+id; await state.db.collection('fotos').doc(pfid).set({data:pdata}); state.fotos[pfid] = pdata; }
       var buf = new Uint8Array(await f.arrayBuffer()), CH = 700000, n = Math.ceil(buf.length/CH);
       for(var i=0;i<n;i++){
@@ -4298,9 +4332,9 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
         await state.db.collection('videos').doc(id+'-'+i).set({data:btoa(bs)});
       }
       state.mVids.push({id:id, n:n, type:f.type||'video/mp4', poster:pfid}); mDrawFotos();
-      $('mHint').textContent = 'Video subido. Acordate de tocar “Guardar”.';
+      $('mHint').textContent = 'Video subido'+(f!==orig ? ' (comprimido de '+(orig.size/1048576).toFixed(1)+' MB a '+(f.size/1048576).toFixed(1)+' MB)' : '')+'. Acordate de tocar “Guardar”.';
     }catch(ex){ $('mHint').textContent = 'No se pudo subir el video. Revisá la conexión y probá de nuevo.'; }
-    $('mSave').disabled = false;
+    $('mSave').disabled = false; $('mNew').disabled = false;
   });
   $('mFile').addEventListener('change', async function(){
     var files = Array.from(this.files||[]); this.value = ''; var fail = '';
