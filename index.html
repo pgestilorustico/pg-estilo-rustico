@@ -1723,7 +1723,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 86</p>
+    <p class="ver">versión app 87</p>
   </div>
 </div>
 
@@ -2530,19 +2530,18 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     y += tl.length*44;
     if(o.medidas){ x.fillStyle = MUT; x.font = '500 28px '+FB; wrapLines(x, 'Medidas: '+o.medidas, CW*.68).forEach(function(l){ y += 6; x.fillText(l, P+28, y); y += 32; }); }
     y += 24; x.fillStyle = LINE; x.fillRect(P, y, CW, 2);
-    // totales
-    var rows = [];
-    if(num(o.envio)){ rows.push(['Envío a domicilio', '+ '+money.format(num(o.envio)), '']); rows.push(['Total', money.format(totalDe(o)), 'tot']); }
-    else if(num(o.precio)) rows.push(['Total', money.format(num(o.precio)), 'tot']);
-    if(sinSena){ if(num(o.precio) && st!=='pagado') rows.push(['Seña para confirmar (50%)', money.format(Math.round(num(o.precio)/2)), 'big']); }
+    // montos (v87: bloque grande y claro)
+    var rows = [], hi = null, tot = totalDe(o);
+    if(num(o.precio)) rows.push(['Trabajo', money.format(num(o.precio)), '']);
+    if(num(o.envio)) rows.push(['Envío a domicilio', '+ '+money.format(num(o.envio)), 'env']);
+    else if(num(o.precio)) rows.push(['Envío a domicilio', 'No incluido', 'muted']);
+    if(num(o.precio)) rows.push([num(o.envio) ? 'TOTAL CON ENVÍO' : 'TOTAL', money.format(tot), 'tot']);
+    if(sinSena){ if(num(o.precio) && st!=='pagado'){ var sen = Math.round(num(o.precio)/2); hi = {l:'SEÑA PARA CONFIRMAR (50%)', v:money.format(sen), s:'El resto ('+money.format(tot-sen)+') se abona al entregar', c:'dark'}; } }
     else {
-      var PG = pagosDe(o);
-      PG.forEach(function(pp){ rows.push([(pp.nota==='Seña'?'Seña':pp.nota==='Saldo'?'Pago del saldo':'Pago')+(pp.fecha?' · '+fmtDate(pp.fecha):''), '− '+money.format(num(pp.monto)), 'ok']); });
-      if(st!=='pagado' && saldo(o)>0) rows.push([kind==='saldo' ? 'Debe' : 'Saldo a pagar', money.format(saldo(o)), 'big']);
-      if(kind==='pago') rows.push(['Pago recibido total', '✓', 'big']);
+      pagosDe(o).forEach(function(pp){ rows.push([(pp.nota==='Seña'?'Seña abonada':pp.nota==='Saldo'?'Saldo abonado':'Pago recibido')+(pp.fecha?' · '+fmtDate(pp.fecha):''), '− '+money.format(num(pp.monto)), 'ok']); });
+      if(st!=='pagado' && saldo(o)>0) hi = {l:kind==='saldo' ? 'SALDO A PAGAR' : 'SALDO A PAGAR', v:money.format(saldo(o)), s: o.vence ? 'Fecha de pago: '+fmtDate(o.vence) : (kind==='saldo' ? 'A pagar al entregar el pedido' : 'Se abona al entregar el pedido'), c:'dark'};
+      if(kind==='pago') hi = {l:'PAGO RECIBIDO TOTAL', v:'✓ '+money.format(tot), s:'¡No queda nada por pagar!', c:'ok'};
     }
-    if(kind==='saldo') rows.push(['Fecha de pago', o.vence ? fmtDate(o.vence) : 'Al entregar el pedido', 'date']);
-    else if(st!=='pagado' && saldo(o)>0 && o.vence && !sinSena) rows.push(['Fecha para abonar el saldo', fmtDate(o.vence), 'small']);
     // condiciones
     var cond = [];
     if(kind==='presu'){ cond.push('Para confirmar el pedido se abona una seña del 50%.'); }
@@ -2551,7 +2550,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     if(o.notas && kind==='presu' && false) cond.push(o.notas);
     // fotos (se achican para que todo entre en la hoja)
     var showAlias = st!=='pagado' && (sinSena || kind==='saldo');
-    var need = rows.reduce(function(a,r){ return a + (r[2]==='big'?96:70); },0) + 50 + 30 + (cond.length ? 42 + cond.length*44 + 20 : 0) + 60 + 135 + (showAlias ? 170 : 0);
+    var need = rows.length*72 + 200 + 50 + 30 + (cond.length ? 42 + cond.length*44 + 20 : 0) + 60 + 135 + (showAlias ? 170 : 0);
     if(fotos.length){
       var avail = 99999, gap = 22;
       /* Fotos enteras (sin recortar): cada una con su forma, todas a la misma altura */
@@ -2564,18 +2563,39 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
         y += fh;
       }
     }
-    y += 50;
-    var bx = P + CW*.38, bw = CW*.62, by = y;
-    rows.forEach(function(rw){
-      var big = rw[2]==='big';
-      if(big){ var gg = x.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#6B5F53'); gg.addColorStop(1,'#473F37'); x.fillStyle = gg; rrect(x,bx,by,bw,78,18); x.fill(); }
-      x.fillStyle = big ? '#F4F2EF' : (rw[2]==='small'||rw[2]==='date') ? MUT : INK; x.font = (big?'700 32px ':rw[2]==='tot'?'600 30px ':'500 28px ')+(big?FH:FB);
-      x.fillText(rw[0], bx+26, by+(big?50:44));
-      x.textAlign='right'; x.fillStyle = big ? '#FFFFFF' : rw[2]==='ok' ? '#3E7A4C' : rw[2]==='date' ? '#6B5F53' : INK; x.font = (big?'700 38px ':rw[2]==='date'?'700 32px ':'600 30px ')+FH; x.fillText(rw[1], bx+bw-26, by+(big?52:44)); x.textAlign='left';
-      if(!big){ x.fillStyle = LINE; x.fillRect(bx+20, by+68, bw-40, 1.5); }
-      by += big ? 96 : 70;
-    });
-    y = by + 30;
+    y += 56;
+    if(rows.length || hi){
+      var rh = function(r){ return r[2]==='tot' ? 104 : 72; };
+      var boxH = 70 + rows.reduce(function(a,r){ return a+rh(r); },0) + 20;
+      x.fillStyle = '#FFFFFF'; rrect(x,P,y,CW,boxH,24); x.fill(); x.strokeStyle = '#3A332E'; x.lineWidth = 3; x.stroke();
+      x.fillStyle = ACC; x.font = '800 24px '+FB; x.fillText('RESUMEN DE PRECIOS'.split('').join(String.fromCharCode(8202)), P+34, y+50);
+      var ry = y + 70;
+      rows.forEach(function(r){
+        var t = r[2];
+        if(t==='tot'){ x.fillStyle = '#3A332E'; x.fillRect(P+24, ry+4, CW-48, 3); }
+        else { x.fillStyle = LINE; x.fillRect(P+24, ry, CW-48, 2); }
+        var base = ry + (t==='tot' ? 70 : 50);
+        x.fillStyle = t==='muted' ? MUT : t==='ok' ? '#2F6B40' : INK;
+        x.font = (t==='tot' ? '800 40px '+FH : t==='env' ? '700 32px '+FB : '600 32px '+FB); x.fillText(r[0], P+34, base);
+        x.textAlign = 'right';
+        x.fillStyle = t==='muted' ? MUT : t==='ok' ? '#2F6B40' : INK;
+        x.font = (t==='tot' ? '800 54px ' : t==='muted' ? '600 30px ' : '700 38px ')+FH; x.fillText(r[1], W-P-34, base);
+        x.textAlign = 'left';
+        ry += rh(r);
+      });
+      y += boxH + 26;
+      if(hi){
+        var hh = 176;
+        if(hi.c==='ok'){ x.fillStyle = '#2F6B40'; }
+        else { var hg = x.createLinearGradient(P,0,P+CW,0); hg.addColorStop(0,'#5A4F45'); hg.addColorStop(1,'#2D2824'); x.fillStyle = hg; }
+        rrect(x,P,y,CW,hh,24); x.fill();
+        x.fillStyle = '#FFFFFF'; x.font = '800 34px '+FH; x.fillText(hi.l, P+36, y+66);
+        x.fillStyle = 'rgba(255,255,255,.82)'; x.font = '600 26px '+FB; x.fillText(hi.s, P+36, y+130);
+        x.textAlign = 'right'; x.fillStyle = '#FFFFFF'; x.font = '800 66px '+FH; x.fillText(hi.v, W-P-36, y+82); x.textAlign = 'left';
+        y += hh;
+      }
+      y += 40;
+    }
     if(showAlias){
       var ah = 140; x.fillStyle = '#F1EEEB'; rrect(x,P,y,CW,ah,22); x.fill(); x.strokeStyle = '#CDC5BE'; x.lineWidth = 2; x.stroke();
       x.fillStyle = '#897A6A'; x.fillRect(P, y+22, 6, ah-44);
