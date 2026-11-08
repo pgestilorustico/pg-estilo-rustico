@@ -1359,6 +1359,30 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
 :root[data-theme="dark"] #list details.order,:root[data-theme="dark"] details.cli,:root[data-theme="dark"] .gbox,:root[data-theme="dark"] .nitem,:root[data-theme="dark"] .hist-it,:root[data-theme="dark"] .av-card,:root[data-theme="dark"] .gs-it,:root[data-theme="dark"] .fsec,:root[data-theme="dark"] .herr,:root[data-theme="dark"] .cdet,:root[data-theme="dark"] .aj-grp,:root[data-theme="dark"] #gNafta .naf-card{border-color:#5E564F!important}
 :root[data-theme="dark"] #list details.order.next{border-color:#C9BDB1!important;box-shadow:0 0 0 1px #C9BDB1!important}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) #list details.order,:root:not([data-theme="light"]) details.cli,:root:not([data-theme="light"]) .gbox,:root:not([data-theme="light"]) .nitem,:root:not([data-theme="light"]) .hist-it,:root:not([data-theme="light"]) .av-card,:root:not([data-theme="light"]) .gs-it,:root:not([data-theme="light"]) .fsec,:root:not([data-theme="light"]) .herr,:root:not([data-theme="light"]) .cdet,:root:not([data-theme="light"]) .aj-grp,:root:not([data-theme="light"]) #gNafta .naf-card{border-color:#5E564F!important} :root:not([data-theme="light"]) #list details.order.next{border-color:#C9BDB1!important;box-shadow:0 0 0 1px #C9BDB1!important} }
+
+/* v88: modelos y medidas */
+.gsub{display:grid!important;grid-template-columns:1fr 1fr}
+#gModelos .three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#gModelos .three .f{min-width:0}
+.mitem{background:var(--surface);border:1.5px solid #8F867D;border-radius:18px;padding:14px;margin-bottom:12px}
+.mitem .mh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.mitem .mh b{font-size:1.02rem;color:var(--ink)}
+.mitem .mchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mitem .mchips span{background:var(--soft);border-radius:999px;padding:5px 11px;font-size:.8rem;font-weight:700;color:var(--ink)}
+.mitem .mchips span small{font-weight:600;color:var(--muted);margin-right:4px}
+.mitem .mmed{white-space:pre-wrap;margin:10px 0 0;font-size:.9rem;line-height:1.45;color:var(--ink);background:var(--soft);border-radius:12px;padding:10px 12px}
+.mitem .mtxt{margin:8px 0 0;font-size:.84rem;color:var(--muted);white-space:pre-wrap}
+.mitem .mfotos{display:flex;gap:8px;overflow-x:auto;margin-top:10px}
+.mitem .mfotos button{border:0;padding:0;background:none;flex:none}
+.mitem .mfotos img{width:96px;height:96px;object-fit:cover;border-radius:12px;display:block}
+.mitem .mfotos .ph-load{width:96px;height:96px;border-radius:12px;background:var(--soft);display:block}
+.mitem .nbtns button{border:0;background:var(--soft);border-radius:10px;width:34px;height:34px;font-size:1rem;color:var(--muted);margin-left:4px}
+.mzoom{position:fixed;inset:0;z-index:60;background:rgba(20,17,15,.92);display:flex;align-items:center;justify-content:center;padding:16px}
+.mzoom[hidden]{display:none}
+.mzoom img{max-width:100%;max-height:100%;border-radius:12px}
+.mz-x{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:1.6rem}
+:root[data-theme="dark"] .mitem{border-color:#5E564F}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .mitem{border-color:#5E564F} }
 </style>
 </head>
 <body>
@@ -1660,7 +1684,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   </div>
 
   <div id="vGastos" hidden>
-    <div class="gsub" role="group" aria-label="Gastos o notas"><button type="button" class="gsb on" data-gs="compras">Compras</button><button type="button" class="gsb" data-gs="notas">📝 Notas de precios</button><button type="button" class="gsb" data-gs="nafta">⛽ Combustible</button></div>
+    <div class="gsub" role="group" aria-label="Gastos o notas"><button type="button" class="gsb on" data-gs="compras">Compras</button><button type="button" class="gsb" data-gs="notas">📝 Notas de precios</button><button type="button" class="gsb" data-gs="nafta">⛽ Combustible</button><button type="button" class="gsb" data-gs="modelos">📐 Modelos y medidas</button></div>
     <div id="gCompras">
     <section class="editor" style="margin-bottom:18px">
       <form class="sheet" id="gform" novalidate>
@@ -1676,6 +1700,27 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <main id="glist" aria-live="polite"></main>
     </div>
     <div id="gNafta" hidden><div class="naf-card" id="nafG"></div></div>
+    <div id="gModelos" hidden>
+      <button type="button" class="btn primary" id="mNew" style="width:100%;margin-bottom:12px">+ Agregar modelo</button>
+      <section class="editor nform" id="mForm" hidden style="margin-bottom:14px">
+        <div class="sheet">
+          <h3 id="mTit">Nuevo modelo</h3>
+          <p class="hint" style="margin-top:-4px">Guardá medidas de muebles para tener de ejemplo.</p>
+          <label class="f">Mueble<input type="text" id="mNom" autocapitalize="sentences" autocomplete="off" placeholder="Ej: Rack de TV con estante"></label>
+          <div class="three"><label class="f">Alto (cm)<input type="text" id="mAlto" inputmode="decimal" autocomplete="off" placeholder="—"></label>
+          <label class="f">Ancho (cm)<input type="text" id="mAncho" inputmode="decimal" autocomplete="off" placeholder="—"></label>
+          <label class="f">Prof. (cm)<input type="text" id="mProf" inputmode="decimal" autocomplete="off" placeholder="—"></label></div>
+          <label class="f">Medidas y piezas<textarea id="mMed" rows="5" autocapitalize="sentences" placeholder="Ej:&#10;2 laterales 180 x 30&#10;4 estantes 86 x 30&#10;Separación entre estantes 40 cm"></textarea></label>
+          <label class="f">Notas (opcional)<textarea id="mTxt" rows="2" autocapitalize="sentences" placeholder="Ej: madera de pino 1x12, para la casa de Juan"></textarea></label>
+          <div class="f"><span>Fotos del modelo</span><div class="photos" id="mPhotos"></div><input type="file" id="mFile" accept="image/*" multiple hidden><p class="hint" id="mHint"></p></div>
+          <p class="err" id="mErr"></p>
+          <div class="actions"><button type="button" class="btn primary" id="mSave">Guardar modelo</button><button type="button" class="btn" id="mCancel">Cancelar</button></div>
+        </div>
+      </section>
+      <input class="search" id="mQ" type="search" placeholder="Buscar modelo (ej: rack, mesa)" aria-label="Buscar modelos" style="margin-bottom:12px">
+      <main id="mlist"></main>
+    </div>
+    <div id="mZoom" class="mzoom" hidden><button type="button" class="mz-x" id="mZoomX" aria-label="Cerrar">×</button><img id="mZoomImg" alt="Foto del modelo"></div>
     <div id="gNotas" hidden>
       <section class="editor nform" style="margin-bottom:14px">
         <div class="sheet">
@@ -1723,7 +1768,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 87</p>
+    <p class="ver">versión app 88</p>
   </div>
 </div>
 
@@ -2140,7 +2185,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       subscribe();
       initStock();
       initClientes();
-      initGastos(); initNotas(); setTimeout(seedNotas, 1500);
+      initGastos(); initNotas(); initModelos(); setTimeout(seedNotas, 1500);
     }else{
       state.loading = false; render();
       state.mem = true;
@@ -2770,7 +2815,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     function vis(id){ var e = document.getElementById(id); return !!(e && !e.hidden); }
     function atras(){
       if(vis('docView')){ closeDocView(); return true; }
-      var ov = [['nafOv','nafClose'],['histOv','histClose'],['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
+      var ov = [['mZoom','mZoomX'],['nafOv','nafClose'],['histOv','histClose'],['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
       for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
       if(state.editing){ if(document.querySelector('.pgd-bg')) return true; pgDialog({title:'¿Salir sin guardar?', msg:'Los cambios que hiciste se van a perder.', cancel:'Seguir editando', ok:'Salir', danger:true}).then(function(si){ if(si){ showEditor(false); window.scrollTo(0,0); } }); return true; }
       if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
@@ -4070,9 +4115,79 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     if(ed){ var n = state.notas.find(function(x){return x.id===ed.getAttribute('data-ned')}); if(!n) return; state.nEdit = n.id; $('nMat').value=n.mat||''; $('nMed').value=n.med||''; $('nPre').value=n.pre||''; $('nDonde').value=n.donde||''; $('nTxt').value=n.txt||''; $('nTit').textContent='Editar nota'; $('nSave').textContent='Guardar cambios'; $('nCancel').hidden=false; $('gNotas').scrollIntoView({behavior:'smooth'}); return; }
     if(dl){ var n2 = state.notas.find(function(x){return x.id===dl.getAttribute('data-ndel')}); if(!n2) return; if(!(await pgDialog({title:'¿Borrar esta nota?', msg:'Se va a borrar la nota de “'+esc(n2.mat||'')+'”.', ok:'Borrar', danger:true}))) return; try{ if(nCol) await nCol.doc(n2.id).delete(); else { state.notas = state.notas.filter(function(x){return x.id!==n2.id}); renderNotas(); } }catch(_){} }
   });
+
+  /* ---------- Modelos y medidas (v88) ---------- */
+  var mCol = null; state.modelos = []; state.mEdit = null; state.mFotos = [];
+  function initModelos(){
+    if(!state.db) return; mCol = state.db.collection('modelos');
+    mCol.onSnapshot(function(snap){ state.modelos = snap.docs.map(function(d){ var x = JSON.parse(JSON.stringify(d.data()||{})); x.id = String(d.id); return x; }); loadMFotos(); renderModelos(); }, function(){});
+  }
+  function loadMFotos(){
+    if(!state.db) return;
+    state.modelos.forEach(function(m){ (Array.isArray(m.fotos)?m.fotos:[]).forEach(function(fid){
+      if(state.fotos[fid] || pending[fid]) return; pending[fid] = true;
+      state.db.collection('fotos').doc(fid).get().then(function(d){ var x = d.exists ? (d.data()||{}) : {}; if(x.data){ state.fotos[fid] = x.data; renderModelos(); } }).catch(function(){}).then(function(){ delete pending[fid]; });
+    }); });
+  }
+  function renderModelos(){
+    if(!$('mlist')) return;
+    var q = nrm($('mQ').value||''), L = state.modelos.filter(function(m){ return !q || nrm([m.nom,m.med,m.txt].join(' ')).indexOf(q)>=0; })
+      .sort(function(a,b){ return String(a.nom||'').localeCompare(String(b.nom||''), 'es'); });
+    $('mlist').innerHTML = L.length ? L.map(function(m){
+      var ch = [['Alto',m.alto],['Ancho',m.ancho],['Prof.',m.prof]].filter(function(c){ return String(c[1]||'').trim(); }).map(function(c){ return '<span><small>'+c[0]+'</small>'+esc(c[1])+' cm</span>'; }).join('');
+      var fs = (Array.isArray(m.fotos)?m.fotos:[]).map(function(fid){ var src = blob(fid); return src ? '<button type="button" data-mzoom="'+esc(fid)+'" aria-label="Ver foto grande"><img src="'+src+'" alt="Foto del modelo"></button>' : '<span class="ph-load"></span>'; }).join('');
+      return '<div class="mitem"><div class="mh"><b>'+esc(m.nom)+'</b><span class="nbtns"><button type="button" data-med="'+esc(m.id)+'" aria-label="Editar modelo">✎</button><button type="button" data-mdel="'+esc(m.id)+'" aria-label="Borrar modelo">×</button></span></div>'+
+        (ch?'<div class="mchips">'+ch+'</div>':'')+(m.med?'<p class="mmed">'+esc(m.med)+'</p>':'')+(m.txt?'<p class="mtxt">'+esc(m.txt)+'</p>':'')+(fs?'<div class="mfotos">'+fs+'</div>':'')+'</div>';
+    }).join('') : '<div class="empty"><strong>'+(q?'No encontré modelos':'Todavía no tenés modelos')+'</strong>'+(q?'Probá con otra palabra.':'Tocá “+ Agregar modelo” para guardar medidas y fotos.')+'</div>';
+  }
+  function mDrawFotos(){
+    $('mPhotos').innerHTML = state.mFotos.map(function(fid,i){ return '<div class="ph"><img src="'+blob(fid)+'" alt="Foto '+(i+1)+'"><button type="button" data-mrm="'+i+'" aria-label="Quitar foto">×</button></div>'; }).join('') + '<label class="addph" for="mFile">+ Agregar foto</label>';
+  }
+  function mOpen(m){
+    state.mEdit = m ? m.id : null; state.mFotos = m && Array.isArray(m.fotos) ? m.fotos.slice() : [];
+    $('mNom').value = m ? (m.nom||'') : ''; $('mAlto').value = m ? (m.alto||'') : ''; $('mAncho').value = m ? (m.ancho||'') : ''; $('mProf').value = m ? (m.prof||'') : '';
+    $('mMed').value = m ? (m.med||'') : ''; $('mTxt').value = m ? (m.txt||'') : ''; $('mErr').textContent = ''; $('mHint').textContent = '';
+    $('mTit').textContent = m ? 'Editar modelo' : 'Nuevo modelo'; $('mSave').textContent = m ? 'Guardar cambios' : 'Guardar modelo';
+    mDrawFotos(); $('mForm').hidden = false; $('mNew').hidden = true;
+    try{ $('mForm').scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
+  }
+  function mClose(){ $('mForm').hidden = true; $('mNew').hidden = false; state.mEdit = null; state.mFotos = []; }
+  $('mNew').addEventListener('click', function(){ mOpen(null); setTimeout(function(){ try{ $('mNom').focus(); }catch(_){} }, 250); });
+  $('mCancel').addEventListener('click', mClose);
+  $('mQ').addEventListener('input', renderModelos);
+  $('mPhotos').addEventListener('click', function(e){ var r = e.target.closest('[data-mrm]'); if(r){ state.mFotos.splice(+r.getAttribute('data-mrm'),1); mDrawFotos(); } });
+  $('mFile').addEventListener('change', async function(){
+    var files = Array.from(this.files||[]); this.value = ''; var fail = '';
+    for(var i=0;i<files.length;i++){
+      $('mHint').textContent = 'Subiendo foto '+(i+1)+' de '+files.length+'…';
+      try{ var url = await shrink(files[i]); var fid = state.db ? state.db.collection('fotos').doc().id : 'f'+Date.now().toString(36)+i; state.fotos[fid] = url; if(state.db) await state.db.collection('fotos').doc(fid).set({data:url}); state.mFotos.push(fid); }
+      catch(ex){ fail = (ex && ex.message) || 'error'; }
+      mDrawFotos();
+    }
+    $('mHint').textContent = fail ? 'No se pudo subir una foto ('+fail+'). Probá de nuevo.' : '';
+  });
+  $('mSave').addEventListener('click', async function(){
+    var nom = $('mNom').value.trim(); if(!nom){ $('mErr').textContent = 'Escribí qué mueble es.'; $('mNom').focus(); return; }
+    var prev = state.mEdit ? state.modelos.find(function(x){return x.id===state.mEdit}) : null;
+    var m = {nom:nom, alto:$('mAlto').value.trim(), ancho:$('mAncho').value.trim(), prof:$('mProf').value.trim(), med:$('mMed').value.trim(), txt:$('mTxt').value.trim(), fotos:state.mFotos.slice(), fecha:(prev&&prev.fecha)||hoyStr(), creado:(prev&&prev.creado)||new Date().toISOString(), editado:prev?hoyStr():''};
+    var id = state.mEdit || (mCol ? mCol.doc().id : 'm'+Date.now().toString(36));
+    $('mSave').disabled = true;
+    try{ if(mCol) await mCol.doc(id).set(m); else { m.id = id; state.modelos = state.modelos.filter(function(x){return x.id!==id}).concat([m]); } mClose(); renderModelos(); }
+    catch(ex){ $('mErr').textContent = 'No se pudo guardar. Revisá la conexión.'; }
+    $('mSave').disabled = false;
+  });
+  $('mlist').addEventListener('click', async function(e){
+    var z = e.target.closest('[data-mzoom]'), ed = e.target.closest('[data-med]'), dl = e.target.closest('[data-mdel]');
+    if(z){ $('mZoomImg').src = blob(z.getAttribute('data-mzoom')); $('mZoom').hidden = false; document.documentElement.classList.add('ov-open'); return; }
+    if(ed){ var m = state.modelos.find(function(x){return x.id===ed.getAttribute('data-med')}); if(m) mOpen(m); return; }
+    if(dl){ var m2 = state.modelos.find(function(x){return x.id===dl.getAttribute('data-mdel')}); if(!m2) return; if(!(await pgDialog({title:'¿Borrar este modelo?', msg:'Se va a borrar “'+esc(m2.nom||'')+'” con sus medidas y fotos.', ok:'Borrar', danger:true}))) return; try{ if(mCol) await mCol.doc(m2.id).delete(); else { state.modelos = state.modelos.filter(function(x){return x.id!==m2.id}); renderModelos(); } }catch(_){} }
+  });
+  function mZoomClose(){ $('mZoom').hidden = true; document.documentElement.classList.remove('ov-open'); }
+  $('mZoomX').addEventListener('click', mZoomClose);
+  $('mZoom').addEventListener('click', function(e){ if(e.target.id==='mZoom') mZoomClose(); });
   document.querySelectorAll('.gsb').forEach(function(b){ b.addEventListener('click', function(){
     var v = b.getAttribute('data-gs'); document.querySelectorAll('.gsb').forEach(function(x){ x.classList.toggle('on', x===b); });
-    $('gCompras').hidden = v!=='compras'; $('gNotas').hidden = v!=='notas'; $('gNafta').hidden = v!=='nafta'; if(v==='notas') renderNotas(); if(v==='nafta') nafRender($('nafG'), false);
+    $('gCompras').hidden = v!=='compras'; $('gNotas').hidden = v!=='notas'; $('gNafta').hidden = v!=='nafta'; $('gModelos').hidden = v!=='modelos'; if(v==='modelos') renderModelos(); if(v==='notas') renderNotas(); if(v==='nafta') nafRender($('nafG'), false);
   }); });
 
   async function onGastoAct(act, a){
