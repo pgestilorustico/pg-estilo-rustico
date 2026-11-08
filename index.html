@@ -1768,7 +1768,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 88</p>
+    <p class="ver">versión app 89</p>
   </div>
 </div>
 
@@ -2185,7 +2185,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       subscribe();
       initStock();
       initClientes();
-      initGastos(); initNotas(); initModelos(); setTimeout(seedNotas, 1500);
+      initGastos(); initNotas(); initModelos(); setTimeout(seedNotas, 1500); setTimeout(seedModelos, 2500);
     }else{
       state.loading = false; render();
       state.mem = true;
@@ -4118,6 +4118,51 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
 
   /* ---------- Modelos y medidas (v88) ---------- */
   var mCol = null; state.modelos = []; state.mEdit = null; state.mFotos = [];
+
+  /* Carga única de modelos (fotos y videos que mandó Pablo el 08/11/2026) */
+  var SEED_MOD = [
+    {id:'seed-reposera', nom:'Reposera plegable de listones', alto:'74', ancho:'46', prof:'', fotos:['reposera'],
+     med:'Largueros del respaldo: 74 cm\nPatas de abajo: 74 cm\nRespaldo: 46 cm de alto\nAsiento: 46 cm de ancho\nListones: 8 cm de ancho, separados 2 cm\nTravesaño bajo el asiento: 7,5 cm\nDel cruce de patas al piso: 18 cm', txt:'Las dos partes se cruzan y se pliega.'},
+    {id:'seed-silla', nom:'Silla simple de pino', alto:'80', ancho:'40', prof:'40', fotos:['silla'],
+     med:'Alto total: 80 cm\nAlto del asiento: 45 cm\nAsiento: 40 x 40 cm\nRespaldo: 35 cm de alto (desde el asiento)', txt:''},
+    {id:'seed-caballete', nom:'Caballete plegable', alto:'78', ancho:'58', prof:'', fotos:['caballete'],
+     med:'Alto: 78 cm\nLargo del travesaño de arriba: 58 cm\nTravesaño abajo en cada lado\nBisagras arriba para plegar\nTira o cadena en el medio para que no se abra de más', txt:''},
+    {id:'seed-sillon', nom:'Sillón de listones con respaldo inclinado', alto:'', ancho:'', prof:'', fotos:['sillon1','sillon2','sillon3'],
+     med:'Piezas laterales: 56 cm con corte a 85°\nPatas: corte a 25° arriba\nRespaldo: inclinado a 75°\nListones del asiento: 9,5 x 41 cm\nTacos abajo de las patas para apoyar', txt:'Medidas sacadas del video.'},
+    {id:'seed-banquito', nom:'Banquito desarmable (sin tornillos)', alto:'', ancho:'42', prof:'25', fotos:['banq1','banq2','banq3','banq4'],
+     med:'Asiento: 42 x 25 cm, con 2 ranuras a 10 cm de cada punta\n2 patas: 20 x 25 cm, con corte en V abajo y ranura arriba\nTravesaño: 24 cm de largo, encastre de 5 cm en cada punta y ranuras de 4,5 cm y 4 cm', txt:'Medidas sacadas del video (aproximadas). Se arma encastrando las piezas.'},
+    {id:'seed-patanordica', nom:'Pata nórdica (cortes)', alto:'', ancho:'', prof:'', fotos:['cuaderno'],
+     med:'Para 42 cm de alto → cortar tablas a 45 cm\nPara 50 cm de alto → cortar tablas a 53 cm\nLos cortes se hacen a 15°', txt:'De mi cuaderno.'},
+    {id:'seed-hexagono', nom:'Cortes hexágono a 30°', alto:'', ancho:'', prof:'', fotos:['cuaderno'],
+     med:'26 cm → corte a 17 cm\n30 cm → corte a 19,5 cm\n35 cm → corte a 22,5 cm\n40 cm → corte a 25,5 cm', txt:'De mi cuaderno. Los cortes de los cantos van a 30°.'},
+    {id:'seed-angulos', nom:'Ángulo de corte según cantidad de lados', alto:'', ancho:'', prof:'', fotos:['angulos'],
+     med:'4 lados (caja): 45°\n6 lados (hexágono): 30°\n8 lados (octógono): 22,5°\n12 lados: 15°\n16 lados: 11,25°', txt:'Para maceteros, cajas y piezas redondas con tablas.'},
+    {id:'seed-macetas', nom:'Macetas de barro (para hacer maceteros)', alto:'', ancho:'', prof:'', fotos:['macetas'],
+     med:'Boca x alto:\n25 cm (el alto no se ve en la foto)\n20 x 18,5 cm\n17,5 x 16 cm\n16 x 13,5 cm\n12,5 x 13 cm\n11,5 x 10,5 cm\n10 x 10 cm\n9 x 9 cm\n9 x 8 cm\n8 x 8 cm', txt:'Para calcular el macetero de madera según la maceta.'}
+  ];
+  function seedModelos(){
+    if(!state.db) return;
+    var aj = state.db.collection('ajustes').doc('seeds');
+    aj.get().then(async function(d){
+      var x = (d && d.exists) ? (d.data()||{}) : {};
+      if(x.mod20261108) return;
+      var hechas = {};
+      for(var i=0;i<SEED_MOD.length;i++){
+        var m = SEED_MOD[i], fids = [];
+        for(var j=0;j<m.fotos.length;j++){
+          var k = m.fotos[j], fid = 'mod-'+k;
+          if(!hechas[k]){
+            var r = await fetch('modelos/'+k+'.jpg'); if(!r.ok) continue;
+            var url = await shrink(await r.blob());
+            await state.db.collection('fotos').doc(fid).set({data:url}); state.fotos[fid] = url; hechas[k] = true;
+          }
+          fids.push(fid);
+        }
+        await state.db.collection('modelos').doc(m.id).set({nom:m.nom, alto:m.alto, ancho:m.ancho, prof:m.prof, med:m.med, txt:m.txt, fotos:fids, fecha:'2026-11-08', creado:'2026-11-08T16:00:0'+i+'.000Z', editado:''});
+      }
+      await aj.set({mod20261108:true}, {merge:true});
+    }).catch(function(){});
+  }
   function initModelos(){
     if(!state.db) return; mCol = state.db.collection('modelos');
     mCol.onSnapshot(function(snap){ state.modelos = snap.docs.map(function(d){ var x = JSON.parse(JSON.stringify(d.data()||{})); x.id = String(d.id); return x; }); loadMFotos(); renderModelos(); }, function(){});
