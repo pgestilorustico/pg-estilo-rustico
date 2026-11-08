@@ -1383,6 +1383,28 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
 .mz-x{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:1.6rem}
 :root[data-theme="dark"] .mitem{border-color:#5E564F}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .mitem{border-color:#5E564F} }
+
+/* v91: visor deslizable y videos */
+.mzoom{padding:0!important;display:block!important;background:#14110F!important;z-index:70!important}
+.mzoom[hidden]{display:none!important}
+.mz-track{position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain}
+.mz-track::-webkit-scrollbar{display:none}
+.mz-sl{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:64px 12px 56px;box-sizing:border-box}
+.mz-sl img,.mz-sl video{max-width:100%;max-height:100%;border-radius:12px;background:#000}
+.mz-sl .mz-load{color:#e9e2db;font-weight:600}
+.mz-cnt{position:absolute;top:calc(22px + env(safe-area-inset-top));left:18px;color:#fff;font-weight:700;font-size:.9rem;background:rgba(255,255,255,.16);padding:6px 12px;border-radius:999px}
+.mz-dots{position:absolute;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:7px}
+.mz-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}
+.mz-dots i.on{background:#fff}
+.mz-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:1.8rem;line-height:1;display:none}
+@media (hover:hover){ .mz-nav{display:block} }
+.mz-prev{left:10px}.mz-next{right:10px}
+.mz-nav[disabled]{opacity:.25}
+.mitem .mfotos .mvid{position:relative}
+.mitem .mfotos .mvid::after,.ph.vid::after{content:"▶";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:1.5rem;text-shadow:0 1px 6px rgba(0,0,0,.6);pointer-events:none}
+.mitem .mfotos .mvid .vtile,.ph.vid .vtile{width:96px;height:96px;border-radius:12px;background:#3A332E;display:block}
+.ph.vid{position:relative}
+.ph.vid .vtile,.ph.vid img{width:72px;height:72px;border-radius:10px;object-fit:cover;display:block}
 </style>
 </head>
 <body>
@@ -1712,7 +1734,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
           <label class="f">Prof. (cm)<input type="text" id="mProf" inputmode="decimal" autocomplete="off" placeholder="—"></label></div>
           <label class="f">Medidas y piezas<textarea id="mMed" rows="5" autocapitalize="sentences" placeholder="Ej:&#10;2 laterales 180 x 30&#10;4 estantes 86 x 30&#10;Separación entre estantes 40 cm"></textarea></label>
           <label class="f">Notas (opcional)<textarea id="mTxt" rows="2" autocapitalize="sentences" placeholder="Ej: madera de pino 1x12, para la casa de Juan"></textarea></label>
-          <div class="f"><span>Fotos del modelo</span><div class="photos" id="mPhotos"></div><input type="file" id="mFile" accept="image/*" multiple hidden><p class="hint" id="mHint"></p></div>
+          <div class="f"><span>Fotos y videos del modelo</span><div class="photos" id="mPhotos"></div><input type="file" id="mFile" accept="image/*" multiple hidden><input type="file" id="mVidFile" accept="video/*" hidden><p class="hint" id="mHint"></p></div>
           <p class="err" id="mErr"></p>
           <div class="actions"><button type="button" class="btn primary" id="mSave">Guardar modelo</button><button type="button" class="btn" id="mCancel">Cancelar</button></div>
         </div>
@@ -1720,7 +1742,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       <input class="search" id="mQ" type="search" placeholder="Buscar modelo (ej: rack, mesa)" aria-label="Buscar modelos" style="margin-bottom:12px">
       <main id="mlist"></main>
     </div>
-    <div id="mZoom" class="mzoom" hidden><button type="button" class="mz-x" id="mZoomX" aria-label="Cerrar">×</button><img id="mZoomImg" alt="Foto del modelo"></div>
+    <div id="mZoom" class="mzoom" hidden><div class="mz-track" id="mzTrack"></div><span class="mz-cnt" id="mzCnt"></span><button type="button" class="mz-x" id="mZoomX" aria-label="Cerrar">×</button><button type="button" class="mz-nav mz-prev" id="mzPrev" aria-label="Anterior">‹</button><button type="button" class="mz-nav mz-next" id="mzNext" aria-label="Siguiente">›</button><div class="mz-dots" id="mzDots"></div></div>
     <div id="gNotas" hidden>
       <section class="editor nform" style="margin-bottom:14px">
         <div class="sheet">
@@ -1768,7 +1790,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 90</p>
+    <p class="ver">versión app 91</p>
   </div>
 </div>
 
@@ -4117,7 +4139,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   });
 
   /* ---------- Modelos y medidas (v88) ---------- */
-  var mCol = null; state.modelos = []; state.mEdit = null; state.mFotos = [];
+  var mCol = null; state.modelos = []; state.mEdit = null; state.mFotos = []; state.mVids = [];
 
   /* Carga única de modelos (fotos y videos que mandó Pablo el 08/11/2026) */
   var SEED_MOD = [
@@ -4127,9 +4149,9 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
      med:'Alto total: 80 cm\nAlto del asiento: 45 cm\nAsiento: 40 x 40 cm\nRespaldo: 35 cm de alto (desde el asiento)', txt:''},
     {id:'seed-caballete', nom:'Caballete plegable', alto:'78', ancho:'58', prof:'', fotos:['caballete'],
      med:'Alto: 78 cm\nLargo del travesaño de arriba: 58 cm\nTravesaño abajo en cada lado\nBisagras arriba para plegar\nTira o cadena en el medio para que no se abra de más', txt:''},
-    {id:'seed-sillon', nom:'Sillón de listones con respaldo inclinado', alto:'', ancho:'', prof:'', fotos:['sillon1','sillon2','sillon3'],
+    {id:'seed-sillon', videos:[{src:'modelos/sillon.mp4', poster:'mod-sillon1'}], nom:'Sillón de listones con respaldo inclinado', alto:'', ancho:'', prof:'', fotos:['sillon1','sillon2','sillon3'],
      med:'Piezas laterales: 56 cm con corte a 85°\nPatas: corte a 25° arriba\nRespaldo: inclinado a 75°\nListones del asiento: 9,5 x 41 cm\nTacos abajo de las patas para apoyar', txt:'Medidas sacadas del video.'},
-    {id:'seed-banquito', nom:'Banquito desarmable (sin tornillos)', alto:'', ancho:'42', prof:'25', fotos:['banq1','banq2','banq3','banq4'],
+    {id:'seed-banquito', videos:[{src:'modelos/banquito.mp4', poster:'mod-banq1'}], nom:'Banquito desarmable (sin tornillos)', alto:'', ancho:'42', prof:'25', fotos:['banq1','banq2','banq3','banq4'],
      med:'Asiento: 42 x 25 cm, con 2 ranuras a 10 cm de cada punta\n2 patas: 20 x 25 cm, con corte en V abajo y ranura arriba\nTravesaño: 24 cm de largo, encastre de 5 cm en cada punta y ranuras de 4,5 cm y 4 cm', txt:'Medidas sacadas del video (aproximadas). Se arma encastrando las piezas.'},
     {id:'seed-patanordica', nom:'Pata nórdica (cortes)', alto:'', ancho:'', prof:'', fotos:['cuaderno'],
      med:'Para 42 cm de alto → cortar tablas a 45 cm\nPara 50 cm de alto → cortar tablas a 53 cm\nLos cortes se hacen a 15°', txt:'De mi cuaderno.'},
@@ -4145,7 +4167,14 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     var aj = state.db.collection('ajustes').doc('seeds');
     aj.get().then(async function(d){
       var x = (d && d.exists) ? (d.data()||{}) : {};
-      if(x.mod20261108) return;
+      if(x.mod20261108){
+        if(!x.modvid20261108){
+          await state.db.collection('modelos').doc('seed-sillon').set({videos:[{src:'modelos/sillon.mp4', poster:'mod-sillon1'}]}, {merge:true});
+          await state.db.collection('modelos').doc('seed-banquito').set({videos:[{src:'modelos/banquito.mp4', poster:'mod-banq1'}]}, {merge:true});
+          await aj.set({modvid20261108:true}, {merge:true});
+        }
+        return;
+      }
       var hechas = {};
       for(var i=0;i<SEED_MOD.length;i++){
         var m = SEED_MOD[i], fids = [];
@@ -4158,9 +4187,9 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
           }
           fids.push(fid);
         }
-        await state.db.collection('modelos').doc(m.id).set({nom:m.nom, alto:m.alto, ancho:m.ancho, prof:m.prof, med:m.med, txt:m.txt, fotos:fids, fecha:'2026-11-08', creado:'2026-11-08T16:00:0'+i+'.000Z', editado:''});
+        await state.db.collection('modelos').doc(m.id).set({nom:m.nom, alto:m.alto, ancho:m.ancho, prof:m.prof, med:m.med, txt:m.txt, fotos:fids, videos:m.videos||[], fecha:'2026-11-08', creado:'2026-11-08T16:00:0'+i+'.000Z', editado:''});
       }
-      await aj.set({mod20261108:true}, {merge:true});
+      await aj.set({mod20261108:true, modvid20261108:true}, {merge:true});
     }).catch(function(){});
   }
   function initModelos(){
@@ -4169,7 +4198,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   }
   function loadMFotos(){
     if(!state.db) return;
-    state.modelos.forEach(function(m){ (Array.isArray(m.fotos)?m.fotos:[]).forEach(function(fid){
+    state.modelos.forEach(function(m){ (Array.isArray(m.fotos)?m.fotos:[]).concat((Array.isArray(m.videos)?m.videos:[]).map(function(v){ return v && v.poster; }).filter(Boolean)).forEach(function(fid){
       if(state.fotos[fid] || pending[fid]) return; pending[fid] = true;
       state.db.collection('fotos').doc(fid).get().then(function(d){ var x = d.exists ? (d.data()||{}) : {}; if(x.data){ state.fotos[fid] = x.data; renderModelos(); } }).catch(function(){}).then(function(){ delete pending[fid]; });
     }); });
@@ -4180,27 +4209,70 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       .sort(function(a,b){ return String(a.nom||'').localeCompare(String(b.nom||''), 'es'); });
     $('mlist').innerHTML = L.length ? L.map(function(m){
       var ch = [['Alto',m.alto],['Ancho',m.ancho],['Prof.',m.prof]].filter(function(c){ return String(c[1]||'').trim(); }).map(function(c){ return '<span><small>'+c[0]+'</small>'+esc(c[1])+' cm</span>'; }).join('');
-      var fs = (Array.isArray(m.fotos)?m.fotos:[]).map(function(fid){ var src = blob(fid); return src ? '<button type="button" data-mzoom="'+esc(fid)+'" aria-label="Ver foto grande"><img src="'+src+'" alt="Foto del modelo"></button>' : '<span class="ph-load"></span>'; }).join('');
+      var fs = mMedia(m).map(function(it,k){
+        if(it.t==='v'){ var pv = it.poster ? blob(it.poster) : ''; return '<button type="button" class="mvid" data-mz="'+esc(m.id)+'" data-mi="'+k+'" aria-label="Ver video">'+(pv?'<img src="'+pv+'" alt="Video del modelo">':'<span class="vtile"></span>')+'</button>'; }
+        var src = blob(it.fid); return src ? '<button type="button" data-mz="'+esc(m.id)+'" data-mi="'+k+'" aria-label="Ver foto grande"><img src="'+src+'" alt="Foto del modelo"></button>' : '<span class="ph-load"></span>'; }).join('');
       return '<div class="mitem"><div class="mh"><b>'+esc(m.nom)+'</b><span class="nbtns"><button type="button" data-med="'+esc(m.id)+'" aria-label="Editar modelo">✎</button><button type="button" data-mdel="'+esc(m.id)+'" aria-label="Borrar modelo">×</button></span></div>'+
         (ch?'<div class="mchips">'+ch+'</div>':'')+(m.med?'<p class="mmed">'+esc(m.med)+'</p>':'')+(m.txt?'<p class="mtxt">'+esc(m.txt)+'</p>':'')+(fs?'<div class="mfotos">'+fs+'</div>':'')+'</div>';
     }).join('') : '<div class="empty"><strong>'+(q?'No encontré modelos':'Todavía no tenés modelos')+'</strong>'+(q?'Probá con otra palabra.':'Tocá “+ Agregar modelo” para guardar medidas y fotos.')+'</div>';
   }
   function mDrawFotos(){
-    $('mPhotos').innerHTML = state.mFotos.map(function(fid,i){ return '<div class="ph"><img src="'+blob(fid)+'" alt="Foto '+(i+1)+'"><button type="button" data-mrm="'+i+'" aria-label="Quitar foto">×</button></div>'; }).join('') + '<label class="addph" for="mFile">+ Agregar foto</label>';
+    $('mPhotos').innerHTML = state.mFotos.map(function(fid,i){ return '<div class="ph"><img src="'+blob(fid)+'" alt="Foto '+(i+1)+'"><button type="button" data-mrm="'+i+'" aria-label="Quitar foto">×</button></div>'; }).join('') +
+      state.mVids.map(function(v,i){ var pv = v.poster ? blob(v.poster) : ''; return '<div class="ph vid">'+(pv?'<img src="'+pv+'" alt="Video '+(i+1)+'">':'<span class="vtile"></span>')+'<button type="button" data-mvrm="'+i+'" aria-label="Quitar video">×</button></div>'; }).join('') +
+      '<label class="addph" for="mFile">+ Agregar foto</label><label class="addph" for="mVidFile">+ Agregar video</label>';
   }
+  function mMedia(m){ return (Array.isArray(m.fotos)?m.fotos:[]).map(function(f){ return {t:'f', fid:f}; }).concat((Array.isArray(m.videos)?m.videos:[]).filter(Boolean).map(function(v){ return {t:'v', src:v.src, id:v.id, n:v.n, type:v.type, poster:v.poster}; })); }
+  var vidUrls = {};
+  async function vidUrl(it){
+    if(it.src) return it.src;
+    if(vidUrls[it.id]) return vidUrls[it.id];
+    var parts = [];
+    for(var i=0;i<it.n;i++){ var d = await state.db.collection('videos').doc(it.id+'-'+i).get(); var x = d.exists ? (d.data()||{}) : {}; if(!x.data) throw new Error('falta'); var bin = atob(x.data), u8 = new Uint8Array(bin.length); for(var j=0;j<bin.length;j++) u8[j] = bin.charCodeAt(j); parts.push(u8); }
+    return (vidUrls[it.id] = URL.createObjectURL(new Blob(parts, {type: it.type||'video/mp4'})));
+  }
+  function vidPoster(file){ return new Promise(function(res){
+    var v = document.createElement('video'), u = URL.createObjectURL(file), done = false;
+    function fin(x){ if(done) return; done = true; URL.revokeObjectURL(u); res(x); }
+    v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = u;
+    v.onloadeddata = function(){ try{ v.currentTime = Math.min(1, (v.duration||2)/3); }catch(_){ fin(''); } };
+    v.onseeked = function(){ try{ var r = Math.min(1, 600/Math.max(v.videoWidth,v.videoHeight)), c = document.createElement('canvas'); c.width = Math.round(v.videoWidth*r); c.height = Math.round(v.videoHeight*r); c.getContext('2d').drawImage(v,0,0,c.width,c.height); fin(c.toDataURL('image/jpeg',.7)); }catch(_){ fin(''); } };
+    v.onerror = function(){ fin(''); }; setTimeout(function(){ fin(''); }, 8000);
+  }); }
   function mOpen(m){
-    state.mEdit = m ? m.id : null; state.mFotos = m && Array.isArray(m.fotos) ? m.fotos.slice() : [];
+    state.mEdit = m ? m.id : null; state.mFotos = m && Array.isArray(m.fotos) ? m.fotos.slice() : []; state.mVids = m && Array.isArray(m.videos) ? m.videos.filter(Boolean).map(function(v){ return Object.assign({}, v); }) : [];
     $('mNom').value = m ? (m.nom||'') : ''; $('mAlto').value = m ? (m.alto||'') : ''; $('mAncho').value = m ? (m.ancho||'') : ''; $('mProf').value = m ? (m.prof||'') : '';
     $('mMed').value = m ? (m.med||'') : ''; $('mTxt').value = m ? (m.txt||'') : ''; $('mErr').textContent = ''; $('mHint').textContent = '';
     $('mTit').textContent = m ? 'Editar modelo' : 'Nuevo modelo'; $('mSave').textContent = m ? 'Guardar cambios' : 'Guardar modelo';
     mDrawFotos(); $('mForm').hidden = false; $('mNew').hidden = true;
     try{ $('mForm').scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
   }
-  function mClose(){ $('mForm').hidden = true; $('mNew').hidden = false; state.mEdit = null; state.mFotos = []; }
+  function mClose(){ $('mForm').hidden = true; $('mNew').hidden = false; state.mEdit = null; state.mFotos = []; state.mVids = []; }
   $('mNew').addEventListener('click', function(){ mOpen(null); setTimeout(function(){ try{ $('mNom').focus(); }catch(_){} }, 250); });
   $('mCancel').addEventListener('click', mClose);
   $('mQ').addEventListener('input', renderModelos);
-  $('mPhotos').addEventListener('click', function(e){ var r = e.target.closest('[data-mrm]'); if(r){ state.mFotos.splice(+r.getAttribute('data-mrm'),1); mDrawFotos(); } });
+  $('mPhotos').addEventListener('click', function(e){ var r = e.target.closest('[data-mrm]'), rv = e.target.closest('[data-mvrm]'); if(r){ state.mFotos.splice(+r.getAttribute('data-mrm'),1); mDrawFotos(); } if(rv){ state.mVids.splice(+rv.getAttribute('data-mvrm'),1); mDrawFotos(); } });
+  $('mVidFile').addEventListener('change', async function(){
+    var f = (this.files||[])[0]; this.value = ''; if(!f) return;
+    var MAX = 25*1024*1024;
+    if(f.size > MAX){ $('mHint').textContent = 'El video pesa '+(f.size/1048576).toFixed(0)+' MB y el máximo es 25 MB. Probá con uno más corto.'; return; }
+    if(!state.db){ $('mHint').textContent = 'Sin conexión: no se puede subir el video.'; return; }
+    $('mSave').disabled = true;
+    try{
+      $('mHint').textContent = 'Preparando video…';
+      var pdata = await vidPoster(f), id = state.db.collection('videos').doc().id, pfid = '';
+      if(pdata){ pfid = 'vp-'+id; await state.db.collection('fotos').doc(pfid).set({data:pdata}); state.fotos[pfid] = pdata; }
+      var buf = new Uint8Array(await f.arrayBuffer()), CH = 700000, n = Math.ceil(buf.length/CH);
+      for(var i=0;i<n;i++){
+        $('mHint').textContent = 'Subiendo video… '+Math.round(i/n*100)+'%';
+        var sl = buf.subarray(i*CH, Math.min(buf.length,(i+1)*CH)), bs = '';
+        for(var j=0;j<sl.length;j+=8192) bs += String.fromCharCode.apply(null, sl.subarray(j, j+8192));
+        await state.db.collection('videos').doc(id+'-'+i).set({data:btoa(bs)});
+      }
+      state.mVids.push({id:id, n:n, type:f.type||'video/mp4', poster:pfid}); mDrawFotos();
+      $('mHint').textContent = 'Video subido. Acordate de tocar “Guardar”.';
+    }catch(ex){ $('mHint').textContent = 'No se pudo subir el video. Revisá la conexión y probá de nuevo.'; }
+    $('mSave').disabled = false;
+  });
   $('mFile').addEventListener('change', async function(){
     var files = Array.from(this.files||[]); this.value = ''; var fail = '';
     for(var i=0;i<files.length;i++){
@@ -4214,7 +4286,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   $('mSave').addEventListener('click', async function(){
     var nom = $('mNom').value.trim(); if(!nom){ $('mErr').textContent = 'Escribí qué mueble es.'; $('mNom').focus(); return; }
     var prev = state.mEdit ? state.modelos.find(function(x){return x.id===state.mEdit}) : null;
-    var m = {nom:nom, alto:$('mAlto').value.trim(), ancho:$('mAncho').value.trim(), prof:$('mProf').value.trim(), med:$('mMed').value.trim(), txt:$('mTxt').value.trim(), fotos:state.mFotos.slice(), fecha:(prev&&prev.fecha)||hoyStr(), creado:(prev&&prev.creado)||new Date().toISOString(), editado:prev?hoyStr():''};
+    var m = {nom:nom, alto:$('mAlto').value.trim(), ancho:$('mAncho').value.trim(), prof:$('mProf').value.trim(), med:$('mMed').value.trim(), txt:$('mTxt').value.trim(), fotos:state.mFotos.slice(), videos:state.mVids.map(function(v){ var o = {}; ['src','id','n','type','poster'].forEach(function(k){ if(v[k]!=null && v[k]!=='') o[k] = v[k]; }); return o; }), fecha:(prev&&prev.fecha)||hoyStr(), creado:(prev&&prev.creado)||new Date().toISOString(), editado:prev?hoyStr():''};
     var id = state.mEdit || (mCol ? mCol.doc().id : 'm'+Date.now().toString(36));
     $('mSave').disabled = true;
     try{ if(mCol) await mCol.doc(id).set(m); else { m.id = id; state.modelos = state.modelos.filter(function(x){return x.id!==id}).concat([m]); } mClose(); renderModelos(); }
@@ -4222,14 +4294,38 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     $('mSave').disabled = false;
   });
   $('mlist').addEventListener('click', async function(e){
-    var z = e.target.closest('[data-mzoom]'), ed = e.target.closest('[data-med]'), dl = e.target.closest('[data-mdel]');
-    if(z){ $('mZoomImg').src = blob(z.getAttribute('data-mzoom')); $('mZoom').hidden = false; document.documentElement.classList.add('ov-open'); return; }
+    var z = e.target.closest('[data-mz]'), ed = e.target.closest('[data-med]'), dl = e.target.closest('[data-mdel]');
+    if(z){ var mm = state.modelos.find(function(x){return x.id===z.getAttribute('data-mz')}); if(mm) mzOpen(mm, +z.getAttribute('data-mi')); return; }
     if(ed){ var m = state.modelos.find(function(x){return x.id===ed.getAttribute('data-med')}); if(m) mOpen(m); return; }
     if(dl){ var m2 = state.modelos.find(function(x){return x.id===dl.getAttribute('data-mdel')}); if(!m2) return; if(!(await pgDialog({title:'¿Borrar este modelo?', msg:'Se va a borrar “'+esc(m2.nom||'')+'” con sus medidas y fotos.', ok:'Borrar', danger:true}))) return; try{ if(mCol) await mCol.doc(m2.id).delete(); else { state.modelos = state.modelos.filter(function(x){return x.id!==m2.id}); renderModelos(); } }catch(_){} }
   });
-  function mZoomClose(){ $('mZoom').hidden = true; document.documentElement.classList.remove('ov-open'); }
+  var mzItems = [], mzIdx = 0;
+  function mzOpen(m, k){
+    mzItems = mMedia(m);
+    $('mzTrack').innerHTML = mzItems.map(function(it,i){ return '<div class="mz-sl" data-i="'+i+'">'+(it.t==='f' ? '<img src="'+blob(it.fid)+'" alt="Foto '+(i+1)+'">' : '<span class="mz-load">Cargando video…</span>')+'</div>'; }).join('');
+    $('mzDots').innerHTML = mzItems.length>1 ? mzItems.map(function(){ return '<i></i>'; }).join('') : '';
+    $('mZoom').hidden = false; document.documentElement.classList.add('ov-open');
+    var tr = $('mzTrack'); tr.scrollLeft = tr.clientWidth * k; mzSet(k);
+  }
+  function mzSet(k){
+    mzIdx = k; $('mzCnt').textContent = mzItems.length>1 ? (k+1)+' / '+mzItems.length : '';
+    $('mzCnt').hidden = mzItems.length<2;
+    $('mzDots').querySelectorAll('i').forEach(function(d,i){ d.classList.toggle('on', i===k); });
+    $('mzPrev').disabled = k<=0; $('mzNext').disabled = k>=mzItems.length-1;
+    $('mzTrack').querySelectorAll('video').forEach(function(v){ if(+v.parentNode.getAttribute('data-i')!==k) try{ v.pause(); }catch(_){} });
+    var it = mzItems[k], sl = $('mzTrack').querySelector('.mz-sl[data-i="'+k+'"]');
+    if(it && it.t==='v' && sl && !sl.querySelector('video') && !sl.dataset.loading){
+      sl.dataset.loading = '1';
+      vidUrl(it).then(function(u){ sl.innerHTML = '<video src="'+u+'" controls playsinline preload="metadata"'+(it.poster && blob(it.poster) ? ' poster="'+blob(it.poster)+'"' : '')+'></video>'; })
+        .catch(function(){ sl.innerHTML = '<span class="mz-load">No se pudo cargar el video. Revisá la conexión.</span>'; delete sl.dataset.loading; });
+    }
+  }
+  $('mzTrack').addEventListener('scroll', function(){ var tr = this, k = Math.round(tr.scrollLeft / Math.max(1,tr.clientWidth)); if(k!==mzIdx) mzSet(k); }, {passive:true});
+  $('mzPrev').addEventListener('click', function(){ var tr = $('mzTrack'); tr.scrollTo({left:tr.clientWidth*(mzIdx-1), behavior:'smooth'}); });
+  $('mzNext').addEventListener('click', function(){ var tr = $('mzTrack'); tr.scrollTo({left:tr.clientWidth*(mzIdx+1), behavior:'smooth'}); });
+  function mZoomClose(){ $('mzTrack').querySelectorAll('video').forEach(function(v){ try{ v.pause(); }catch(_){} }); $('mZoom').hidden = true; $('mzTrack').innerHTML = ''; document.documentElement.classList.remove('ov-open'); }
   $('mZoomX').addEventListener('click', mZoomClose);
-  $('mZoom').addEventListener('click', function(e){ if(e.target.id==='mZoom') mZoomClose(); });
+  $('mzTrack').addEventListener('click', function(e){ if(e.target.classList.contains('mz-sl')) mZoomClose(); });
   document.querySelectorAll('.gsb').forEach(function(b){ b.addEventListener('click', function(){
     var v = b.getAttribute('data-gs'); document.querySelectorAll('.gsb').forEach(function(x){ x.classList.toggle('on', x===b); });
     $('gCompras').hidden = v!=='compras'; $('gNotas').hidden = v!=='notas'; $('gNafta').hidden = v!=='nafta'; $('gModelos').hidden = v!=='modelos'; if(v==='modelos') renderModelos(); if(v==='notas') renderNotas(); if(v==='nafta') nafRender($('nafG'), false);

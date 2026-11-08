@@ -1,6 +1,6 @@
 /* Service worker: permite instalar la app y abrirla aunque falle la conexión.
    Los datos (pedidos, clientes, etc.) los guarda Firebase, no este archivo. */
-const CACHE = 'pg-app-v90';
+const CACHE = 'pg-app-v91';
 const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest', './icon-v4-192.png', './icon-v4-512.png'];
 
 self.addEventListener('install', e => {
@@ -45,6 +45,7 @@ self.addEventListener('fetch', e => {
     return;
   }
   if (url.origin !== location.origin) return;           // Firebase (datos) y Google: directo a internet
+  if (/\.mp4$/i.test(url.pathname) || req.headers.has('range')) return;   // videos: directo, sin guardar
   /* Primero internet (así ves la última versión), pero si tarda más de 3 segundos abre lo guardado */
   const red = fetch(req).then(res => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return res; });
   const guardado = caches.match(req, {ignoreSearch: req.mode === 'navigate'}).then(r => r || (req.mode === 'navigate' ? caches.match('./index.html') : null));
