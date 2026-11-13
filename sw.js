@@ -1,7 +1,7 @@
 /* Service worker: permite instalar la app y abrirla aunque falle la conexión.
    Los datos (pedidos, clientes, etc.) los guarda Firebase, no este archivo. */
-const CACHE = 'pg-app-v93';
-const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest', './icon-v4-192.png', './icon-v4-512.png'];
+const CACHE = 'pg-app-v94';
+const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest', './icon-v4-192.png', './icon-v4-512.png', './logo-anim-cuerpo.webp', './logo-anim-cinta.webp'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
