@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PG Rústico">
 <link rel="preload" as="image" href="logo-anim-cuerpo.webp">
-<link rel="manifest" href="manifest.webmanifest?v=5">
+<link rel="manifest" href="manifest-v5.webmanifest?v=5">
 <link rel="icon" href="icon-v5-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon-v5.png">
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1819,7 +1819,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 95</p>
+    <p class="ver">versión app 96</p>
   </div>
 </div>
 
@@ -2991,7 +2991,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   /* Hora real de internet: si la computadora o el celular tienen mal la hora, el contador igual cuenta bien */
   var clockOff = 0;
   function ahora(){ return Date.now() + clockOff; }
-  function syncReloj(){ try{ var t0 = Date.now(); fetch('./manifest.webmanifest?clk='+t0, {method:'HEAD', cache:'no-store'}).then(function(r){ var t1 = Date.now(), d = r.headers.get('date'); if(!d) return; var srv = new Date(d).getTime(); if(isNaN(srv)) return; var off = srv - (t0+t1)/2; clockOff = Math.abs(off) > 90000 ? off : 0; }).catch(function(){}); }catch(_){} }
+  function syncReloj(){ try{ var t0 = Date.now(); fetch('./manifest-v5.webmanifest?clk='+t0, {method:'HEAD', cache:'no-store'}).then(function(r){ var t1 = Date.now(), d = r.headers.get('date'); if(!d) return; var srv = new Date(d).getTime(); if(isNaN(srv)) return; var off = srv - (t0+t1)/2; clockOff = Math.abs(off) > 90000 ? off : 0; }).catch(function(){}); }catch(_){} }
   syncReloj(); document.addEventListener('visibilitychange', function(){ if(!document.hidden) syncReloj(); });
   function segTrab(o){ var t = o.tiempo||{}, s0 = num(t.seg); if(t.desde){ var d = (ahora() - new Date(t.desde).getTime())/1000; if(d>0) s0 += d; } return s0; }
   function fmtVivo(sg){ sg = Math.max(0, Math.floor(sg)); var h = Math.floor(sg/3600), m = Math.floor(sg%3600/60), ss = sg%60; return h ? h+' h '+m+' min' : m ? m+' min '+ss+' s' : ss+' s'; }
