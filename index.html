@@ -1808,6 +1808,8 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <div class="themesw aj-val" role="group" aria-label="Validez del presupuesto"><button type="button" data-val="7">7 días</button><button type="button" data-val="10">10 días</button><button type="button" data-val="15">15 días</button></div>
     <p class="aj-sec">Apariencia</p>
     <div class="themesw" role="group" aria-label="Tema de la app"><button type="button" data-theme-set="auto"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>Automático</button><button type="button" data-theme-set="light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Claro</button><button type="button" data-theme-set="dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>Oscuro</button></div>
+    <p class="aj-sec">Sonidos</p>
+    <div class="themesw aj-snd" role="group" aria-label="Sonidos de la app" style="grid-template-columns:repeat(2,1fr)"><button type="button" data-snd="1">🔊 Prendidos</button><button type="button" data-snd="0">🔇 Apagados</button></div>
     <p class="aj-sec">Cuenta</p>
     <div class="aj-grp">
       <div class="aj-row aj-static"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span><span class="aj-tx"><b>Cuenta de Google</b><small id="acctMail"></small></span></div>
@@ -1819,7 +1821,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 96</p>
+    <p class="ver">versión app 97</p>
   </div>
 </div>
 
@@ -2054,6 +2056,41 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     else if(k==='Escape'){ close(); e.preventDefault(); }
     else if(k==='Delete'){ key('C'); e.preventDefault(); }
   });
+})();
+</script>
+<script>
+/* ---------- Sonidos (v97): guardar, cobro, horas y WhatsApp ---------- */
+(function(){
+  var A = null, M = null;
+  function on(){ try{ return localStorage.getItem('pg-sonidos') !== '0'; }catch(_){ return true; } }
+  function ac(){
+    if(!A){ var C = window.AudioContext||window.webkitAudioContext; if(!C) return null; A = new C();
+      var comp = A.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+      M = A.createGain(); M.gain.value = 1.6; M.connect(comp); comp.connect(A.destination); }
+    if(A.state === 'suspended') A.resume();
+    return A;
+  }
+  function tone(f,t,d,type,v){ var a = ac(); if(!a) return; var o = a.createOscillator(), g = a.createGain(), t0 = a.currentTime + 0.02 + t;
+    o.type = type||'sine'; o.frequency.setValueAtTime(f, t0);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    o.connect(g); g.connect(M); o.start(t0); o.stop(t0 + d + 0.05); }
+  function glide(f1,f2,t,d,v){ var a = ac(); if(!a) return; var o = a.createOscillator(), g = a.createGain(), t0 = a.currentTime + 0.02 + t;
+    o.type = 'sine'; o.frequency.setValueAtTime(f1, t0); o.frequency.exponentialRampToValueAtTime(f2, t0 + d);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    o.connect(g); g.connect(M); o.start(t0); o.stop(t0 + d + 0.05); }
+  var S = {
+    guardar: function(){ tone(659,0,0.25,'sine',0.5); tone(880,0.11,0.4,'sine',0.45); },
+    cobro:   function(){ tone(784,0,0.18,'triangle',0.5); tone(988,0.1,0.18,'triangle',0.5); tone(1318,0.2,0.45,'triangle',0.55); },
+    arranca: function(){ tone(523,0,0.12,'sine',0.5); tone(784,0.09,0.22,'sine',0.5); },
+    para:    function(){ tone(784,0,0.12,'sine',0.5); tone(523,0.09,0.28,'sine',0.5); },
+    whatsapp:function(){ glide(700,1100,0,0.06,0.55); glide(1000,1500,0.09,0.08,0.5); }
+  };
+  window.pgSnd = function(n){ try{ if(on() && S[n]) S[n](); }catch(_){} };
+  // desbloquear el audio con el primer toque
+  document.addEventListener('pointerdown', function u(){ try{ if(on()) ac(); }catch(_){} document.removeEventListener('pointerdown', u, true); }, true);
+  function pintar(){ var v = on() ? '1' : '0'; document.querySelectorAll('[data-snd]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-snd')===v)); }); }
+  document.addEventListener('click', function(e){ if(e.target.closest('.wa-go,[data-segui]')) window.pgSnd('whatsapp'); var b = e.target.closest('[data-snd]'); if(!b) return; try{ localStorage.setItem('pg-sonidos', b.getAttribute('data-snd')); }catch(_){} pintar(); if(b.getAttribute('data-snd')==='1') window.pgSnd('guardar'); });
+  pintar();
 })();
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -2739,6 +2776,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   function docName(o){ var k = docKind(o); return ({presu:'Presupuesto', saldo:'Trabajo finalizado', pago:'Trabajo finalizado', pedido:'Pedido'}[k])+' '+String(o.cliente||'').replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,'').trim()+'.jpg'; }
   function waTxtFor(o){ var ta = document.getElementById('wa-'+o.id); return ta ? ta.value : waCorto(o); }
   async function shareDoc(o, b, txt){
+    if(window.pgSnd) pgSnd('whatsapp');
     var f = new File([b], docName(o), {type:'image/jpeg'});
     if(txt){ try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).catch(function(){}); }catch(_){} }
     if(txt && navigator.canShare && navigator.canShare({files:[f], text:txt})){ await navigator.share({files:[f], text:txt}); return 'shared'; }
@@ -3004,7 +3042,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       for(var i=0;i<state.orders.length;i++){ var x = state.orders[i]; if(x.id!==o.id && x.tiempo && x.tiempo.desde){ var tx = JSON.parse(JSON.stringify(x.tiempo)); tx.seg = Math.round(segTrab(x)); tx.desde = ''; x.tiempo = tx; await saveOrder(x).catch(function(){}); } }
       t.desde = new Date(ahora()).toISOString(); if(!t.inicio) t.inicio = hoyStr();
     } else if(act==='pause'){ t.seg = Math.round(segTrab(o)); t.desde = ''; }
-    o.tiempo = t; await saveOrder(o).catch(showErr);
+    o.tiempo = t; if(window.pgSnd) pgSnd(act==='start' ? 'arranca' : 'para'); await saveOrder(o).catch(showErr);
   }
   function timerHtml(o){
     var t = o.tiempo||{}, sg = segTrab(o), run = !!t.desde, st = estado(o);
@@ -3741,7 +3779,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       state.open = d.id; state.openSet[d.id]=true;
       state.filter = q0 ? state.filter : estado(d);
       var curO = state.orders.find(function(x){return x.id===d.id}); if(curO) d.tiempo = curO.tiempo ? JSON.parse(JSON.stringify(curO.tiempo)) : d.tiempo;
-      await saveOrder(d);
+      await saveOrder(d); if(window.pgSnd) pgSnd('guardar');
       ensureCliente(d.cliente).catch(function(){});
       state.open = d.id; state.openSet[d.id]=true; showEditor(false);
       document.querySelectorAll('.tab').forEach(function(b){b.setAttribute('aria-pressed', b.getAttribute('data-filter')===state.filter?'true':'false')});
@@ -4554,7 +4592,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       np.push({fecha:pf, monto:pm, nota: num(o.sena) ? '' : 'Seña'});
       o.pagos = np; o.sena = num(o.sena) + pm; o.vence = pv;
       if(num(o.precio) && saldo(o) <= 0.5){ o.pagado = true; o.estado = 'pagado'; o.vence = ''; }
-      state.payOpen = null; state.payMsg = '';
+      state.payOpen = null; state.payMsg = ''; if(window.pgSnd) pgSnd('cobro');
       await saveOrder(o).catch(showErr); return;
     }
     if(act==='vercobro' && o){ state.q=''; if($('q')) $('q').value=''; state.filter = estado(o); state.open = id; state.openSet[id] = true; document.querySelectorAll('.tab').forEach(function(b){b.setAttribute('aria-pressed', b.getAttribute('data-filter')===state.filter?'true':'false')}); lastHtml=null; render(); setTimeout(function(){ var c=document.getElementById('o-'+id); if(c) c.scrollIntoView({block:'start', behavior:'smooth'}); }, 60); return; }
@@ -4598,7 +4636,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       return;
     }
     if(act==='dup' && o){ setView('pedidos'); openForm(null); copiarDe(o, true); $('fCliente').focus(); return; }
-    if(act==='markpaid' && o){ var rest = saldo(o); if(rest>0 && num(o.precio)){ var hp = pagosDe(o).map(function(p){ return {fecha:p.fecha||'', monto:num(p.monto), nota:p.nota||''}; }); hp.push({fecha:hoyStr(), monto:rest, nota:'Saldo'}); o.pagos = hp; o.sena = num(o.precio); } o.pagado=true; o.estado='pagado'; o.vence=''; await saveOrder(o).catch(showErr); return}
+    if(act==='markpaid' && o){ var rest = saldo(o); if(rest>0 && num(o.precio)){ var hp = pagosDe(o).map(function(p){ return {fecha:p.fecha||'', monto:num(p.monto), nota:p.nota||''}; }); hp.push({fecha:hoyStr(), monto:rest, nota:'Saldo'}); o.pagos = hp; o.sena = num(o.precio); } o.pagado=true; o.estado='pagado'; o.vence=''; if(window.pgSnd) pgSnd('cobro'); await saveOrder(o).catch(showErr); return}
     if(act==='unpaid' && o){o.pagado=false; o.estado='saldo'; await saveOrder(o).catch(showErr); return}
     if(act==='tosaldo' && o){o.pagado=false; o.estado='saldo'; await saveOrder(o).catch(showErr); return}
     if(act==='rechazar' && o){o.pagado=false; o.estado='rechazado'; await saveOrder(o).catch(showErr); return}
