@@ -1823,7 +1823,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 98</p>
+    <p class="ver">versión app 99</p>
   </div>
 </div>
 
@@ -2283,7 +2283,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       subscribe();
       initStock();
       initClientes();
-      initGastos(); initNotas(); initModelos(); setTimeout(seedNotas, 1500); setTimeout(seedModelos, 2500); setTimeout(seedModelos2, 6000);
+      initGastos(); initNotas(); initModelos(); setTimeout(seedNotas, 1500); setTimeout(seedModelos, 2500); setTimeout(seedModelos2, 6000); setTimeout(seedModelos3, 9000);
     }else{
       state.loading = false; render();
       state.mem = true;
@@ -4262,6 +4262,19 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       }
       await state.db.collection('modelos').doc(m.id).set({nom:m.nom, alto:m.alto, ancho:m.ancho, prof:m.prof, med:m.med, txt:m.txt, fotos:fids, videos:m.videos||[], fecha:'2026-11-08', creado:'2026-11-08T17:00:0'+i+'.000Z', editado:''});
     }
+  }
+  var SEED_MOD3 = [
+    {id:'seed-arbol-navidad', nom:'Árbol de Navidad estante', alto:'', ancho:'53', prof:'', fotos:['arbol'],
+     med:'Medidas del plano (en pulgadas, pasadas a cm):\nTramo de arriba izquierdo: 14" = 35,5 cm\nResto de los tramos de los costados: 12" = 30,5 cm (3 por lado, escalonados)\nBase: ~20 7/8" = 53 cm\nPie de abajo: 12" = 30,5 cm\nCortes: 45° en la punta y 22,5° en los escalones y en la base', txt:'Los tramos van escalonados para que quede la forma de árbol.'},
+    {id:'seed-corte-inclinado', nom:'Corte con la hoja inclinada (cuánto se corre)', alto:'', ancho:'', prof:'', fotos:['ci1','ci2'], videos:[{src:'modelos/corte-inclinado.mp4', poster:'mod-ci1'}],
+     med:'Lo que anota en la madera:\n1,5 → a 45° → se corre 1,5\n1,5 → a 15° → se corre ,5 (aprox.)\nAl inclinar la hoja, arriba el corte se corre: a 45° lo mismo que el espesor, a 15° más o menos un tercio.', txt:'Es como entendí el video (no tiene sonido acá). Miralo para confirmar.'},
+    {id:'seed-placas-colores', nom:'Colores de placas (melamina)', alto:'', ancho:'', prof:'', fotos:['placa-fresno','placa-negro'],
+     med:'Fresno Mediterráneo: veta marcada, marrón muy oscuro casi negro\nNegro Expresión: negro con veta fina gris', txt:'Muestras de placas con su nombre.'}
+  ];
+  function seedModelos3(){
+    if(!state.db) return;
+    var aj = state.db.collection('ajustes').doc('seeds');
+    aj.get().then(async function(d){ var x = (d && d.exists) ? (d.data()||{}) : {}; if(x.mod3_20261114) return; await seedLista(SEED_MOD3); await aj.set({mod3_20261114:true}, {merge:true}); }).catch(function(){});
   }
   function seedModelos2(){
     if(!state.db) return;
