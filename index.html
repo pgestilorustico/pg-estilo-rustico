@@ -1432,6 +1432,27 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
 :root[data-theme="dark"] .login.splash .login-box .lg-txt{color:#ECE8E5}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .login.splash .login-box .lg-txt{color:#ECE8E5} }
 @media (prefers-reduced-motion: reduce){ .lg-anim *,.lg-txt span{animation-duration:.01s!important;animation-delay:0s!important} }
+
+/* v100: publicar en redes */
+#redOv{z-index:47}
+#redOv .red-box{height:auto!important;max-height:94vh;border-radius:24px 24px 0 0;width:100%;max-width:520px;display:flex;flex-direction:column;overflow:hidden}
+@media (min-width:900px){ #redOv .red-box{border-radius:24px} }
+#redOv .res-body{overflow:auto;padding:6px 16px 22px}
+.red-fmt{display:grid!important;grid-template-columns:1fr 1fr;gap:4px;margin:0 0 12px;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+.red-prev{position:relative;background:var(--soft);border-radius:16px;padding:10px;display:flex;justify-content:center}
+.red-prev canvas{display:block;width:auto;max-width:100%;height:auto;max-height:52vh;border-radius:8px;box-shadow:0 6px 18px -10px rgba(0,0,0,.35)}
+.red-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;margin:0;color:var(--muted);font-weight:600;pointer-events:none}
+.red-warn{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#FFF4E0;color:#7A4B00;font-size:.85rem;font-weight:600}
+:root[data-theme="dark"] .red-warn{background:#3A2E1C;color:#F2CF8E}
+.red-fotos{display:flex;gap:8px;overflow-x:auto;margin:12px 0 8px}
+.red-fotos button{flex:none;border:2px solid transparent;border-radius:12px;padding:0;background:none}
+.red-fotos button[aria-pressed="true"]{border-color:var(--ink)}
+.red-fotos img{width:68px;height:68px;object-fit:cover;border-radius:10px;display:block}
+.red-gal{display:block;text-align:center;margin:4px 0 12px;width:100%;box-sizing:border-box}
+.red-enc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.red-enc input[type=range]{width:100%}
+.red-chk{display:flex;align-items:center;gap:8px;font-weight:600;margin:4px 0 10px}
+#redTxt{resize:vertical}
 </style>
 </head>
 <body>
@@ -1802,6 +1823,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     </div>
     <p class="aj-sec">Resumen</p>
     <div class="aj-grp"><button type="button" class="aj-row" id="resBtn2"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="aj-tx"><b>Resumen del mes</b><small id="resAjTxt">Cobrado, ganancia y gastos del mes</small></span><span class="aj-chev">›</span></button></div>
+    <div class="aj-grp" style="margin-top:8px"><button type="button" class="aj-row" id="redBtnAj"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg></span><span class="aj-tx"><b>Publicar en redes</b><small>Armá una foto con tu logo para Instagram o Facebook</small></span><span class="aj-chev">›</span></button></div>
     <div class="aj-grp" style="margin-top:8px"><button type="button" class="aj-row" id="histBtn2"><span class="aj-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5"/><path d="M10 2h4"/></svg></span><span class="aj-tx"><b>Historial de horas</b><small>Trabajos cronometrados y cuánto ganaste por hora</small></span><span class="aj-chev">›</span></button></div>
     <p class="aj-sec">Presupuestos</p>
     <div class="aj-grp"><div class="aj-row aj-static"><span class="aj-tx"><b>Validez del presupuesto</b><small>Se agrega en la foto y en el texto de WhatsApp</small></span></div></div>
@@ -1823,7 +1845,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     <span class="aj-rule"><img src="logo.png" alt=""></span>
     <p class="aj-brand">PG Estilo Rústico</p>
     <p class="credit">App creada por <b>Pablo A. Guzmán</b></p>
-    <p class="ver">versión app 99</p>
+    <p class="ver">versión app 100</p>
   </div>
 </div>
 
@@ -1837,6 +1859,30 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
   <img alt="Foto que se va a enviar">
 </div>
 <button type="button" id="calcFab" aria-label="Abrir calculadora (podés arrastrarla)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="7.5" y="5.5" width="9" height="4" rx="1.2" fill="currentColor" opacity=".9"/><circle cx="8.6" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.4" cy="13" r="1.1" fill="currentColor"/><circle cx="8.6" cy="16.6" r="1.1" fill="currentColor"/><circle cx="12" cy="16.6" r="1.1" fill="currentColor"/><circle cx="15.4" cy="16.6" r="1.1" fill="currentColor"/></svg></button>
+<div id="redOv" class="catov" hidden role="dialog" aria-label="Publicar en redes">
+  <div class="cat-box res-box red-box">
+    <div class="cat-top av-top"><strong>📣 Publicar en redes</strong><span class="cat-acts"><button type="button" class="calc-x" id="redClose" aria-label="Cerrar">✕</button></span></div>
+    <div class="res-body">
+      <div class="red-fmt themesw" role="group" aria-label="Formato"><button type="button" data-rfmt="post" aria-pressed="true">Publicación</button><button type="button" data-rfmt="story" aria-pressed="false">Historia / Estado</button></div>
+      <div class="red-prev"><canvas id="redCv" width="1080" height="1350"></canvas><p class="red-empty" id="redEmpty">Elegí una foto para empezar</p></div>
+      <p class="red-warn" id="redWarn" hidden></p>
+      <div class="red-fotos" id="redFotos"></div>
+      <label class="btn primary red-gal" for="redFile">📷 Elegir foto de la galería (mejor calidad)</label><input type="file" id="redFile" accept="image/*" hidden>
+      <div class="red-enc" id="redEnc" hidden>
+        <label class="f">Mover foto<input type="range" id="redPos" min="0" max="100" value="50"></label>
+        <label class="f">Acercar<input type="range" id="redZoom" min="100" max="220" value="100"></label>
+      </div>
+      <label class="f">Nombre del mueble<input type="text" id="redTit" autocapitalize="sentences" autocomplete="off" placeholder="Ej: Mesa ratona de pino"></label>
+      <label class="f">Detalle (opcional)<input type="text" id="redDet" autocapitalize="sentences" autocomplete="off" placeholder="Ej: Tapa blanca · patas de pino macizo"></label>
+      <label class="f">Texto del botón<input type="text" id="redBtn" autocapitalize="sentences" autocomplete="off"></label>
+      <label class="red-chk"><input type="checkbox" id="redPrecioOn"> Mostrar precio</label>
+      <label class="f" id="redPrecioF" hidden>Precio<input type="text" id="redPrecio" inputmode="numeric" autocomplete="off" placeholder="Ej: 85000"></label>
+      <label class="f">Texto para la publicación<textarea id="redTxt" rows="6"></textarea></label>
+      <p class="hint" id="redMsg"></p>
+      <div class="actions"><button type="button" class="btn primary" id="redShare">Compartir</button><button type="button" class="btn" id="redDown">Descargar</button></div>
+    </div>
+  </div>
+</div>
 <div id="nafOv" class="catov" hidden role="dialog" aria-label="Calculadora de combustible">
   <div class="cat-box res-box naf-box">
     <div class="cat-top av-top"><strong>⛽ Combustible</strong><span class="cat-acts"><button type="button" class="calc-x" id="nafClose" aria-label="Cerrar">✕</button></span></div>
@@ -2914,7 +2960,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     function vis(id){ var e = document.getElementById(id); return !!(e && !e.hidden); }
     function atras(){
       if(vis('docView')){ closeDocView(); return true; }
-      var ov = [['mZoom','mZoomX'],['nafOv','nafClose'],['histOv','histClose'],['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
+      var ov = [['redOv','redClose'],['mZoom','mZoomX'],['nafOv','nafClose'],['histOv','histClose'],['ajOv','ajClose'],['compras','compClose'],['cat','catClose'],['placas','plClose'],['resumen','resClose'],['cpick','cpClose'],['avisos','avClose'],['calc','calcClose']];
       for(var i=0;i<ov.length;i++){ if(vis(ov[i][0])){ var cb = document.getElementById(ov[i][1]); if(cb) cb.click(); else { document.getElementById(ov[i][0]).hidden = true; document.documentElement.classList.remove('ov-open'); } return true; } }
       if(state.editing){ if(document.querySelector('.pgd-bg')) return true; pgDialog({title:'¿Salir sin guardar?', msg:'Los cambios que hiciste se van a perder.', cancel:'Seguir editando', ok:'Salir', danger:true}).then(function(si){ if(si){ showEditor(false); window.scrollTo(0,0); } }); return true; }
       if(state.view && state.view!=='pedidos'){ setView('pedidos'); window.scrollTo(0,0); return true; }
@@ -3128,6 +3174,106 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
     calc();
   }
   function nafClose(){ $('nafOv').hidden = true; document.documentElement.classList.remove('ov-open'); }
+
+  /* ---------- Publicar en redes (v100) ---------- */
+  var RED = {fmt:'post', img:null, src:'', pos:50, zoom:100, logo:null};
+  (function(){ var a = new Image(), b = new Image(), n = 0; function ok(){ if(++n<2) return; try{ var c = document.createElement('canvas'); c.width = a.naturalWidth; c.height = a.naturalHeight; var x = c.getContext('2d'); x.drawImage(b,0,0); x.drawImage(a,0,0); RED.logo = c; }catch(_){} } a.onload = ok; b.onload = ok; a.src = 'logo-anim-cuerpo.webp'; b.src = 'logo-anim-cinta.webp'; })();
+  function redCaption(){
+    var t = $('redTit').value.trim(), d = $('redDet').value.trim(), pr = $('redPrecioOn').checked ? num($('redPrecio').value) : 0;
+    return (t||'Mueble a medida')+(d?' — '+d:'')+' 🪵\nHecho a medida en nuestro taller.'+(pr?'\nPrecio: '+money.format(pr):'')+'\nConsultas y pedidos por WhatsApp 📲\n\n#carpinteria #muebles #madera #hechoamano #amedida #trelew #pgestilorustico';
+  }
+  var redTxtTocado = false;
+  function redFit(x, txt, max, w, wt, fam){ var sz = max; do { x.font = wt+' '+sz+'px '+fam; if(x.measureText(txt).width <= w) break; sz -= 2; } while(sz > 30); return sz; }
+  function redPill(x, txt, cx, cy, h, bg, fg, font, padX){ x.font = font; var w = x.measureText(txt).width + padX*2, r = h/2; x.fillStyle = bg; x.beginPath(); x.moveTo(cx+r,cy); x.arcTo(cx+w,cy,cx+w,cy+h,r); x.arcTo(cx+w,cy+h,cx,cy+h,r); x.arcTo(cx,cy+h,cx,cy,r); x.arcTo(cx,cy,cx+w,cy,r); x.closePath(); x.fill(); x.fillStyle = fg; x.textBaseline = 'middle'; x.fillText(txt, cx+padX, cy+h/2+1); x.textBaseline = 'alphabetic'; return w; }
+  function redBadge(x, X, Y, sz){ x.fillStyle = 'rgba(255,255,255,.94)'; x.beginPath(); x.arc(X+sz/2, Y+sz/2, sz/2, 0, Math.PI*2); x.fill(); if(RED.logo){ var L = RED.logo, k = (sz*0.72)/Math.max(L.width,L.height), w = L.width*k, h = L.height*k; x.drawImage(L, X+(sz-w)/2, Y+(sz-h)/2, w, h); } }
+  function redCover(x, img, X, Y, W, H){
+    var z = RED.zoom/100, r = Math.max(W/img.width, H/img.height)*z, w = img.width*r, h = img.height*r, p = RED.pos/100;
+    var ox = w-W, oy = h-H, dx, dy;
+    if(ox >= oy){ dx = X - ox*p; dy = Y - oy/2; } else { dx = X - ox/2; dy = Y - oy*p; }
+    x.save(); x.beginPath(); x.rect(X,Y,W,H); x.clip(); x.drawImage(img, dx, dy, w, h); x.restore();
+  }
+  function redDraw(){
+    var cv = $('redCv'), post = RED.fmt==='post', W = 1080, H = post ? 1350 : 1920; cv.width = W; cv.height = H;
+    var x = cv.getContext('2d'); x.imageSmoothingQuality = 'high';
+    var INK = '#2E2824', TAUPE = '#75685C', CREAM = '#FAF7F3';
+    var tit = $('redTit').value.trim() || 'Nombre del mueble', det = $('redDet').value.trim(), bt = $('redBtn').value.trim(), pr = $('redPrecioOn').checked ? num($('redPrecio').value) : 0;
+    $('redEmpty').hidden = !!RED.img;
+    x.fillStyle = post ? CREAM : '#3A332E'; x.fillRect(0,0,W,H);
+    if(post){
+      var PH = 1010;
+      if(RED.img) redCover(x, RED.img, 0, 0, W, PH); else { x.fillStyle = '#E6E0D9'; x.fillRect(0,0,W,PH); }
+      redBadge(x, 40, 40, 150);
+      if(pr){ x.font = '600 46px Archivo, sans-serif'; var pt = money.format(pr), pw = x.measureText(pt).width + 64; redPill(x, pt, W-40-pw, PH-40-84, 84, '#FFFFFF', INK, '600 46px Archivo, sans-serif', 32); }
+      x.fillStyle = INK; var ts = redFit(x, tit, 66, W-128, '600', 'Archivo, sans-serif'); x.fillText(tit, 64, 1052+ts);
+      if(det){ x.fillStyle = TAUPE; redFit(x, det, 36, W-128, '500', 'Manrope, sans-serif'); x.fillText(det, 66, 1182); }
+      if(bt) redPill(x, bt, 64, 1222, 78, INK, '#FFFFFF', '600 34px Manrope, sans-serif', 38);
+      x.fillStyle = TAUPE; x.font = '600 30px Manrope, sans-serif'; x.textAlign = 'right'; x.fillText('PG Estilo Rústico', W-64, 1272); x.textAlign = 'left';
+    } else {
+      if(RED.img) redCover(x, RED.img, 0, 0, W, H);
+      var g = x.createLinearGradient(0, H*0.55, 0, H); g.addColorStop(0,'rgba(30,26,23,0)'); g.addColorStop(1,'rgba(30,26,23,.88)'); x.fillStyle = g; x.fillRect(0, H*0.55, W, H*0.45);
+      redBadge(x, 60, 100, 180);
+      var y = 1480;
+      if(pr) { redPill(x, money.format(pr), 70, y-120, 84, '#FFFFFF', INK, '600 46px Archivo, sans-serif', 32); }
+      x.fillStyle = '#FFFFFF'; var ts2 = redFit(x, tit, 80, W-140, '600', 'Archivo, sans-serif'); x.fillText(tit, 70, y+ts2);
+      x.fillStyle = '#EBE4DC'; if(det){ redFit(x, det, 42, W-140, '500', 'Manrope, sans-serif'); x.fillText(det, 72, y+ts2+70); }
+      if(bt) redPill(x, bt, 70, y+ts2+(det?120:60), 96, '#FFFFFF', INK, '600 38px Manrope, sans-serif', 44);
+      x.fillStyle = 'rgba(255,255,255,.85)'; x.font = '600 32px Manrope, sans-serif'; x.textAlign = 'right'; x.fillText('PG Estilo Rústico', W-60, H-70); x.textAlign = 'left';
+    }
+    if(!redTxtTocado) $('redTxt').value = redCaption();
+  }
+  function redSetImg(src, img){
+    RED.img = img; RED.src = src; RED.pos = 50; RED.zoom = 100; $('redPos').value = 50; $('redZoom').value = 100; $('redEnc').hidden = false;
+    var corto = Math.min(img.naturalWidth||img.width, img.naturalHeight||img.height);
+    $('redWarn').hidden = corto >= 1000; $('redWarn').textContent = 'Esta foto es chica ('+(img.naturalWidth||img.width)+' × '+(img.naturalHeight||img.height)+'). Para mejor calidad elegila de la galería.';
+    $('redFotos').querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-rf')===src)); });
+    redDraw();
+  }
+  function redLoad(url, src){ var im = new Image(); im.onload = function(){ redSetImg(src, im); }; im.src = url; }
+  function redOpen(o){
+    RED.img = null; RED.src = ''; redTxtTocado = false; $('redMsg').textContent = ''; $('redWarn').hidden = true; $('redEnc').hidden = true;
+    $('redTit').value = o ? String(o.pedido||'') : ''; $('redDet').value = o ? String(o.medidas||'') : '';
+    $('redBtn').value = RED.fmt==='post' ? 'Hecho a medida' : 'Pedí el tuyo por WhatsApp';
+    $('redPrecioOn').checked = false; $('redPrecioF').hidden = true; $('redPrecio').value = o && num(o.precio) ? String(num(o.precio)) : '';
+    var fs = o && Array.isArray(o.fotos) ? o.fotos.filter(function(f){ return blob(f); }) : [];
+    $('redFotos').innerHTML = fs.map(function(f){ return '<button type="button" data-rf="'+esc(f)+'" aria-pressed="false" aria-label="Usar esta foto"><img src="'+blob(f)+'" alt=""></button>'; }).join('');
+    $('redFotos').hidden = !fs.length;
+    $('redOv').hidden = false; document.documentElement.classList.add('ov-open');
+    var fl = document.fonts && document.fonts.load ? Promise.all([document.fonts.load('600 60px Archivo'), document.fonts.load('600 30px Manrope'), document.fonts.load('500 30px Manrope')]) : Promise.resolve();
+    fl.catch(function(){}).then(function(){ if(fs.length) redLoad(blob(fs[0]), fs[0]); else redDraw(); });
+  }
+  window.redOpen = redOpen;
+  function redClose(){ $('redOv').hidden = true; document.documentElement.classList.remove('ov-open'); if(RED.src==='galeria' && RED.img && RED.img.src && RED.img.src.indexOf('blob:')===0) URL.revokeObjectURL(RED.img.src); RED.img = null; }
+  $('redClose').addEventListener('click', redClose);
+  $('redBtnAj').addEventListener('click', function(){ redOpen(null); });
+  $('redOv').addEventListener('click', function(e){
+    var f = e.target.closest('[data-rfmt]'); if(f){ var nf = f.getAttribute('data-rfmt'); if(nf!==RED.fmt){ var b = $('redBtn').value.trim(); if(b==='Hecho a medida' || b==='Pedí el tuyo por WhatsApp' || !b) $('redBtn').value = nf==='post' ? 'Hecho a medida' : 'Pedí el tuyo por WhatsApp'; RED.fmt = nf; } document.querySelectorAll('[data-rfmt]').forEach(function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-rfmt')===RED.fmt)); }); redDraw(); return; }
+    var p = e.target.closest('[data-rf]'); if(p){ var id = p.getAttribute('data-rf'); redLoad(blob(id), id); }
+  });
+  $('redFile').addEventListener('change', function(){ var f = (this.files||[])[0]; this.value = ''; if(!f) return; redLoad(URL.createObjectURL(f), 'galeria'); });
+  ['redTit','redDet','redBtn','redPrecio'].forEach(function(id){ $(id).addEventListener('input', redDraw); });
+  $('redPrecioOn').addEventListener('change', function(){ $('redPrecioF').hidden = !this.checked; redDraw(); });
+  $('redPos').addEventListener('input', function(){ RED.pos = +this.value; redDraw(); });
+  $('redZoom').addEventListener('input', function(){ RED.zoom = +this.value; redDraw(); });
+  $('redTxt').addEventListener('input', function(){ redTxtTocado = true; });
+  function redBlob(){ return new Promise(function(res){ $('redCv').toBlob(function(b){ res(b); }, 'image/jpeg', 0.93); }); }
+  function redNombre(){ return (RED.fmt==='post' ? 'Publicacion' : 'Historia')+' '+($('redTit').value.trim()||'PG').replace(/[^\wÁÉÍÓÚáéíóúÑñ ]/g,'').slice(0,40)+'.jpg'; }
+  $('redShare').addEventListener('click', async function(){
+    if(!RED.img){ $('redMsg').textContent = 'Primero elegí una foto.'; return; }
+    var txt = $('redTxt').value; try{ await navigator.clipboard.writeText(txt); }catch(_){}
+    var b = await redBlob(), f = new File([b], redNombre(), {type:'image/jpeg'});
+    try{
+      if(navigator.canShare && navigator.canShare({files:[f], text:txt})){ await navigator.share({files:[f], text:txt}); $('redMsg').textContent = 'El texto también quedó copiado: si la red no lo pone sola, mantené apretado donde se escribe y tocá Pegar.'; return; }
+      if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f]}); $('redMsg').textContent = 'El texto quedó copiado: pegalo en la publicación.'; return; }
+    }catch(e){ if(e && e.name==='AbortError') return; }
+    var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+    $('redMsg').textContent = 'La imagen se descargó y el texto quedó copiado.';
+  });
+  $('redDown').addEventListener('click', async function(){
+    if(!RED.img){ $('redMsg').textContent = 'Primero elegí una foto.'; return; }
+    var b = await redBlob(), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = redNombre(); document.body.appendChild(a); a.click(); a.remove();
+    try{ await navigator.clipboard.writeText($('redTxt').value); }catch(_){}
+    $('redMsg').textContent = 'Imagen descargada (está en tu galería o en Descargas). El texto quedó copiado.';
+  });
   $('nafOpen').addEventListener('click', function(){ nafRender($('nafO'), true); $('nafOv').hidden = false; document.documentElement.classList.add('ov-open'); });
   $('nafClose').addEventListener('click', nafClose);
   $('nafOv').addEventListener('click', function(e){ if(e.target===$('nafOv')) nafClose(); });
@@ -3479,13 +3625,14 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
         unpaid: actBtn('unpaid',o.id,'btn','Reabrir saldo'),
         edit: actBtn('edit',o.id,'btn','✎ Editar'),
         dup: actBtn('dup',o.id,'btn','Copiar a pedido nuevo'),
+        redes: actBtn('redes',o.id,'btn','📣 Publicar en redes'),
         del: state.confirmDel===o.id ? actBtn('delyes',o.id,'btn bad','Sí, borrar pedido') + actBtn('delno',o.id,'btn','No') : actBtn('del',o.id,'btn bad','Borrar')
       };
       if(st==='presupuesto'){ P = ['aceptar','rechazar','wa','edit']; M = ['dup','del']; }
       else if(st==='rechazado'){ P = ['aceptar','reenviar','edit']; M = ['wa','dup','del']; }
-      else if(st==='proceso'){ P = ['wa','pay','term','edit']; M = ['venc','paid','dup','del']; }
-      else if(st==='saldo'){ P = ['pay','paid','wa','edit']; M = ['venc','proc','dup','del']; }
-      else { P = ['wa','edit']; M = ['unpaid','dup','del']; }
+      else if(st==='proceso'){ P = ['wa','pay','term','edit']; M = ['venc','paid','redes','dup','del']; }
+      else if(st==='saldo'){ P = ['pay','paid','wa','edit']; M = ['venc','proc','redes','dup','del']; }
+      else { P = ['wa','edit']; M = ['redes','unpaid','dup','del']; }
       h += '<div class="actions acts-main">'+P.map(function(k){ return A[k]; }).join('')+'</div>';
       h += '<details class="acts-more"'+(state.confirmDel===o.id?' open':'')+'><summary>⋯ Más opciones</summary><div class="actions">'+M.map(function(k){ return A[k]; }).join('')+'</div></details>';
       h += '</div></div>';
@@ -4658,6 +4805,7 @@ body:not(.v-pedidos) #ajGear,body:not(.v-pedidos) .aj-foot{display:none!importan
       try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, fail); else fail(); }catch(_){ fail(); }
       return;
     }
+    if(act==='redes' && o){ if(window.redOpen) window.redOpen(o); return; }
     if(act==='dup' && o){ setView('pedidos'); openForm(null); copiarDe(o, true); $('fCliente').focus(); return; }
     if(act==='markpaid' && o){ var rest = saldo(o); if(rest>0 && num(o.precio)){ var hp = pagosDe(o).map(function(p){ return {fecha:p.fecha||'', monto:num(p.monto), nota:p.nota||''}; }); hp.push({fecha:hoyStr(), monto:rest, nota:'Saldo'}); o.pagos = hp; o.sena = num(o.precio); } o.pagado=true; o.estado='pagado'; o.vence=''; if(window.pgSnd) pgSnd('cobro'); await saveOrder(o).catch(showErr); return}
     if(act==='unpaid' && o){o.pagado=false; o.estado='saldo'; await saveOrder(o).catch(showErr); return}
